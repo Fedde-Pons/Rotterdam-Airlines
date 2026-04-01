@@ -28,6 +28,36 @@ public class AccountsLogic
         }
         return null;
     }
+
+    public void CreateAccount(AccountModel account)
+    {
+        // Validate account details
+        if (string.IsNullOrWhiteSpace(account.FullName))
+        {
+            throw new ArgumentException("Full name cannot be empty.");
+        }
+
+        if (string.IsNullOrWhiteSpace(account.EmailAddress) || !account.EmailAddress.Contains("@"))
+        {
+            throw new ArgumentException("Please enter a valid email address.");
+        }
+
+        if (string.IsNullOrWhiteSpace(account.Password) || account.Password.Length < 6)
+        {
+            throw new ArgumentException("Password must be at least 6 characters long.");
+        }
+
+        // Check if email already exists
+        AccountModel existingAccount = _access.GetByEmail(account.EmailAddress);
+        if (existingAccount != null)
+        {
+            throw new ArgumentException("An account with this email already exists.");
+        }
+
+        // Create the account
+        _access.Write(account);
+        CurrentAccount = account;
+    }
 }
 
 

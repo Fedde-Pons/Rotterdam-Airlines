@@ -1,0 +1,1 @@
+hierzo zet je de logica van je programma in elkaar

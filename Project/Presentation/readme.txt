@@ -1,0 +1,1 @@
+hier doe je alleen readline, writeline, aanroepen van logica
