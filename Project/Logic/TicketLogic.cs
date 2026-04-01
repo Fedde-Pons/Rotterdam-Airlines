@@ -1,10 +1,10 @@
 /// <summary>
 /// this class is for handling the ticket logic within the project
 /// </summary>
-class TicketLogic
+public class TicketLogic
 {   
 
-    //TODO: Implement the user and plane into the logic here
+    //TODO: Implement the booking and plane into the logic here
     public TicketLogic()
     {
         

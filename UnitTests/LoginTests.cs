@@ -1,7 +1,5 @@
 ﻿namespace UnitTests;
 
-
-
 [TestClass]
 public sealed class Test1
 {
