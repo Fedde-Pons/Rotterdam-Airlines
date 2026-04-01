@@ -1,4 +1,4 @@
-﻿namespace core;
+﻿namespace project;
 
 class Program
 {
