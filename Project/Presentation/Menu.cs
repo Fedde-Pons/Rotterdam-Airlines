@@ -61,6 +61,7 @@ static class Menu
                 // This calls the method to login.
 
                 // UserLogin.Start();
+                Console.WriteLine("This feature is not implemented yet.");
                 break;
             case "2":
                 // This calls the method to register a new account. 
