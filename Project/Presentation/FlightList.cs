@@ -15,24 +15,33 @@ static class FlightList
         // Sort flights by departure time
         flights = flights.OrderBy(f => f.DepartureTime).ToList();
 
-        Console.WriteLine("\n========================================");
-        Console.WriteLine("        Available Flights");
-        Console.WriteLine("========================================\n");
+        // Table header
+        string header = String.Format(
+            " {0,-4} {1,-10} {2,-20} {3,-20} {4,-18} {5,-18} {6,-22} {7,-10} {8,-10}",
+            "#", "Flight", "From", "To", "Departure", "Arrival", "Aircraft", "Price", "Status");
+        string separator = new string('=', header.Length);
+
+        Console.WriteLine($"\n{separator}");
+        Console.WriteLine("  DEPARTURES - Rotterdam Airlines");
+        Console.WriteLine(separator);
+        Console.WriteLine(header);
+        Console.WriteLine(new string('-', header.Length));
 
         for (int i = 0; i < flights.Count; i++)
         {
             var flight = flights[i];
-            Console.WriteLine($"  [{i + 1}] Flight {flight.FlightNumber}");
-            Console.WriteLine($"      From:        {flight.DepartureAirportName}, {flight.DepartureCity} ({flight.DepartureCountry})");
-            Console.WriteLine($"      To:          {flight.DestinationAirportName}, {flight.DestinationCity} ({flight.DestinationCountry})");
-            Console.WriteLine($"      Time:        {flight.DepartureTime} - {flight.ArrivalTime}");
-            Console.WriteLine($"      Aircraft:    {flight.AircraftManufacturer} {flight.AircraftModel}");
-            Console.WriteLine($"      Price:       €{flight.BasePrice:F2}");
-            Console.WriteLine($"      Status:      {flight.Status}");
-            Console.WriteLine("      ----------------------------------------");
+            string from = $"{flight.DepartureCity} ({flight.DepartureCountry})";
+            string to = $"{flight.DestinationCity} ({flight.DestinationCountry})";
+            string aircraft = $"{flight.AircraftManufacturer} {flight.AircraftModel}";
+            string price = $"€{flight.BasePrice:F2}";
+
+            Console.WriteLine(String.Format(
+                " {0,-4} {1,-10} {2,-20} {3,-20} {4,-18} {5,-18} {6,-22} {7,-10} {8,-10}",
+                i + 1, flight.FlightNumber, from, to, flight.DepartureTime, flight.ArrivalTime, aircraft, price, flight.Status));
         }
 
-        Console.WriteLine($"\n  Total flights found: {flights.Count}\n");
+        Console.WriteLine(separator);
+        Console.WriteLine($"  Total flights: {flights.Count}\n");
         Console.WriteLine("Press any key to return to the menu...");
         Console.ReadKey();
         Menu.Start();
