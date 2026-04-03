@@ -23,10 +23,7 @@ static class Menu
                 // This calls the method to show all available flights.
                 // This function is implemented in the "feature/show-available-flights" branch
 
-                // FlightList.ShowAllFlights();
-
-                Console.WriteLine("This feature is not implemented yet.");
-                Start();
+                FlightList.ShowAllFlights();
                 break;
             case "2":
                 // This calls the method to book a flight (not implemented yet)
@@ -64,6 +61,7 @@ static class Menu
                 // This calls the method to login.
 
                 // UserLogin.Start();
+                Console.WriteLine("This feature is not implemented yet.");
                 break;
             case "2":
                 // This calls the method to register a new account. 
