@@ -12,10 +12,8 @@ static class FlightList
             return;
         }
 
-        // Sort flights by departure time
         flights = flights.OrderBy(f => f.DepartureTime).ToList();
 
-        // Table header
         string header = String.Format(
             " {0,-4} {1,-10} {2,-20} {3,-20} {4,-18} {5,-18} {6,-22} {7,-10} {8,-10}",
             "#", "Flight", "From", "To", "Departure", "Arrival", "Aircraft", "Price", "Status");
