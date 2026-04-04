@@ -14,8 +14,7 @@ public class CreateAccountLogic
     // returns false = something went wrong
     public bool CreateAccount(string firstName, string lastName, string dob, string email, string phoneNumber, string password)
     {
-        // first we check if the user actually filled everything in
-        // if not stop
+        // check if everything is filled in
         if (string.IsNullOrWhiteSpace(firstName) ||
             string.IsNullOrWhiteSpace(lastName) ||
             string.IsNullOrWhiteSpace(dob) ||
@@ -26,23 +25,26 @@ public class CreateAccountLogic
             return false;
         }
 
-        // now we check if the email already exists
-        // because we don't want duplicate accounts
-        AccountModel existingAccount = _access.GetByEmail(email);
-
-        // if we find one stop again
-        if (existingAccount != null)
+        // check if email already exists
+        if (_access.EmailExists(email))
         {
             return false;
         }
 
-        // if everything is fine we make a new account object
-        AccountModel newAccount = new AccountModel(0, firstName, lastName, dob, email, phoneNumber, password);
+        // create account object
+        AccountModel newAccount = new AccountModel(
+            0,
+            firstName,
+            lastName,
+            dob,
+            email,
+            phoneNumber,
+            password
+        );
 
-        // save it using the access layer
+        // save to database
         _access.Write(newAccount);
 
-        // done account created
         return true;
     }
 }
