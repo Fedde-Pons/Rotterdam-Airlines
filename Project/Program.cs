@@ -7,11 +7,10 @@ class Program
 {
     static void Main(string[] args)
     {
-        // 🔥 DATABASE INITIALIZEN
+        // DATABASE INITIALIZEN
         var db = new DatabaseInitializer();
         db.Initialize();
 
-        // 👇 jouw bestaande code
         var access = new AccountsAccess();
         access.CreateTable();
 
@@ -31,7 +30,7 @@ class Program
             Console.WriteLine("Account not found");
         }
 
-        // 🔍 CHECK OF TABELLEN BESTAAN
+        // CHECK OF TABELLEN BESTAAN
         using var connection = new SqliteConnection("Data Source=DataSources/project.db");
 
         var tables = connection.Query<string>(
