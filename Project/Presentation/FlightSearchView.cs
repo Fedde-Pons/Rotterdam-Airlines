@@ -2,7 +2,9 @@ public static class FlightSearch
 {
     public static void StartSearch()
     {
-        Console.Clear();
+        FlightList.ShowAllAvailableFlightsShortList();
+
+        Console.WriteLine("\nSEARCH FOR A FLIGHT");
 
         FlightLogic flightLogic = new FlightLogic();
         List<FlightModel> flights = flightLogic.GetAllFlights();
@@ -13,35 +15,78 @@ public static class FlightSearch
         Console.Write("Enter your destination city: ");
         string searchDestination = Console.ReadLine();
 
-        Console.Write("Enter your travel date (YYYY-MM-DD): ");
-        string dateInput = Console.ReadLine();
-        DateTime searchDate = DateTime.Parse(dateInput);
-
-        bool flightFound = false;
+        List<FlightModel> routeMatches = new List<FlightModel>();
 
         foreach (FlightModel flight in flights)
         {
             if (flight.DepartureCity.Equals(searchDeparture, StringComparison.OrdinalIgnoreCase) &&
-                flight.DestinationCity.Equals(searchDestination, StringComparison.OrdinalIgnoreCase) &&
-                DateTime.TryParse(flight.DepartureTime, out DateTime flightDate) &&
-                flightDate.Date == searchDate.Date) 
+                flight.DestinationCity.Equals(searchDestination, StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine($"Flight Number: {flight.FlightNumber}");
-                Console.WriteLine($"Route: {flight.DepartureCity} to {flight.DestinationCity}");
-                Console.WriteLine($"Departure: {flight.DepartureTime}");
-                Console.WriteLine($"Price: €{flight.BasePrice}");
-                
-                flightFound = true;
+                routeMatches.Add(flight);
             }
         }
 
-        if (flightFound == false)
+        if (routeMatches.Count == 0)
         {
-            Console.WriteLine("Sorry, no flights are available for that route.");
+            Console.WriteLine("\nSorry, no flights are available for that route.");
+            Console.WriteLine("Press any key to return to the menu...");
+            Console.ReadKey();
+            Menu.Start();
+            return;
         }
 
-        Console.WriteLine("\nEnter the flight number for more details/booking. Or type X to return to main menu. ");
+        Console.Clear();
 
+        Console.WriteLine($"\nAVAILABLE FLIGHTS: {searchDeparture.ToUpper()} TO {searchDestination.ToUpper()}");
+        foreach (FlightModel f in routeMatches)
+        {
+            Console.WriteLine($"- Flight {f.FlightNumber} departs at {f.DepartureTime}");
+        }
+
+        DateTime searchDate;
+
+        while (true)
+        {
+            Console.Write("\nEnter your travel date (YYYY-MM-DD): ");
+            string dateInput = Console.ReadLine();
+
+            if (DateTime.TryParse(dateInput, out searchDate))
+            {
+                break;
+            }
+            else 
+            {
+                Console.WriteLine("Invalid Input, Please follow the exact travel date format!");
+            }
+        }
+
+        List<FlightModel> finalMatches = new List<FlightModel>();
+
+        foreach (FlightModel f in routeMatches)
+        {
+            if (DateTime.Parse(f.DepartureTime).Date == searchDate.Date)
+            {
+                finalMatches.Add(f);
+            }
+        }
+
+        if (finalMatches.Count == 0)
+        {
+            Console.WriteLine("\nSorry, no flights found on that specific date.");
+            Console.WriteLine("Press any key to return to the menu...");
+            Console.ReadKey();
+            Menu.Start();
+            return;
+        }
+
+        Console.Clear();
+        Console.WriteLine($"\n FLIGHTS ON {searchDate.ToShortDateString()}");
+        foreach (FlightModel f in finalMatches)
+        {
+            Console.WriteLine($"Flight Number: {f.FlightNumber} | Price: €{f.BasePrice}");
+        }
+
+        Console.WriteLine("\nEnter the flight number for more details/booking. Or type X to return to main menu.");
         string userChoice = Console.ReadLine();
 
         if (userChoice.Equals("X", StringComparison.OrdinalIgnoreCase))
@@ -82,7 +127,9 @@ public static class FlightSearch
 
                     if (bookingChoice == "1")
                     {
-                        // hier komt dan de booking feature i think
+                        Console.WriteLine("\nThank you for booking your flight . (dev note: Booking feature isn't complete yet, coming soon.)");
+                        Console.WriteLine("\nPress any key to return to the main menu.");
+                        Console.ReadKey();
                         break;
                     }
                     else if (bookingChoice == "2")
