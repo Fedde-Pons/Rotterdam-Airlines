@@ -11,7 +11,7 @@ public class FlightAccess
     public List<FlightModel> GetAllAvailableFlights()
     {
         string sql = @"SELECT 
-            f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
+            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
             f.departureTime, f.arrivalTime, f.basePrice, f.status,
             a.manufacturer AS AircraftManufacturer, a.model AS AircraftModel,
             dep.name AS DepartureAirportName, dep.city AS DepartureCity, dep.country AS DepartureCountry,
@@ -28,7 +28,7 @@ public class FlightAccess
     public List<FlightModel> GetAllFlights()
     {
         string sql = @"SELECT 
-            f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
+            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
             f.departureTime, f.arrivalTime, f.basePrice, f.status,
             a.manufacturer AS AircraftManufacturer, a.model AS AircraftModel,
             dep.name AS DepartureAirportName, dep.city AS DepartureCity, dep.country AS DepartureCountry,
