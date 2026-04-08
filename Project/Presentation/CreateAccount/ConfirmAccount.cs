@@ -1,25 +1,28 @@
 
 static class ConfirmAccount
 {
+    private static string _RepeatingConfirmSentence = @"
+ ▗▄▖  ▗▄▄▖ ▗▄▄▖ ▗▄▖ ▗▖ ▗▖▗▖  ▗▖▗▄▄▄▖     ▗▄▄▖ ▗▄▖ ▗▖  ▗▖▗▄▄▄▖▗▄▄▄▖▗▄▄▖ ▗▖  ▗▖ ▗▄▖▗▄▄▄▖▗▄▄▄▖ ▗▄▖ ▗▖  ▗▖
+▐▌ ▐▌▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▛▚▖▐▌  █      ▐▌   ▐▌ ▐▌▐▛▚▖▐▌▐▌     █  ▐▌ ▐▌▐▛▚▞▜▌▐▌ ▐▌ █    █  ▐▌ ▐▌▐▛▚▖▐▌
+▐▛▀▜▌▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌ ▝▜▌  █      ▐▌   ▐▌ ▐▌▐▌ ▝▜▌▐▛▀▀▘  █  ▐▛▀▚▖▐▌  ▐▌▐▛▀▜▌ █    █  ▐▌ ▐▌▐▌ ▝▜▌
+▐▌ ▐▌▝▚▄▄▖▝▚▄▄▖▝▚▄▞▘▝▚▄▞▘▐▌  ▐▌  █      ▝▚▄▄▖▝▚▄▞▘▐▌  ▐▌▐▌   ▗▄█▄▖▐▌ ▐▌▐▌  ▐▌▐▌ ▐▌ █  ▗▄█▄▖▝▚▄▞▘▐▌  ▐▌";
     public static void ShowConfirmation(AccountModel account, CreateAccountLogic logic)
     {
         bool confirming = true;
 
+
+
         while (confirming)
         {
             Console.Clear();
-            Console.WriteLine(@"
- ▗▄▖  ▗▄▄▖ ▗▄▄▖ ▗▄▖ ▗▖ ▗▖▗▖  ▗▖▗▄▄▄▖     ▗▄▄▖ ▗▄▖ ▗▖  ▗▖▗▄▄▄▖▗▄▄▄▖▗▄▄▖ ▗▖  ▗▖ ▗▄▖▗▄▄▄▖▗▄▄▄▖ ▗▄▖ ▗▖  ▗▖
-▐▌ ▐▌▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▛▚▖▐▌  █      ▐▌   ▐▌ ▐▌▐▛▚▖▐▌▐▌     █  ▐▌ ▐▌▐▛▚▞▜▌▐▌ ▐▌ █    █  ▐▌ ▐▌▐▛▚▖▐▌
-▐▛▀▜▌▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌ ▝▜▌  █      ▐▌   ▐▌ ▐▌▐▌ ▝▜▌▐▛▀▀▘  █  ▐▛▀▚▖▐▌  ▐▌▐▛▀▜▌ █    █  ▐▌ ▐▌▐▌ ▝▜▌
-▐▌ ▐▌▝▚▄▄▖▝▚▄▄▖▝▚▄▞▘▝▚▄▞▘▐▌  ▐▌  █      ▝▚▄▄▖▝▚▄▞▘▐▌  ▐▌▐▌   ▗▄█▄▖▐▌ ▐▌▐▌  ▐▌▐▌ ▐▌ █  ▗▄█▄▖▝▚▄▞▘▐▌  ▐▌");
+            Console.WriteLine(_RepeatingConfirmSentence);
 
             Console.WriteLine("\n=== Confirm Your Details ===");
             Console.WriteLine($"First name: {account.FirstName}");
             Console.WriteLine($"Last name: {account.LastName}");
             Console.WriteLine($"Email Address: {account.EmailAddress}");
             Console.WriteLine($"Password: {new string('*', account.Password.Length)}");
-            Console.WriteLine($"Phone Number: {account.PhoneNumber}");
+            Console.WriteLine($"Phone Number: +{account.PhoneNumber}");
             Console.WriteLine($"Date Of Birth (dd/mm/yyyy): {account.DateOfBirth}");
 
             
@@ -58,8 +61,11 @@ static class ConfirmAccount
 
         while (SwitchCaseLoop)
         {
+            Console.Clear();
+            Console.WriteLine(_RepeatingConfirmSentence);
             bool LoopValidation = true;
 
+            Console.WriteLine();
             Console.WriteLine("\n=== Edit Details ===");
             Console.WriteLine($"1. First name: {account.FirstName}");
             Console.WriteLine($"2. Last name: {account.LastName}");
@@ -69,20 +75,22 @@ static class ConfirmAccount
             Console.WriteLine($"6. Date Of Birth (dd/mm/yyyy): {account.DateOfBirth}");
             Console.WriteLine($"X. Cancel editing prompt");
 
-            string choice = Console.ReadLine();
+            string choice = Console.ReadLine().ToUpper();
 
             switch (choice)
             {
                 case "X":
                     Console.Clear();
                     SwitchCaseLoop = false;
-                    Console.WriteLine("Exiting editing prompt, press enter to continue...");
-                    Console.ReadLine();
+                    Console.WriteLine(_RepeatingConfirmSentence);
+                    Console.WriteLine("Exiting editing prompt");
                     break;
                 case "1":
+                    Console.Clear();
+                    Console.WriteLine(_RepeatingConfirmSentence);
                     while (LoopValidation)
                     {
-                        Console.Clear();
+                        Console.WriteLine();
                         Console.WriteLine($"Current first name: {account.FirstName}");
                         Console.Write("Enter new first name: ");
                         string NewFirstName = Console.ReadLine();
@@ -95,16 +103,17 @@ static class ConfirmAccount
                         }
                         else
                         {
-                            Console.WriteLine($"Invalid entry for first name, press enter to retry...");
-                            Console.ReadLine();
+                            Console.WriteLine($"Invalid entry for first name");
                         }
                         
                     }
                     break;
                 case "2":
+                    Console.Clear();
+                    Console.WriteLine(_RepeatingConfirmSentence);
                     while (LoopValidation)
                     {
-                        Console.Clear();
+                        Console.WriteLine();
                         Console.WriteLine($"Current last name: {account.LastName}");
                         Console.Write("Enter new last name: ");
                         string NewLastName = Console.ReadLine();
@@ -117,16 +126,17 @@ static class ConfirmAccount
                         }
                         else
                         {
-                            Console.WriteLine($"Invalid entry for last name, press enter to retry...");
-                            Console.ReadLine();
+                            Console.WriteLine($"Invalid entry for last name");
                         }
                         
                     }
                     break;
                 case "3":
+                    Console.Clear();
+                    Console.WriteLine(_RepeatingConfirmSentence);
                     while (LoopValidation)
                     {
-                        Console.Clear();
+                        Console.WriteLine();
                         Console.WriteLine($"Current email address: {account.EmailAddress}");
                         Console.Write("Enter new email address: ");
                         string NewEmailAddress = Console.ReadLine();
@@ -139,38 +149,48 @@ static class ConfirmAccount
                         }
                         else
                         {
-                            Console.WriteLine($"Invalid entry for email address, press enter to retry...");
-                            Console.ReadLine();
+                            Console.WriteLine($"Invalid entry for email address");
                         }
                         
                     }
                     break;
                 case "4":
+                    Console.Clear();
+                    Console.WriteLine(_RepeatingConfirmSentence);
                     while (LoopValidation)
                     {
-                        Console.Clear();
+                        Console.WriteLine();
                         Console.WriteLine($"Current password: {new string('*', account.Password.Length)}");
                         Console.Write("Enter new password: ");
                         string NewPassword = Console.ReadLine();
-                        bool Validated = logic.ValidatePassword(NewPassword);
-                        if (Validated) 
+
+                        Console.WriteLine();
+                        Console.Write("Verify new password: ");
+                        string VerifyNewPassword = Console.ReadLine();
+                        if (NewPassword == VerifyNewPassword)
                         {
-                            LoopValidation = false;
-                            account.Password = NewPassword;
-                            Console.WriteLine($"Successfully updated password to:\n- {new string('*', account.Password.Length)}");
+                            bool Validated = logic.ValidatePassword(NewPassword);
+                            if (Validated) 
+                            {
+                                LoopValidation = false;
+                                account.Password = NewPassword;
+                                Console.WriteLine($"Successfully updated password to:\n- {new string('*', account.Password.Length)}");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Invalid entry for password");
+                            }
                         }
-                        else
-                        {
-                            Console.WriteLine($"Invalid entry for password, press enter to retry...");
-                            Console.ReadLine();
-                        }
+                        else { Console.WriteLine("Passwords don't match, please retry"); }
                         
                     }
                     break;
                 case "5":
+                    Console.Clear();
+                    Console.WriteLine(_RepeatingConfirmSentence);
                     while (LoopValidation)
                     {
-                        Console.Clear();
+                        Console.WriteLine();
                         Console.WriteLine($"Current phone number: {account.PhoneNumber}");
                         Console.Write("Enter your country code (e.g., 1 for USA, 31 for Netherlands) or X: +");
                         string countryCode = Console.ReadLine();
@@ -185,16 +205,17 @@ static class ConfirmAccount
                         }
                         else
                         {
-                            Console.WriteLine($"Invalid entry for phone number, press enter to retry...");
-                            Console.ReadLine();
+                            Console.WriteLine($"Invalid entry for phone number");
                         }
                         
                     }
                     break;
                 case "6":
+                    Console.Clear();
+                    Console.WriteLine(_RepeatingConfirmSentence);
                     while (LoopValidation)
                     {
-                        Console.Clear();
+                        Console.WriteLine();
                         Console.WriteLine($"Current date of birth (dd/mm/yyyy): {account.DateOfBirth}");
                         Console.Write("Enter new date of birth (dd/mm/yyyy): ");
                         string stringNewDateOfBirth = Console.ReadLine();
@@ -207,16 +228,13 @@ static class ConfirmAccount
                         }
                         else
                         {
-                            Console.WriteLine($"Invalid entry for date of birth, press enter to retry...");
-                            Console.ReadLine();
+                            Console.WriteLine($"Invalid entry for date of birth. Please follow the format");
                         }
                         
                     }
                     break;
                 default:
-                    Console.WriteLine("Invalid selection.");
-                    Console.WriteLine("Press enter to continue...");
-                    Console.ReadLine();
+                    Console.WriteLine("Invalid selection. Please choose a valid option from the menu.");
                     break;
             }
         }
@@ -249,21 +267,29 @@ static class ConfirmAccount
 
     private static bool CancelRegistration()
     {
-        Console.WriteLine("Opt out of account creation process?\nY/N");
-        string Response1 = (Console.ReadLine() ?? "").ToUpper();
-        if (Response1 == "Y")
+        Console.Clear();
+        Console.WriteLine(_RepeatingConfirmSentence);
+        Console.WriteLine();
+        while (true)
         {
-            Console.WriteLine("Are you sure you want to stop? \nCreating an account only takes a minute and gives you full access to discounts and member benefits.\n\nYour progress will be lost.");
-            string Response2 = (Console.ReadLine() ?? "").ToUpper();
-            if (Response2 == "Y") 
+            Console.WriteLine("Opt out of account creation process?\nY/N");
+            string Response1 = (Console.ReadLine() ?? "").ToUpper();
+            if (Response1 == "N") {return false;}
+            else if (Response1 == "Y")
             {
-                Console.Clear();
-                Console.WriteLine("We're sorry to see you going, you can always sign up and still earn membership benefits!");
-                Console.WriteLine("Press enter to continue...");
-                Console.ReadLine();
+                Console.WriteLine("Are you sure you want to stop? \nCreating an account only takes a minute and gives you full access to discounts and member benefits.\n\nYour progress will be lost.\nY/N");
+                string Response2 = (Console.ReadLine() ?? "").ToUpper();
+                if (Response2 == "Y") 
+                {
+                    Console.Clear();
+                    Console.WriteLine("We're sorry to see you going, you can always sign up and still earn membership benefits!");
+                    Console.WriteLine("Press enter to continue...");
+                    Console.ReadLine();
+                    return true;
+                }
                 return false;
             }
+            else { Console.WriteLine("Invalid Entry, try again."); }
         }
-        return true;
     }
 }

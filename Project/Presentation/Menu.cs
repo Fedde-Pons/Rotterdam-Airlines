@@ -53,7 +53,7 @@ static class Menu
     {
         Console.Clear();
         Console.WriteLine("Would you like to login to your account or register a new account?");
-        Console.WriteLine("1: Login");
+        Console.WriteLine("1: Login (Not implemented yet)");
         Console.WriteLine("2: Register");
         Console.WriteLine("3: Go back to the main menu");
         Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
