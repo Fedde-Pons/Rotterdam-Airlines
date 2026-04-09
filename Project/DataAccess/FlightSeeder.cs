@@ -13,7 +13,7 @@ public static class FlightSeeder
         InsertSeats(connection);
         InsertFlights(connection);
 
-        Console.WriteLine("✅ Database gevuld met mock data");
+        //Console.WriteLine("✅ Database gevuld met mock data");
     }
 
     private static void InsertAirports(SqliteConnection connection)
@@ -49,7 +49,7 @@ public static class FlightSeeder
         long count = (long)checkCmd.ExecuteScalar()!;
         if (count > 0)
         {
-            Console.WriteLine("⏩ Seats bestaan al, worden overgeslagen.");
+            //Console.WriteLine("⏩ Seats bestaan al, worden overgeslagen.");
             return;
         }
 
@@ -200,7 +200,7 @@ public static class FlightSeeder
 
             if (count > 0)
             {
-                Console.WriteLine($"⏩ Vlucht {flight.FlightNumber} bestaat al, wordt overgeslagen.");
+                //Console.WriteLine($"⏩ Vlucht {flight.FlightNumber} bestaat al, wordt overgeslagen.");
                 continue;
             }
 
@@ -222,7 +222,7 @@ public static class FlightSeeder
             cmd.Parameters.AddWithValue("@status", flight.Status);
             cmd.ExecuteNonQuery();
 
-            Console.WriteLine($"✅ Vlucht {flight.FlightNumber} toegevoegd.");
+            //Console.WriteLine($"✅ Vlucht {flight.FlightNumber} toegevoegd.");
         }
     }
 }

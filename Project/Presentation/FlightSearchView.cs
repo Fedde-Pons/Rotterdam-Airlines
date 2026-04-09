@@ -36,6 +36,7 @@ public static class FlightSearch
         }
 
         Console.Clear();
+        Console.WriteLine("\x1b[3J");
 
         Console.WriteLine($"\nAVAILABLE FLIGHTS: {searchDeparture.ToUpper()} TO {searchDestination.ToUpper()}");
         foreach (FlightModel f in routeMatches)
