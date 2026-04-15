@@ -1,5 +1,5 @@
 /// <summary>
-/// this class is for handling the ticket logic within the project
+/// this class is for handling the booking logic within the project
 /// </summary>
 public static class BookingLogic
 {

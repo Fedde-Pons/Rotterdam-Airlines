@@ -1,3 +1,6 @@
+/// <summary>
+/// this class handels the ticket logic within the project
+/// </summary>
 public static class TicketLogic
 {    
     /// </summary>
