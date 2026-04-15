@@ -13,7 +13,7 @@ public static class FlightSeeder
         InsertSeats(connection);
         InsertFlights(connection);
 
-        Console.WriteLine("✅ Database gevuld met mock data");
+        //Console.WriteLine("✅ Database gevuld met mock data");
     }
 
     private static void InsertAirports(SqliteConnection connection)
@@ -45,6 +45,14 @@ public static class FlightSeeder
 
     private static void InsertSeats(SqliteConnection connection)
     {
+        var checkCmd = new SqliteCommand("SELECT COUNT(*) FROM Seats", connection);
+        long count = (long)checkCmd.ExecuteScalar()!;
+        if (count > 0)
+        {
+            //Console.WriteLine("⏩ Seats bestaan al, worden overgeslagen.");
+            return;
+        }
+
         for (int aircraftId = 1; aircraftId <= 3; aircraftId++)
         {
             int totalRows = aircraftId == 1 ? 30 : aircraftId == 2 ? 35 : 40;
@@ -60,7 +68,7 @@ public static class FlightSeeder
                     bool isLast = row == totalRows;
 
                     string query = @"
-                    INSERT OR IGNORE INTO Seats 
+                    INSERT INTO Seats 
                     (aircraftId, seatNumber, rowNumber, seatClass, isWindow, isExitRow, isFirstRow, isLastRow)
                     VALUES
                     (@aircraftId, @seatNumber, @rowNumber, @seatClass, @isWindow, @isExit, @isFirst, @isLast);";
@@ -192,7 +200,7 @@ public static class FlightSeeder
 
             if (count > 0)
             {
-                Console.WriteLine($"⏩ Vlucht {flight.FlightNumber} bestaat al, wordt overgeslagen.");
+                //Console.WriteLine($"⏩ Vlucht {flight.FlightNumber} bestaat al, wordt overgeslagen.");
                 continue;
             }
 
@@ -214,7 +222,7 @@ public static class FlightSeeder
             cmd.Parameters.AddWithValue("@status", flight.Status);
             cmd.ExecuteNonQuery();
 
-            Console.WriteLine($"✅ Vlucht {flight.FlightNumber} toegevoegd.");
+            //Console.WriteLine($"✅ Vlucht {flight.FlightNumber} toegevoegd.");
         }
     }
 }

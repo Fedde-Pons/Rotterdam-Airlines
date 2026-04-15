@@ -11,14 +11,15 @@ public static class CreateAccountPresent
 ▐▌   ▐▛▀▚▖▐▛▀▀▘▐▛▀▜▌ █  ▐▛▀▀▘    ▐▛▀▜▌▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌ ▝▜▌  █  
 ▝▚▄▄▖▐▌ ▐▌▐▙▄▄▖▐▌ ▐▌ █  ▐▙▄▄▖    ▐▌ ▐▌▝▚▄▄▖▝▚▄▄▖▝▚▄▞▘▝▚▄▞▘▐▌  ▐▌  █                       
                                                                      
-Fields with a * are mandatory,\nif you don't want to enter the specific information enter X if not mandatory.";
+Fields with a * are mandatory,
+if you don't want to enter the specific information enter X if not mandatory.
+Enter Q to quit. 
+";
     public static void AccountCreation()
     {   
         // elke keer dat het in deze method gaat, is het true als je al 1x hebt gedaan, dus hiermee herstel je het
 
         CancelOperationEntirely = false;
-        
-        bool CancelOperation = false;
 
         string firstName = "";
         string lastName = "";
@@ -27,7 +28,9 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
         string phoneNumber = "";
         string dateOfBirth = "";
 
-        CancelOperation = PromptToCancel();
+        Console.Clear();
+        Console.WriteLine(_repeatingSentence);
+        Console.WriteLine();
         if (!CancelOperationEntirely)
         {
             Console.Clear();
@@ -35,62 +38,74 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
             Console.WriteLine();
             // Prompt for first name
             firstName = PromptForFirstName();
-            Console.WriteLine("Succesfully captured first name, press enter to continue...");
-            Console.ReadLine();
         }
 
-        CancelOperation = PromptToCancel();
         if (!CancelOperationEntirely)
         {
             Console.Clear();
             Console.WriteLine(_repeatingSentence);
-            // Prompt for last name
-            lastName = PromptForLastName();
-            Console.WriteLine("Succesfully captured last name, press enter to continue...");
-            Console.ReadLine();
+            Console.WriteLine("Succesfully captured first name!");
+            if (!CancelOperationEntirely)
+            {
+                // Prompt for last name
+                lastName = PromptForLastName();
+            }
         }
 
-        CancelOperation = PromptToCancel();
         if (!CancelOperationEntirely)
         {
             Console.Clear();
             Console.WriteLine(_repeatingSentence);
-            // Prompt for email
-            email = PromptForEmail();
-            Console.WriteLine("Succesfully captured email, press enter to continue...");
-            Console.ReadLine();
+            Console.WriteLine("Succesfully captured last name!");
+            if (!CancelOperationEntirely)
+            {
+                // Prompt for email
+                email = PromptForEmail();
+            }
         }
 
-        CancelOperation = PromptToCancel();
         if (!CancelOperationEntirely)
         {
             Console.Clear();
             Console.WriteLine(_repeatingSentence);
-            // Prompt for password
-            password = PromptForPassword();
-            Console.WriteLine("Succesfully captured password, press enter to continue...");
-            Console.ReadLine();
+            Console.WriteLine("Succesfully captured email!");
+            if (!CancelOperationEntirely)
+            {
+                // Prompt for password
+                password = PromptForPassword();
+            }
         }
 
-        CancelOperation = PromptToCancel();
         if (!CancelOperationEntirely)
         {
             Console.Clear();
             Console.WriteLine(_repeatingSentence);
-            // Prompt for phone number
-            phoneNumber = PromptForPhoneNumber();
-            Console.WriteLine("Succesfully captured phone number, press enter to continue...");
-            Console.ReadLine();
+            Console.WriteLine("Succesfully captured password!");
+            if (!CancelOperationEntirely)
+            {
+                // Prompt for phone number
+                phoneNumber = PromptForPhoneNumber();
+            }
         }
 
-        CancelOperation = PromptToCancel();
         if (!CancelOperationEntirely)
         {
             Console.Clear();
             Console.WriteLine(_repeatingSentence);
-            // Prompt for date of birth
-            dateOfBirth = PromptForDateOfBirth();
-            Console.WriteLine("Succesfully captured birthdate, press enter to continue...");
+            Console.WriteLine("Succesfully captured phone number");
+            if (!CancelOperationEntirely)
+            {
+                // Prompt for date of birth
+                dateOfBirth = PromptForDateOfBirth();
+            }
+        }
+        if (!CancelOperationEntirely)
+        {
+            Console.Clear();
+            Console.WriteLine(_repeatingSentence);        
+            Console.WriteLine("Succesfully captured birthdate!");
+            Console.WriteLine();
+            Console.WriteLine("Press enter to proceed to account confirmation...");
             Console.ReadLine();
         }
 
@@ -109,18 +124,30 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
 
     private static string PromptForFirstName()
     {
+
         while (true)
         {
             Console.Write("* \nEnter your first name: ");
-            string firstName = Console.ReadLine();
+            string firstName = Console.ReadLine() ?? "";
 
-            if (_logic.ValidateFirstName(firstName))
+            if (firstName.ToUpper() == "Q")
+            {
+                ConfirmQuit();
+                if (CancelOperationEntirely) return "";
+            }
+            else if (_logic.ValidateFirstName(firstName))
             {
                 return firstName;
             }
             else
             {
+                Console.Clear();
+                Console.WriteLine("");
+                Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid first name. First name cannot contain spaces or numbers.");
+                Console.WriteLine("");
+                Console.WriteLine("=== RETRY ===");
+                Console.WriteLine("");
             }
         }
     }
@@ -130,15 +157,26 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
         while (true)
         {
             Console.Write("* \nEnter your last name: ");
-            string lastName = Console.ReadLine();
+            string lastName = Console.ReadLine() ?? "";
 
-            if (_logic.ValidateLastName(lastName))
+            if (lastName.ToUpper() == "Q")
+            {
+                ConfirmQuit();
+                if (CancelOperationEntirely) return "";
+            }
+            else if (_logic.ValidateLastName(lastName))
             {
                 return lastName;
             }
             else
             {
+                Console.Clear();
+                Console.WriteLine("");
+                Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid last name. Last name cannot contain numbers.");
+                Console.WriteLine("");
+                Console.WriteLine("=== RETRY ===");
+                Console.WriteLine("");
             }
         }
     }
@@ -148,15 +186,26 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
         while (true)
         {
             Console.Write("*\nEnter your email address: ");
-            string email = Console.ReadLine();
+            string email = Console.ReadLine() ?? "";
 
-            if (_logic.ValidateEmailAddress(email))
+            if (email.ToUpper() == "Q")
+            {
+                ConfirmQuit();
+                if (CancelOperationEntirely) return "";
+            }
+            else if (_logic.ValidateEmailAddress(email))
             {
                 return email;
             }
             else
             {
+                Console.Clear();
+                Console.WriteLine("");
+                Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid email address. Email must contain @ and .");
+                Console.WriteLine("");
+                Console.WriteLine("=== RETRY ===");
+                Console.WriteLine("");
             }
         }
     }
@@ -166,16 +215,45 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
         while (true)
         {
             Console.Write("*\nEnter your password: ");
-            string password = Console.ReadLine();
+            string password = Console.ReadLine() ?? "";
 
-            if (_logic.ValidatePassword(password))
+            if (password.ToUpper() == "Q")
             {
-                return password;
+                ConfirmQuit();
+                if (CancelOperationEntirely) return "";
+            }
+            else if (_logic.ValidatePassword(password))
+            {
+                Console.Write("*\nVerify your password: ");
+                string verifyPassword = Console.ReadLine() ?? "";
+                
+                if (verifyPassword.ToUpper() == "Q")
+                {
+                    ConfirmQuit();
+                    if (CancelOperationEntirely) return "";
+                }
+                else if (verifyPassword == password) { return password; }
+                else 
+                { 
+                    Console.Clear();
+                    Console.WriteLine("");
+                    Console.WriteLine("=== INVALID ENTRY ===");
+                    Console.WriteLine("Password does not match, retry");
+                    Console.WriteLine();
+                }
             }
             else
             {
-                Console.WriteLine("Invalid password. Requirements: 8-20 characters, at least one uppercase letter, one lowercase letter, one number, one special character (!@#$%^&*), and no spaces.");
+                Console.Clear();
+                Console.WriteLine("");
+                Console.WriteLine("=== INVALID ENTRY ===");
+                Console.WriteLine("Invalid password. Requirements: 8-20 characters, at least one uppercase letter, one lowercase letter, \none number, one special character (!@#$%^&*), and no spaces.");
+                Console.WriteLine("");
+                Console.WriteLine("=== RETRY ===");
+                Console.WriteLine("");
             }
+
+
         }
     }
 
@@ -183,20 +261,36 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
     {
         while (true)
         {
-            Console.Clear();
             Console.Write("Enter your country code (e.g., 1 for USA, 31 for Netherlands) or X: +");
-            string countryCode = Console.ReadLine();
+            string countryCode = Console.ReadLine() ?? "";
     
-            Console.Write($"Enter your phone number or X: +{countryCode} ");
-            string phoneNumber = Console.ReadLine();
+            if (countryCode.ToUpper() == "Q")
+            {
+                ConfirmQuit();
+                if (CancelOperationEntirely) return "";
+            }
 
-            if (_logic.ValidatePhoneNumber(countryCode, phoneNumber))
+            Console.Write($"Enter your phone number or X: +{countryCode} ");
+            string phoneNumber = Console.ReadLine() ?? "";
+
+            if (phoneNumber.ToUpper() == "Q")
+            {
+                ConfirmQuit();
+                if (CancelOperationEntirely) return "";
+            }
+            else if (_logic.ValidatePhoneNumber(countryCode, phoneNumber))
             {
                 return $"{countryCode} {phoneNumber}";
             }
             else
             {
+                Console.Clear();
+                Console.WriteLine("");
+                Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid phone number. Please enter a valid country code and phone number (6-15 digits).");
+                Console.WriteLine("");
+                Console.WriteLine("=== RETRY ===");
+                Console.WriteLine("");
             }
         }
     }
@@ -206,38 +300,42 @@ Fields with a * are mandatory,\nif you don't want to enter the specific informat
         while (true)
         {
             Console.Write("*\nEnter your date of birth (dd/mm/yyyy): ");
-            string dateOfBirth = Console.ReadLine();
+            string dateOfBirth = Console.ReadLine() ?? "";
 
-            if (_logic.ValidateDateOfBirth(dateOfBirth))
+            if (dateOfBirth.ToUpper() == "Q")
+            {
+                ConfirmQuit();
+                if (CancelOperationEntirely) return "";
+            }
+            else if (_logic.ValidateDateOfBirth(dateOfBirth))
             {
                 return dateOfBirth;
             }
             else
             {
+                Console.Clear();
+                Console.WriteLine("");
+                Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid date of birth. Format must be dd/mm/yyyy and year must be 1909 or later.");
+                Console.WriteLine("");
+                Console.WriteLine("=== RETRY ===");
+                Console.WriteLine("");
             }
         }
     }
 
-    private static bool PromptToCancel()
+    private static void ConfirmQuit()
     {
-
-        Console.WriteLine("Opt out of account creation process?\nY/N");
-        string Response1 = (Console.ReadLine() ?? "").ToUpper();
-        if (Response1 == "N") {return false;}
-
-        Console.WriteLine("Are you sure you want to stop? \nCreating an account only takes a minute and gives you full access to discounts and member benefits.\n\nYour progress will be lost.");
+        Console.WriteLine("Are you sure you want to stop? \nCreating an account only takes a minute and gives you full access to discounts and member benefits.\n\nYour progress will be lost.\nY/N");
         string Response2 = (Console.ReadLine() ?? "").ToUpper();
-        if (Response2 == "N") 
+        if (Response2 == "Y") 
         {
             Console.Clear();
             Console.WriteLine("We're sorry to see you going, you can always sign up and still earn membership benefits!");
             Console.WriteLine("Press enter to continue...");
             Console.ReadLine();
             CancelOperationEntirely = true;
-            return false;
         }
-        return true;
     }
 
 

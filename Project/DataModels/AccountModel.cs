@@ -1,8 +1,36 @@
 ﻿public class AccountModel
 {
     public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    private string _firstName;
+    public string FirstName
+    {
+        get { return _firstName; }
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                _firstName = value;
+                return;
+            }
+
+            _firstName = char.ToUpper(value[0]) + value.Substring(1);
+        }
+    }
+    private string _lastName;
+    public string LastName
+    {
+        get { return _lastName; }
+        set 
+        { 
+            if (string.IsNullOrEmpty(value))
+            {
+                _lastName = value;
+                return;
+            }
+
+            _lastName = char.ToUpper(value[0]) + value.Substring(1);
+        }
+    }
     public string DateOfBirth { get; set; }
     public string EmailAddress { get; set; }
     public string PhoneNumber { get; set; }
@@ -23,5 +51,4 @@
         DateOfBirth = dateOfBirth;
     }
 }
-
 
