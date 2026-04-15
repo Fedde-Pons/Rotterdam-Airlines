@@ -1,5 +1,6 @@
 public class FlightModel
 {
+    public int Id {get; set;}
     public string? FlightNumber {get; set;}
     public int AircraftId {get; set;}
     public int DepartureAirportId {get; set;}
@@ -23,8 +24,9 @@ public class FlightModel
     public string? DestinationCity {get; set;}
     public string? DestinationCountry {get; set;}
 
-    public FlightModel(string flightNumber, int aircraftId, int departureAirportId, int destinationAirportId, string departureTime, string arrivalTime, double basePrice, string status)
+    public FlightModel(int id, string flightNumber, int aircraftId, int departureAirportId, int destinationAirportId, string departureTime, string arrivalTime, double basePrice, string status)
     {
+        Id = id;
         FlightNumber = flightNumber;
         AircraftId = aircraftId;
         DepartureAirportId = departureAirportId;

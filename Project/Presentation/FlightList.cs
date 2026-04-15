@@ -1,52 +1,83 @@
 static class FlightList
 {
-    static public void ShowAllFlights()
+    static public void ShowAllAvailableFlightsList()
     {
         FlightLogic flightLogic = new FlightLogic();
+        string previousList = "";
 
         while (true)
         {
-            List<FlightModel> flights = flightLogic.GetAllFlights();
+            List<FlightModel> flights = flightLogic.GetAllAvailableFlightsSorted();
+            string currentList = FlightLogic.CreateFlightsSummary(flights);
 
-            Console.Clear();
-
-            if (flights == null || flights.Count == 0)
+            if (currentList != previousList)
             {
-                Console.WriteLine("\nThere are currently no available flights.\n");
-            }
-            else
-            {
-                flights = flights.OrderBy(f => f.DepartureTime).ToList();
+                previousList = currentList;
 
-                string header = String.Format(
-                    " {0,-4} {1,-10} {2,-20} {3,-20} {4,-18} {5,-18} {6,-22} {7,-10} {8,-10}",
-                    "#", "Flight", "From", "To", "Departure", "Arrival", "Aircraft", "Price", "Status");
-                string separator = new string('=', header.Length);
+                Console.Clear();
+                Console.Write("\x1b[3J");
+                Console.Out.Flush();
 
-                Console.WriteLine($"\n{separator}");
-                Console.WriteLine("  DEPARTURES - Rotterdam Airlines");
-                Console.WriteLine(separator);
-                Console.WriteLine(header);
-                Console.WriteLine(new string('-', header.Length));
-
-                for (int i = 0; i < flights.Count; i++)
+                if (flights == null || flights.Count == 0)
                 {
-                    var flight = flights[i];
-                    string from = $"{flight.DepartureCity} ({flight.DepartureCountry})";
-                    string to = $"{flight.DestinationCity} ({flight.DestinationCountry})";
-                    string aircraft = $"{flight.AircraftManufacturer} {flight.AircraftModel}";
-                    string price = $"€{flight.BasePrice:F2}";
+                    Console.WriteLine("\nThere are currently no available flights.\n");
+                }
+                else
+                {
+                    var rows = new List<string[]>();
+                    for (int i = 0; i < flights.Count; i++)
+                    {
+                        var f = flights[i];
+                        rows.Add(new[]
+                        {
+                            f.FlightNumber ?? "",
+                            $"{f.DepartureCity} ({f.DepartureCountry})",
+                            $"{f.DestinationCity} ({f.DestinationCountry})",
+                            f.DepartureTime ?? "",
+                            f.ArrivalTime ?? "",
+                            $"{f.AircraftManufacturer} {f.AircraftModel}",
+                            $"€{f.BasePrice:F2}",
+                            f.Status ?? ""
+                        });
+                    }
 
-                    Console.WriteLine(String.Format(
-                        " {0,-4} {1,-10} {2,-20} {3,-20} {4,-18} {5,-18} {6,-22} {7,-10} {8,-10}",
-                        i + 1, flight.FlightNumber, from, to, flight.DepartureTime, flight.ArrivalTime, aircraft, price, flight.Status));
+                    string[] headers = { "Flight", "From", "To", "Departure", "Arrival", "Aircraft", "Price", "Status" };
+                    int[] widths = new int[headers.Length];
+                    for (int c = 0; c < headers.Length; c++)
+                    {
+                        widths[c] = headers[c].Length;
+                        foreach (var row in rows)
+                            if (row[c].Length > widths[c])
+                                widths[c] = row[c].Length;
+                    }
+
+                    string fmt = " " + string.Join("  ", widths.Select((w, i) => $"{{{i},-{w}}}"));
+                    string header = string.Format(fmt, headers);
+                    string separator = new string('=', header.Length);
+
+                    Console.WriteLine($"\n{separator}");
+                    Console.WriteLine("  DEPARTURES - Rotterdam Airlines");
+                    Console.WriteLine(separator);
+                    Console.WriteLine(header);
+                    Console.WriteLine(new string('-', header.Length));
+
+                    string fmtNoStatus = " " + string.Join("  ", widths.Take(widths.Length - 1).Select((w, i) => $"{{{i},-{w}}}"));
+
+                    foreach (var row in rows)
+                    {
+                        string status = row[^1];
+                        string[] rowWithoutStatus = row.Take(row.Length - 1).ToArray();
+                        Console.Write(string.Format(fmtNoStatus, rowWithoutStatus) + "  ");
+                        WriteColoredStatus(status, widths[^1]);
+                        Console.WriteLine();
+                    }
+
+                    Console.WriteLine(separator);
+                    Console.WriteLine($"  Total flights: {flights.Count}\n");
                 }
 
-                Console.WriteLine(separator);
-                Console.WriteLine($"  Total flights: {flights.Count}\n");
+                Console.WriteLine("Press any key to return to the menu...");
             }
-
-            Console.WriteLine("Press any key to return to the menu... (auto-refresh every 5 seconds)");
 
             DateTime waitUntil = DateTime.Now.AddSeconds(5);
             while (DateTime.Now < waitUntil)
@@ -59,6 +90,45 @@ static class FlightList
                 }
                 Thread.Sleep(100);
             }
+        }
+    }
+
+    private static void WriteColoredStatus(string status, int width)
+    {
+        ConsoleColor color = status switch
+        {
+            "Scheduled" => ConsoleColor.Green,
+            "Delayed" => ConsoleColor.Yellow,
+            "Cancelled" => ConsoleColor.Red,
+            _ => ConsoleColor.White
+        };
+        Console.ForegroundColor = color;
+        Console.Write(status.PadRight(width));
+        Console.ResetColor();
+    }
+
+    static public void ShowAllAvailableFlightsShortList()
+    {
+        FlightLogic flightLogic = new FlightLogic();
+        List<FlightModel> flights = flightLogic.GetAllAvailableFlightsSorted();
+
+        Console.Clear();
+        Console.Write("\x1b[3J");
+        Console.Out.Flush();
+
+        if (flights == null || flights.Count == 0)
+        {
+            Console.WriteLine("\nThere are currently no available flights.\n");
+            Console.WriteLine("Press any key to return to the menu...");
+            Console.ReadKey();
+            Menu.Start();
+            return;
+        }
+
+        Console.WriteLine("\nAvailable Flights:");
+        foreach (var flight in flights)
+        {
+            Console.WriteLine($"- {flight.FlightNumber}: {flight.DepartureCity} to {flight.DestinationCity} at {flight.DepartureTime}");
         }
     }
 }

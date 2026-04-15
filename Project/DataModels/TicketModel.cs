@@ -1,4 +1,4 @@
-﻿public class TicketModel
+﻿﻿public class TicketModel
 {
     public long Id { get; set; }
     public long BookingId { get; set; }
@@ -18,5 +18,3 @@
         ExtraBaggageKg = extraBaggageKg;
     }
 }
-
-
