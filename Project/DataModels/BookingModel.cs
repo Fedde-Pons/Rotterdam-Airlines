@@ -1,4 +1,4 @@
-public class BookingsModel
+public class BookingModel
 {
     public int Id { get; set; }
     public long AccountId { get; set; }
@@ -6,7 +6,7 @@ public class BookingsModel
     public double TotalPrice { get; set; }
     public string Status { get; set; }
 
-    public BookingsModel(long accountId, string date, double totalPrice, string status)
+    public BookingModel(long accountId, string date, double totalPrice, string status)
     {
         AccountId = accountId;
         Date = date;
