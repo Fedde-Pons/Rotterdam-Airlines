@@ -1,14 +1,14 @@
-﻿﻿public class TicketModel
+﻿public class TicketModel
 {
-    public long Id { get; set; }
-    public long BookingId { get; set; }
-    public long FlightId { get; set; }
-    public long SeatId { get; set; }
-    public long PassengerId { get; set; }
-    public double Price { get; set; }
+    public int Id { get; set; }
+    public int BookingId { get; set; }
+    public int FlightId { get; set; }
+    public int SeatId { get; set; }
+    public int PassengerId { get; set; }
+    public float Price { get; set; }
     public int ExtraBaggageKg { get; set; }
 
-    public TicketModel(long bookingId, long flightId, long seatId, long passengerId, double price, int extraBaggageKg)
+    public TicketModel(int bookingId, int flightId, int seatId, int passengerId, float price, int extraBaggageKg)
     {
         BookingId = bookingId;
         FlightId = flightId;
