@@ -1,6 +1,6 @@
 public class BookingsModel
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
     public long AccountId { get; set; }
     public string Date { get; set; }
     public double TotalPrice { get; set; }
