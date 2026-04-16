@@ -49,7 +49,7 @@ static class Menu
                 Console.Clear();
                 Console.WriteLine("Invalid input, please try again.");
                 Console.WriteLine("Press any key to return to the menu...");
-                Console.ReadKey();
+                Console.ReadLine();
                 Start();
                 break;
         }
