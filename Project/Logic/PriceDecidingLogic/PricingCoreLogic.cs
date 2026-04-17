@@ -1,7 +1,7 @@
 public static class PricingCoreLogic
 {
     public static double CalculateFlightPrice(
-        double distance,
+        double baseFare,
         double demandFactor,
         double TimeUntilDepartureFactor,
         string seatType,
@@ -9,7 +9,6 @@ public static class PricingCoreLogic
         bool hasMembership = false)
     {
         // baseFare = distance × 0.1
-        double baseFare = distance * 0.1;
         
         // price = (baseFare × distance) × DemandFactor + SeatTypeExtraCost - Discounts
         double price = baseFare * (demandFactor+TimeUntilDepartureFactor/2);
@@ -32,3 +31,4 @@ public static class PricingCoreLogic
 
 // ergens in andermans code moet deze class worden geimplementeerd, en daarna FlightModel updaten,
 // en daarna functie daarin gebruiken om basePrice te updaten in db
+// make sure om ook in de andere logica, FactoringLogic.cs te gebruiken 
