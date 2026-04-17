@@ -141,7 +141,6 @@ Enter Q to quit.
             }
             else
             {
-                Console.Clear();
                 Console.WriteLine("");
                 Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid first name. First name cannot contain spaces or numbers.");
@@ -170,7 +169,6 @@ Enter Q to quit.
             }
             else
             {
-                Console.Clear();
                 Console.WriteLine("");
                 Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid last name. Last name cannot contain numbers.");
@@ -195,11 +193,10 @@ Enter Q to quit.
             }
             else if (_logic.ValidateEmailAddress(email))
             {
-                return email;
+                return email.ToLower();
             }
             else
             {
-                Console.Clear();
                 Console.WriteLine("");
                 Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid email address. Email must contain @ and .");
@@ -209,13 +206,40 @@ Enter Q to quit.
             }
         }
     }
+    private static string ReadPassword()
+    {
+        string password = "";
+        ConsoleKeyInfo key;
 
+        while (true)
+        {
+            key = Console.ReadKey(true); // true = don't display the key
+
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
+                break;
+            }
+            else if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+            {
+                password = password.Substring(0, password.Length - 1); // remove last char
+                Console.Write("\b \b");   // remove last *
+            }
+            else if (!char.IsControl(key.KeyChar))
+            {
+                password += key.KeyChar;
+                Console.Write("*");
+            }
+        }
+
+        return password;
+    }
     private static string PromptForPassword()
     {
         while (true)
         {
             Console.Write("*\nEnter your password: ");
-            string password = Console.ReadLine() ?? "";
+            string password = ReadPassword();
 
             if (password.ToUpper() == "Q")
             {
@@ -225,7 +249,7 @@ Enter Q to quit.
             else if (_logic.ValidatePassword(password))
             {
                 Console.Write("*\nVerify your password: ");
-                string verifyPassword = Console.ReadLine() ?? "";
+                string verifyPassword = ReadPassword();
                 
                 if (verifyPassword.ToUpper() == "Q")
                 {
@@ -235,7 +259,6 @@ Enter Q to quit.
                 else if (verifyPassword == password) { return password; }
                 else 
                 { 
-                    Console.Clear();
                     Console.WriteLine("");
                     Console.WriteLine("=== INVALID ENTRY ===");
                     Console.WriteLine("Password does not match, retry");
@@ -244,7 +267,6 @@ Enter Q to quit.
             }
             else
             {
-                Console.Clear();
                 Console.WriteLine("");
                 Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid password. Requirements: 8-20 characters, at least one uppercase letter, one lowercase letter, \none number, one special character (!@#$%^&*), and no spaces.");
@@ -284,7 +306,6 @@ Enter Q to quit.
             }
             else
             {
-                Console.Clear();
                 Console.WriteLine("");
                 Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid phone number. Please enter a valid country code and phone number (6-15 digits).");
@@ -313,7 +334,6 @@ Enter Q to quit.
             }
             else
             {
-                Console.Clear();
                 Console.WriteLine("");
                 Console.WriteLine("=== INVALID ENTRY ===");
                 Console.WriteLine("Invalid date of birth. Format must be dd/mm/yyyy and year must be 1909 or later.");

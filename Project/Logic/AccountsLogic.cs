@@ -15,11 +15,6 @@ public class AccountsLogic
 
     }
 
-    public static void Logout()
-    {
-        CurrentAccount = null;
-    }
-
     public AccountModel CheckLogin(string email, string password)
     {
 
