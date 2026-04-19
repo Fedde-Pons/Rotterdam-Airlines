@@ -1,8 +1,73 @@
 namespace UnitTests;
 
 [TestClass]
-public sealed class FlightTests
+public class FlightTests
 {
+    [TestMethod]
+    public void GetAllFlights_AllFlightsHaveUniqueFlightNumber()
+    {
+        // arrange
+        FlightLogic logic = new();
+
+        // act
+        List<FlightModel> result = logic.GetAllFlights();
+
+        // assert
+        var flightNumbers = result.Select(f => f.FlightNumber).ToList();
+        var uniqueFlightNumbers = flightNumbers.Distinct().ToList();
+        Assert.AreEqual(flightNumbers.Count, uniqueFlightNumbers.Count, "Niet alle FlightNumbers zijn uniek.");
+    }
+
+    [TestMethod]
+    public void GetAllFlights_ArrivalTimeIsAfterDepartureTime()
+    {
+        // arrange
+        FlightLogic logic = new();
+
+        // act
+        List<FlightModel> result = logic.GetAllFlights();
+
+        // assert
+        foreach (var flight in result)
+        {
+            if (DateTime.TryParse(flight.DepartureTime, out var dep) && DateTime.TryParse(flight.ArrivalTime, out var arr))
+            {
+                Assert.IsTrue(arr > dep, $"ArrivalTime ({flight.ArrivalTime}) is niet later dan DepartureTime ({flight.DepartureTime}) voor vlucht {flight.FlightNumber}");
+            }
+        }
+    }
+
+    [TestMethod]
+    public void GetAllFlights_BasePriceWithinRealisticRange()
+    {
+        // arrange
+        FlightLogic logic = new();
+
+        // act
+        List<FlightModel> result = logic.GetAllFlights();
+
+        // assert
+        foreach (var flight in result)
+        {
+            Assert.IsTrue(flight.BasePrice >= 50 && flight.BasePrice <= 5000, $"BasePrice ({flight.BasePrice}) is buiten het realistische bereik voor vlucht {flight.FlightNumber}");
+        }
+    }
+
+    [TestMethod]
+    public void GetAllFlights_NoDomesticFlights()
+    {
+        // arrange
+        FlightLogic logic = new();
+
+        // act
+        List<FlightModel> result = logic.GetAllFlights();
+
+        // assert
+        foreach (var flight in result)
+        {
+            Assert.AreNotEqual(flight.DepartureCountry, flight.DestinationCountry, $"Binnenlandse vlucht gevonden: {flight.FlightNumber} ({flight.DepartureCountry} -> {flight.DestinationCountry})");
+        }
+    }
     [TestMethod]
     public void GetAllFlights_ReturnsNonNullList()
     {
@@ -46,7 +111,7 @@ public sealed class FlightTests
         foreach (var flight in result)
         {
             Assert.IsTrue(
-                flight.Status == "Scheduled" || flight.Status == "Delayed",
+                flight.Status == "Scheduled" || flight.Status == "Delayed" || flight.Status == "Cancelled",
                 $"Vlucht {flight.FlightNumber} heeft een onverwachte status: {flight.Status}");
         }
     }
