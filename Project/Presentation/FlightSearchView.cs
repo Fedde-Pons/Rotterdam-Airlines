@@ -36,7 +36,6 @@ public static class FlightSearch
         }
 
         Console.Clear();
-        Console.WriteLine("\x1b[3J");
 
         Console.WriteLine($"\nAVAILABLE FLIGHTS: {searchDeparture.ToUpper()} TO {searchDestination.ToUpper()}");
         foreach (FlightModel f in routeMatches)
@@ -84,7 +83,7 @@ public static class FlightSearch
         Console.WriteLine($"\n FLIGHTS ON {searchDate.ToShortDateString()}");
         foreach (FlightModel f in finalMatches)
         {
-            Console.WriteLine($"Flight Number: {f.FlightNumber} | Price: €{f.BasePrice}");
+            Console.WriteLine($"Flight Number: {f.FlightNumber}");
         }
 
         Console.WriteLine("\nEnter the flight number for more details/booking. Or type X to return to main menu.");
@@ -108,14 +107,28 @@ public static class FlightSearch
         {
             if (specificFlight.FlightNumber.Equals(userChoice, StringComparison.OrdinalIgnoreCase))
             {
+
+                specificFlightFound = true;
+                List<SeatModel> seatsOnPlane = new List<SeatModel>();
+                int totalSeats = 150;
+                int bookedSeats = 0;
+                int availableSeats = totalSeats - bookedSeats;
+
+
+                double demandFactor = FactoringLogic.CalculateDemandFactor(bookedSeats, totalSeats);
+                DateTime departureDate = DateTime.Parse(specificFlight.DepartureTime);
+                double timeFactor = FactoringLogic.CalculateTimeUntilDepartureFactor(departureDate);
+
+                double economyPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, demandFactor, timeFactor, "economy");
+                double businessPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, demandFactor, timeFactor, "business");
+
                 Console.Clear();
                 Console.WriteLine($"Flight Number: {specificFlight.FlightNumber}");
                 Console.WriteLine($"Route: {specificFlight.DepartureCity} to {specificFlight.DestinationCity}");
                 Console.WriteLine($"Departure: {specificFlight.DepartureTime}");
-                Console.WriteLine($"Economy: €{specificFlight.BasePrice}");
-                Console.WriteLine("Available Seats: 42");
+                Console.WriteLine($"Prices: Economy €{economyPrice} | Business €{businessPrice}");
+                Console.WriteLine($"Available Seats: {availableSeats} / {totalSeats}");
 
-                specificFlightFound = true;
 
                 Console.WriteLine("\nOptions:");
                 Console.WriteLine("1. Proceed to Booking");
