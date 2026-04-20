@@ -1,13 +1,36 @@
 public static class FlightSearch
 {
     public static void StartSearch()
-    {
-        FlightList.ShowAllAvailableFlightsShortList();
-
-        Console.WriteLine("\nSEARCH FOR A FLIGHT");
+    {   Console.Clear();
 
         FlightLogic flightLogic = new FlightLogic();
         List<FlightModel> flights = flightLogic.GetAllFlights();
+
+        List<string> availableRoutes = new List<string>();
+
+       
+        foreach (FlightModel flight in flights)
+        {
+            
+            string routeStr = $"{flight.DepartureCity} -> {flight.DestinationCity}";
+            
+            
+            if (!availableRoutes.Contains(routeStr))
+            {
+                availableRoutes.Add(routeStr);
+            }
+        }
+
+        availableRoutes.Sort();
+
+        Console.WriteLine("\nAvailable Routes:");
+        foreach (string route in availableRoutes)
+        {
+            Console.WriteLine($"- {route}");
+        }
+
+        Console.WriteLine("\nSEARCH FOR A FLIGHT");
+
         
         Console.Write("Enter your departure city: ");
         string searchDeparture = Console.ReadLine();
