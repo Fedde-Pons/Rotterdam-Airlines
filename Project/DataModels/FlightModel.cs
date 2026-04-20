@@ -23,7 +23,7 @@ public class FlightModel
     public string? DestinationAirportName {get; set;}
     public string? DestinationCity {get; set;}
     public string? DestinationCountry {get; set;}
-
+    public int distance_in_km {get; set;} = 0;
     public FlightModel(int id, string flightNumber, int aircraftId, int departureAirportId, int destinationAirportId, string departureTime, string arrivalTime, double basePrice, string status)
     {
         Id = id;
@@ -38,4 +38,28 @@ public class FlightModel
     }
 
     public FlightModel() { }
+
+    public void UpdateBasePriceInDB(
+        double demandFactor,
+        double timeUntilDepartureFactor,
+        string seatType = "economy",
+        double discount = 0,
+        bool hasMembership = false)
+    {
+        // Bereken de nieuwe prijs met PricingCoreLogic
+        double newPrice = PricingCoreLogic.CalculateFlightPrice(
+            distance_in_km,
+            demandFactor,
+            timeUntilDepartureFactor,
+            seatType,
+            discount,
+            hasMembership);
+        
+        // Update de BasePrice
+        BasePrice = newPrice;
+        
+        // Sla op in de database
+        FlightAccess flightAccess = new FlightAccess();
+        flightAccess.StoreNewFlightDetails(this);
+    }
 }
