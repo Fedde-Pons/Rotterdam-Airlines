@@ -5,14 +5,14 @@ public class BookingsModel
     public string Date { get; set; }
     public double TotalPrice { get; set; }
     public enum Status { Done = 0, onGoing = 1, Canceled = 2}
+    public Status BookingStatus { get; set; }
 
-    public BookingsModel(long accountId, string date, double totalPrice, int Status )
+    public BookingsModel(long accountId, string date, double totalPrice, int status)
     {
-        FlightId = flightId;
-        SeatId = seatId;
-        PassengerId = passengerId;
-        Price = price;
-        ExtraBaggageKg = extraBaggageKg;
+        AccountId = accountId;
+        Date = date;
+        TotalPrice = totalPrice;
+        BookingStatus = (Status)status;
     }
 }
 
