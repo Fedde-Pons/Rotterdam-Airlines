@@ -64,5 +64,13 @@ namespace Project.DataAccess
 
             connection.Execute(sql, new { Id = bookingId, Status = status });
         }
+
+        public BookingsModel? GetById(long id)
+        {
+            using var connection = new SqliteConnection(connectionString);
+
+            string sql = "SELECT * FROM Bookings WHERE Id = @Id;";
+            return connection.QueryFirstOrDefault<BookingsModel>(sql, new { Id = id });
+        }
     }
 }

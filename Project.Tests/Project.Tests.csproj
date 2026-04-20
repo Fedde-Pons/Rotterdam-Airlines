@@ -1,40 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- we gebruiken .NET 10 -->
     <TargetFramework>net10.0</TargetFramework>
-
-    <!-- standaard usings automatisch -->
     <ImplicitUsings>enable</ImplicitUsings>
-
-    <!-- null checks aan (zodat je warnings krijgt) -->
     <Nullable>enable</Nullable>
-
-    <!-- dit is geen app maar een test project -->
     <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- voor coverage (niet super belangrijk maar handig) -->
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
-
-    <!-- nodig om tests te runnen met dotnet test -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-
-    <!-- xunit gebruiken we voor de tests -->
-    <PackageReference Include="xunit" Version="2.9.3" />
-
-    <!-- zorgt dat tests ook echt runnen in VS Code / terminal -->
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- zodat we niet elke keer using Xunit hoeven te typen -->
-    <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- link naar main project zodat we die code kunnen testen -->
     <ProjectReference Include="..\Project\Project.csproj" />
   </ItemGroup>
 

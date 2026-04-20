@@ -29,29 +29,29 @@ namespace Project.Logic
         /// <summary>
         /// Tries to create a booking + ticket
         /// </summary>
-        public (bool IsSuccesfull, string ErrorMessage) BookTicket()
+        public (bool IsSuccesfull, string ErrorMessage, long BookingId) BookTicket()
         {
             Console.WriteLine("DEBUG: BookTicket is called");
 
             // check if everything is filled in
             if (Flight == null)
-                return (false, "Flight is null");
+                return (false, "Flight is null", 0);
 
             if (Account == null)
-                return (false, "Account is null");
+                return (false, "Account is null", 0);
 
             if (Passanger == null)
-                return (false, "Passenger is null");
+                return (false, "Passenger is null", 0);
 
             if (string.IsNullOrWhiteSpace(Date))
-                return (false, "Date is required");
+                return (false, "Date is required", 0);
 
             // get price from flight
             double price = Flight.BasePrice;
 
             // price must be valid
             if (price <= 0)
-                return (false, "Invalid price");
+                return (false, "Invalid price", 0);
 
             // make booking (status = ongoing)
             BookingsModel booking = CreateBooking(Account.Id, Date, price, "ongoing");
@@ -76,8 +76,7 @@ namespace Project.Logic
             ConfirmBooking(booking);
 
             // if everything worked
-            return (true, "Booking created successfully");
-        }
+            return (true, "Booking created successfully", booking.Id);        }
 
         /// <summary>
         /// Creates and returns a booking object

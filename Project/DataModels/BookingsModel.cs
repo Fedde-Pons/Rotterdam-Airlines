@@ -8,6 +8,10 @@ namespace Project.DataModels
         public double TotalPrice { get; set; }
         public string Status { get; set; }
 
+        public BookingsModel()
+        {
+        }
+
         public BookingsModel(long accountId, string date, double totalPrice, string status)
         {
             AccountId = accountId;
