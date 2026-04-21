@@ -24,7 +24,7 @@ public static class PricingCoreLogic
     private static double GetSeatTypeExtraCost(string seatType) => seatType switch
     {
         "business" => 200,
-        "premium" => 100,
+        "economy" => 0,
         _ => 0
     };
 }
