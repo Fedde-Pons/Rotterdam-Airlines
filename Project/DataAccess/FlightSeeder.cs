@@ -227,4 +227,4 @@ public static class FlightSeeder
             //Console.WriteLine($"✅ Vlucht {flight.FlightNumber} toegevoegd.");
         }
     }
-}
+} 
