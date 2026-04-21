@@ -11,7 +11,7 @@ public static class PricingCoreLogic
         // baseFare = distance × 0.1
         
         // price = (baseFare × distance) × DemandFactor + SeatTypeExtraCost - Discounts
-        double price = baseFare * (demandFactor+TimeUntilDepartureFactor/2);
+        double price = baseFare * ((demandFactor+TimeUntilDepartureFactor/2)+1);
         price += GetSeatTypeExtraCost(seatType);
         price -= discount;
         
