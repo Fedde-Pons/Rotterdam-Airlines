@@ -5,8 +5,8 @@ public static class PricingCoreLogic
         double demandFactor,
         double TimeUntilDepartureFactor,
         string seatType,
-        double discount = 0, // excluderend membership
-        bool hasMembership = false)
+        double discount = 0 // excluderend membership
+        )
     {
         // baseFare = distance × 0.1
         
@@ -15,8 +15,6 @@ public static class PricingCoreLogic
         price += GetSeatTypeExtraCost(seatType);
         price -= discount;
         
-        // if (hasMembership)
-        //     price *= 0.9; // Example: 10% membership discount
             
         return Math.Max(price, 0); // zeker weten dat het minimaal 0 returned als het negatief zou zijn
     }
