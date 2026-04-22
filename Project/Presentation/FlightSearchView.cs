@@ -154,7 +154,7 @@ public static class FlightSearch
 
 
                 Console.WriteLine("\nOptions:");
-                Console.WriteLine("1. Proceed to Booking");
+                Console.WriteLine("1. Proceed to Booking (Seat selection)");
                 Console.WriteLine("2. Return to Main Menu");
                 
                 while (true)
@@ -164,7 +164,7 @@ public static class FlightSearch
 
                     if (bookingChoice == "1")
                     {
-                        Console.WriteLine("\nThank you for booking your flight . (dev note: Booking feature isn't complete yet, coming soon.)");
+                        
                         Console.WriteLine("\nPress any key to return to the main menu.");
                         Console.ReadKey();
                         break;
@@ -192,4 +192,6 @@ public static class FlightSearch
             Menu.Start();
         }
     }
+
+    
 }
