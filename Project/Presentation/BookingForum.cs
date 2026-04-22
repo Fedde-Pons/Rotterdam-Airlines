@@ -10,19 +10,56 @@ public static class BookingForums
     /// <param name="date"></param>
    public static void Start(FlightModel flight, string date)
     {
-        int accountID = AccountsLogic.CurrentAccount.Id;
+        int accountID = AccountsLogic.CurrentAccount != null ? AccountsLogic.CurrentAccount.Id : 1; // edited this so we dont need to be logged in atm  
         BookingModel booking = new BookingModel(accountID, date, "ongoing");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket)> bookingValues = [];
+
+        FlightAccess dbAccess = new FlightAccess();
+        var seatData = dbAccess.GetLiveSeatData(flight.Id, flight.AircraftId);
+        
+        List<SeatModel> availableSeats = seatData.availableSeats;
+        int totalSeats = seatData.totalSeats;
+        int bookedSeats = seatData.bookedSeats;
+
+
         for(int i = 0; i < numberOfTickets; i++)
         {
             PassangerModel passanger = CreatePassanger();
             // seat and price logic goes here
+            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, totalSeats, bookedSeats);
+
+            if (seatingResult == null)
+            {
+                return;
+            }
+
+            SeatModel pickedSeat = seatingResult.Value.seat;
+            double finalPrice = seatingResult.Value.price;
+
+            availableSeats.Remove(pickedSeat);
+            bookedSeats++;
             
             //TODO: the 0's need to be adjusted based on pricing
-            TicketModel ticket = CreateTicket(booking.Id, flight.Id, 0, 0);
+            TicketModel ticket = CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice);
             bookingValues.Add((passanger, ticket));
         }
+
+        Console.Clear();
+        Console.WriteLine("======================================");
+        Console.WriteLine("          BOOKING SUCCESSFUL!         ");
+        Console.WriteLine("======================================");
+        Console.WriteLine($"\nYou have successfully booked {numberOfTickets} ticket(s) for Flight {flight.FlightNumber}!");
+        
+        foreach (var bookedItem in bookingValues)
+        {
+            Console.WriteLine($"- Passenger: {bookedItem.passanger.FirstName} {bookedItem.passanger.LastName} | Ticket Price: €{bookedItem.ticket.Price}");
+        }
+
+        Console.WriteLine("\nPress any key to return to the main menu...");
+        Console.ReadKey();
+
+        
         // code for storing it in the database here
         // would recommend using a tuple that combines the booking and the bookingValues list
         // also keep in mind that my code doesnt assign a passanger id to the ticket (sinde that database decides the id)

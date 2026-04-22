@@ -97,5 +97,21 @@ public class FlightAccess
         return _connection.QueryFirstOrDefault<FlightModel>(sql, new { FlightNumber = flightNumber });
     }
 
+    public (List<SeatModel> availableSeats, int totalSeats, int bookedSeats) GetLiveSeatData(int flightId, int aircraftId)
+    {
+
+        string getSeatsQuery = "SELECT * FROM Seats WHERE aircraftId = @AircraftId";
+        List<SeatModel> allSeats = _connection.Query<SeatModel>(getSeatsQuery, new { AircraftId = aircraftId }).ToList();
+
+
+        string getBookedSeatsQuery = "SELECT seatId FROM Tickets WHERE flightId = @FlightId";
+        List<int> bookedSeatIds = _connection.Query<int>(getBookedSeatsQuery, new { FlightId = flightId }).ToList();
+
+
+        List<SeatModel> availableSeats = allSeats.Where(seat => !bookedSeatIds.Contains(seat.Id)).ToList();
+
+        return (availableSeats, allSeats.Count, bookedSeatIds.Count);
+    }
+
 
 }

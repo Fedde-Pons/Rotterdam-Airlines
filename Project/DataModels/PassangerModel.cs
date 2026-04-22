@@ -13,4 +13,6 @@ public class PassangerModel
         DateOfBirth = dateOfBirth;
         PassportNumber = passportNumber;
     }
+
 }
+
