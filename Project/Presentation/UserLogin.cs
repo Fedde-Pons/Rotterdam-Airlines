@@ -10,7 +10,23 @@ static class UserLogin
         Console.WriteLine("Please enter your email address:");
         string email = Console.ReadLine();
         Console.WriteLine("\nPlease enter your password:");
-        string password = Console.ReadLine();
+        string password = "";
+        ConsoleKeyInfo key;
+        do
+        {
+            key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+            {
+                password = password[..^1];
+                Console.Write("\b \b");
+            }
+            else if (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Backspace)
+            {
+                password += key.KeyChar;
+                Console.Write("*");
+            }
+        } while (key.Key != ConsoleKey.Enter);
+        Console.WriteLine();
         AccountModel acc = accountsLogic.CheckLogin(email, password);
         if (acc != null)
         {

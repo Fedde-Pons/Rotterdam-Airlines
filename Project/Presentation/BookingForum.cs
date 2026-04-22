@@ -25,7 +25,7 @@ public static class BookingForums
 
         for(int i = 0; i < numberOfTickets; i++)
         {
-            PassangerModel passanger = CreatePassanger();
+            PassangerModel passanger = CreatePassanger(i + 1, numberOfTickets);
             // seat and price logic goes here
             var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, totalSeats, bookedSeats);
 
@@ -49,11 +49,16 @@ public static class BookingForums
         Console.WriteLine("======================================");
         Console.WriteLine("          BOOKING SUCCESSFUL!         ");
         Console.WriteLine("======================================");
-        Console.WriteLine($"\nYou have successfully booked {numberOfTickets} ticket(s) for Flight {flight.FlightNumber}!");
-        
-        foreach (var bookedItem in bookingValues)
+        Console.WriteLine($"\nFlight:   {flight.FlightNumber}");
+        Console.WriteLine($"Tickets:  {numberOfTickets}");
+        Console.WriteLine();
+        Console.WriteLine("  #  Passenger                   Price");
+        Console.WriteLine("  -  ---------                   -----");
+        for (int i = 0; i < bookingValues.Count; i++)
         {
-            Console.WriteLine($"- Passenger: {bookedItem.passanger.FirstName} {bookedItem.passanger.LastName} | Ticket Price: €{bookedItem.ticket.Price}");
+            var item = bookingValues[i];
+            string name = $"{item.passanger.FirstName} {item.passanger.LastName}";
+            Console.WriteLine($"  {i + 1}  {name,-28} €{item.ticket.Price}");
         }
 
         Console.WriteLine("\nPress any key to return to the main menu...");
@@ -68,22 +73,28 @@ public static class BookingForums
     private static int NumberOfTickets()
     {
         Console.Clear();
+        Console.WriteLine("======================================");
+        Console.WriteLine("             BOOK A FLIGHT            ");
+        Console.WriteLine("======================================\n");
         while (true)
         {
-            Console.WriteLine("how many tickets do you want to buy");
+            Console.WriteLine("How many tickets would you like to buy? ");
             string? UserInput = Console.ReadLine();
-            if (int.TryParse(UserInput, out int userInput))
+            if (int.TryParse(UserInput, out int userInput) && userInput > 0)
             {
-                return userInput; 
+                return userInput;
             }
             else
             {
-                Console.Clear();
-                Console.WriteLine("please put in a valid number, press any key to continue");
+                Console.WriteLine("\nInvalid input. Please enter a valid number greater than 0.");
+                Console.WriteLine("Press any key to try again...");
                 Console.ReadKey();
+                Console.Clear();
+                Console.WriteLine("======================================");
+                Console.WriteLine("             BOOK A FLIGHT            ");
+                Console.WriteLine("======================================\n");
             }
         }
-
     }
     private static TicketModel CreateTicket(int bookingID ,int flightId,int seatID,int price)
     {
@@ -92,49 +103,40 @@ public static class BookingForums
         return ticket;
     }
 
-    private static PassangerModel CreatePassanger()
+    private static PassangerModel CreatePassanger(int current, int total)
     {
         Console.Clear();
-        string? firstName;
-        string? lastName;
+        Console.WriteLine("======================================");
+        Console.WriteLine($"      PASSENGER DETAILS ({current}/{total})       ");
+        Console.WriteLine("======================================\n");
+
+        Console.WriteLine("Please enter first name:");
+        string? firstName = Console.ReadLine();
+
+        Console.WriteLine("\nPlease enter last name:");
+        string? lastName = Console.ReadLine();
+
         string? dateOfBirth;
-        int passportNumber;
-        while(true)
+        while (true)
         {
-            Console.WriteLine("please enter your first name");   
-            firstName = Console.ReadLine();
-            break;
-        }
-        while(true)
-        {
-            Console.WriteLine("please enter your last name");   
-            lastName = Console.ReadLine();
-            break;
-        }
-        while(true)
-        {
-            Console.WriteLine("please enter your date of birth YYYY-MM-DD");   
+            Console.WriteLine("\nPlease enter date of birth (YYYY-MM-DD): ");
             dateOfBirth = Console.ReadLine();
-            break;
-        }
-        while(true)
-        {
-            Console.WriteLine("please put in your passport number");
-            string? UserInput = Console.ReadLine();
-            if (int.TryParse(UserInput, out int userInput))
-            {
-                passportNumber = userInput;
+            if (DateTime.TryParse(dateOfBirth, out _))
                 break;
-            }
-            else
-            {
-                Console.Clear();
-                Console.WriteLine("please put in a valid passport-number, press any key to continue");
-                Console.ReadKey();
-            }
+            Console.WriteLine("Invalid date format. Please use YYYY-MM-DD.\n");
         }
+
+        int passportNumber;
+        while (true)
+        {
+            Console.WriteLine("\nPlease enter passport number: ");
+            string? userInput = Console.ReadLine();
+            if (int.TryParse(userInput, out passportNumber))
+                break;
+            Console.WriteLine("Invalid passport number. Please enter a numeric value.\n");
+        }
+
         PassangerModel passanger = new PassangerModel(firstName, lastName, dateOfBirth, passportNumber);
-        Console.WriteLine("passanger created");
         return passanger;
     }
 }
