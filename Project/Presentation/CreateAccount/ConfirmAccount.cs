@@ -144,7 +144,7 @@ static class ConfirmAccount
                         if (Validated) 
                         {
                             LoopValidation = false;
-                            account.EmailAddress = NewEmailAddress;
+                            account.EmailAddress = NewEmailAddress.ToLower();
                             Console.WriteLine($"Successfully updated email address to:\n- {account.EmailAddress}");
                         }
                         else
