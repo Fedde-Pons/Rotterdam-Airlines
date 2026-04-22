@@ -2,15 +2,28 @@ using System.Runtime.CompilerServices;
 
 public static class BookingForums
 {
-    public static void Start(FlightModel flight, string date)
+    /// <summary>
+    /// starts the ui for the booking forum <br/>
+    /// this also starts the ui for the passanger and ticket forums
+    /// </summary>
+    /// <param name="flight"></param>
+    /// <param name="date"></param>
+   public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount.Id;
         BookingModel booking = new BookingModel(accountID, date, "ongoing");
         int numberOfTickets = NumberOfTickets();
+        List<(PassangerModel passanger, TicketModel ticket)> bookingValues = [];
         for(int i = 0; i < numberOfTickets; i++)
         {
-            
+            PassangerModel passanger = CreatePassanger();
+            // seat and price logic goes here
+            TicketModel ticket = CreateTicket(booking.Id, flight.Id, 0, passanger.Id, 0);
+            bookingValues.Add((passanger, ticket));
         }
+        // code for storing it in the database here
+        // would recommend using a tuple that combines the booking and the bookingValues list
+
     }
     private static int NumberOfTickets()
     {

@@ -130,7 +130,7 @@ public static class FlightSearch
                     {
                         Console.WriteLine("\nThank you for booking your flight . (dev note: Booking feature isn't complete yet, coming soon.)");
                         Console.WriteLine("\nPress any key to return to the main menu.");
-                        BookingForums.Start();
+                        BookingForums.Start(specificFlight, "1970-01-01");
                         Console.ReadKey();
                         break;
                     }
