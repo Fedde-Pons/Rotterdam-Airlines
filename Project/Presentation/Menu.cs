@@ -20,11 +20,13 @@ static class Menu
             Console.WriteLine("Welcome to Rotterdam Airlines!\n");
 
         Console.WriteLine("1: View all available flights");
-        Console.WriteLine("2: Book a flight");
         if (AccountsLogic.CurrentAccount == null)
             Console.WriteLine("3: Login/Register");
         else
+        {
+            Console.WriteLine("2: Book a flight");
             Console.WriteLine("3: My Account");
+        }
         Console.WriteLine("4: Exit program");
         Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
 
