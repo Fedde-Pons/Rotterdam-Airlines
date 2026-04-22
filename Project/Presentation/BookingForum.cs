@@ -18,6 +18,8 @@ public static class BookingForums
         {
             PassangerModel passanger = CreatePassanger();
             // seat and price logic goes here
+            
+            //TODO: the 0's need to be adjusted based on pricing
             TicketModel ticket = CreateTicket(booking.Id, flight.Id, 0, 0);
             bookingValues.Add((passanger, ticket));
         }
