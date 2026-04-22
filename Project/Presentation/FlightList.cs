@@ -24,8 +24,8 @@ static class FlightList
                 }
                 else
                 {
-                    var departures = flights.Where(f => f.DepartureCity == "Rotterdam").ToList();
-                    var arrivals = flights.Where(f => f.DestinationCity == "Rotterdam").ToList();
+                    var departures = flights.Where(f => f.DepartureAirportId == 8).ToList();
+                    var arrivals = flights.Where(f => f.DestinationAirportId == 8).ToList();
 
                     var leftBoard = BuildBoardLines("DEPARTURES", departures, isDeparture: true);
                     var rightBoard = BuildBoardLines("ARRIVALS", arrivals, isDeparture: false);

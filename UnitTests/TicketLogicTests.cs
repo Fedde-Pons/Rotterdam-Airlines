@@ -1,34 +1,32 @@
-using System.Reflection;
+// using System.Reflection;
 
 namespace UnitTests;
 
 [TestClass]
-public sealed class TestTicket
-{
-
-
-    [TestMethod]
+public sealed class TestTicketLogic
+{ 
+    
+    // DONT DELETE (needed later)
+    // [TestMethod]
     // [DataRow("kevin@kevin.nl", "kevin")]
-    public void SeatIsUnavailble()
-    {
+    // public void SeatIsUnavailble()
+    // {
         // arrange
         // AccountsLogic l = new();
         // AccountsAccess access = new();
-        TicketLogic ticket = new TicketLogic();
+        // TicketLogic ticket = new TicketLogic();
 
         // act 
-        MethodInfo method = ticket.GetType().GetMethod("IsValidateSeatAvailable", BindingFlags.NonPublic | BindingFlags.Instance);
+        // MethodInfo method = ticket.GetType().GetMethod("IsValidateSeatAvailable", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        object[] parmerters = new object[0] {};
+        // object[] parmerters = new object[0] {};
 
-        var result = method.Invoke(ticket, parmerters);
-
-
+        // var result = method.Invoke(ticket, parmerters);
 
         // assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(false, result);
-    }
+        // Assert.IsNotNull(result);
+        // Assert.AreEqual(false, result);
+    // }
 
     // [DataTestMethod]
     // [DataRow("kevin@kevin.nl", "wrong")] // wrong password

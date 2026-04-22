@@ -43,8 +43,7 @@ public class FlightModel
         double demandFactor,
         double timeUntilDepartureFactor,
         string seatType = "economy",
-        double discount = 0,
-        bool hasMembership = false)
+        double discount = 0)
     {
         // Bereken de nieuwe prijs met PricingCoreLogic
         double newPrice = PricingCoreLogic.CalculateFlightPrice(
@@ -52,8 +51,7 @@ public class FlightModel
             demandFactor,
             timeUntilDepartureFactor,
             seatType,
-            discount,
-            hasMembership);
+            discount);
         
         // Update de BasePrice
         BasePrice = newPrice;

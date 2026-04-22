@@ -83,5 +83,3 @@ public static class SeatingLogic
     }
 }
 
-
-// THIS IS STILL IN PROGRESS
