@@ -17,4 +17,12 @@
         Price = price;
         ExtraBaggageKg = extraBaggageKg;
     }
+    public TicketModel(int bookingId, int flightId, int seatId, float price, int extraBaggageKg)
+    {
+        BookingId = bookingId;
+        FlightId = flightId;
+        SeatId = seatId;
+        Price = price;
+        ExtraBaggageKg = extraBaggageKg;
+    }
 }

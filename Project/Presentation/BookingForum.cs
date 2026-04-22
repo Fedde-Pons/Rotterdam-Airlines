@@ -18,11 +18,12 @@ public static class BookingForums
         {
             PassangerModel passanger = CreatePassanger();
             // seat and price logic goes here
-            TicketModel ticket = CreateTicket(booking.Id, flight.Id, 0, passanger.Id, 0);
+            TicketModel ticket = CreateTicket(booking.Id, flight.Id, 0, 0);
             bookingValues.Add((passanger, ticket));
         }
         // code for storing it in the database here
         // would recommend using a tuple that combines the booking and the bookingValues list
+        // also keep in mind that my code doesnt assign a passanger id to the ticket (sinde that database decides the id)
 
     }
     private static int NumberOfTickets()
@@ -45,10 +46,10 @@ public static class BookingForums
         }
 
     }
-    private static TicketModel CreateTicket(int bookingID ,int flightId,int seatID, int passangerID,int price)
+    private static TicketModel CreateTicket(int bookingID ,int flightId,int seatID,int price)
     {
         // replace the 0 with extra baggage later
-        TicketModel ticket = new(bookingID, flightId, seatID,passangerID,price, 0);
+        TicketModel ticket = new(bookingID, flightId, seatID ,price, 0);
         return ticket;
     }
 
