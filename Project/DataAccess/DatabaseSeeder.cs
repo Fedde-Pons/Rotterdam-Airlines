@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Data.Sqlite;
 
-public static class FlightSeeder
+public static class DatabaseSeeder
 {
     public static void Run(string connectionString)
     {
