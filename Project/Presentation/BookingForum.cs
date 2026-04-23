@@ -19,7 +19,7 @@ public static class BookingForums
         var seatData = dbAccess.GetLiveSeatData(flight.Id, flight.AircraftId);
         
         List<SeatModel> availableSeats = seatData.availableSeats;
-        int totalSeats = seatData.totalSeats;
+        int totalSeats = seatData.allSeats.Count;
         int bookedSeats = seatData.bookedSeats;
 
 

@@ -132,25 +132,31 @@ public static class FlightSearch
             {
 
                 specificFlightFound = true;
-                List<SeatModel> seatsOnPlane = new List<SeatModel>();
-                int totalSeats = 150;
-                int bookedSeats = 0;
-                int availableSeats = totalSeats - bookedSeats;
+                FlightAccess flightAccess = new FlightAccess();
+                var (availableSeatsList, allSeatsList, bookedSeats) = flightAccess.GetLiveSeatData(specificFlight.Id, specificFlight.AircraftId);
+                int totalSeats = allSeatsList.Count;
 
+                int totalEconomy = allSeatsList.Count(s => s.Seatclass.Equals("Economy", StringComparison.OrdinalIgnoreCase));
+                int totalBusiness = allSeatsList.Count(s => s.Seatclass.Equals("Business", StringComparison.OrdinalIgnoreCase));
+                int availableEconomy = availableSeatsList.Count(s => s.Seatclass.Equals("Economy", StringComparison.OrdinalIgnoreCase));
+                int availableBusiness = availableSeatsList.Count(s => s.Seatclass.Equals("Business", StringComparison.OrdinalIgnoreCase));
+                int bookedEconomy = totalEconomy - availableEconomy;
+                int bookedBusiness = totalBusiness - availableBusiness;
 
-                double demandFactor = FactoringLogic.CalculateDemandFactor(bookedSeats, totalSeats);
+                double economyDemandFactor = FactoringLogic.CalculateDemandFactor(bookedEconomy, totalEconomy);
+                double businessDemandFactor = FactoringLogic.CalculateDemandFactor(bookedBusiness, totalBusiness);
                 DateTime departureDate = DateTime.Parse(specificFlight.DepartureTime);
                 double timeFactor = FactoringLogic.CalculateTimeUntilDepartureFactor(departureDate);
 
-                double economyPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, demandFactor, timeFactor, "economy");
-                double businessPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, demandFactor, timeFactor, "business");
+                double economyPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, economyDemandFactor, timeFactor, "economy");
+                double businessPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, businessDemandFactor, timeFactor, "business");
 
                 Console.Clear();
                 Console.WriteLine($"Flight Number: {specificFlight.FlightNumber}");
                 Console.WriteLine($"Route: {specificFlight.DepartureCity} to {specificFlight.DestinationCity}");
                 Console.WriteLine($"Departure: {specificFlight.DepartureTime}");
-                Console.WriteLine($"Prices: Economy €{economyPrice} | Business €{businessPrice}");
-                Console.WriteLine($"Available Seats: {availableSeats} / {totalSeats}");
+                Console.WriteLine($"Economy: €{economyPrice:F2} | Available: {availableEconomy} / {totalEconomy}");
+                Console.WriteLine($"Business: €{businessPrice:F2} | Available: {availableBusiness} / {totalBusiness}");
 
 
                 Console.WriteLine("\nOptions:");

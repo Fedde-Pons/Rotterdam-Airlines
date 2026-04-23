@@ -33,8 +33,7 @@ public static class SeatingLogic
             if (seat.Seatclass.Equals("Economy", StringComparison.OrdinalIgnoreCase))
             {
                 string windowText = seat.IsWindows ? " (Window)" : "";
-                string legroomText = seat.IsExitRow || seat.IsFirstRow ? " (Extra Legroom)" : "";
-                Console.WriteLine($"- Seat {seat.SeatNumber} | €{economyPrice:F2}{windowText}{legroomText}");
+                Console.WriteLine($"- Seat {seat.SeatNumber} | €{economyPrice:F2}{windowText}");
             }
         }
 

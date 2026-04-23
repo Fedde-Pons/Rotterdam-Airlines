@@ -16,7 +16,7 @@ public static class PricingCoreLogic
         price -= discount;
         
             
-        return Math.Max(price, 0); // zeker weten dat het minimaal 0 returned als het negatief zou zijn
+        return Math.Round(Math.Max(price, 0), 2); // zeker weten dat het minimaal 0 returned als het negatief zou zijn
     }
     
     private static double GetSeatTypeExtraCost(string seatType) => seatType switch
