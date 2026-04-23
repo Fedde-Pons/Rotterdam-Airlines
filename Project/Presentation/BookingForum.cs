@@ -64,11 +64,21 @@ public static class BookingForums
         Console.WriteLine("\nPress any key to return to the main menu...");
         Console.ReadKey();
 
-        
-        // code for storing it in the database here
-        // would recommend using a tuple that combines the booking and the bookingValues list
-        // also keep in mind that my code doesnt assign a passanger id to the ticket (sinde that database decides the id)
+        // Save booking + passengers + tickets to the database
+        booking.TotalPrice = bookingValues.Sum(bv => bv.ticket.Price);
 
+        BookingAccess bookingAccess = new();
+        PassangerAccess passangerAccess = new();
+        TicketAccess ticketAccess = new();
+
+        int bookingId = bookingAccess.Write(booking);
+
+        foreach (var (passanger, ticket) in bookingValues)
+        {
+            int passangerId = passangerAccess.Write(passanger);
+            TicketModel dbTicket = new(bookingId, ticket.FlightId, ticket.SeatId, passangerId, ticket.Price, ticket.ExtraBaggageKg);
+            ticketAccess.Write(dbTicket);
+        }
     }
     private static int NumberOfTickets()
     {

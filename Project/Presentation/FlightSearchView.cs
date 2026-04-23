@@ -166,7 +166,7 @@ public static class FlightSearch
                     {
                         
                         Console.WriteLine("\nPress any key to return to the main menu.");
-                        BookingForums.Start(specificFlight, "1970-01-01");
+                        BookingForums.Start(specificFlight, DateTime.Today.ToString("yyyy-MM-dd"));
                         Console.ReadKey();
                         break;
                     }
