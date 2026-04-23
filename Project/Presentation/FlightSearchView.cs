@@ -170,10 +170,7 @@ public static class FlightSearch
 
                     if (bookingChoice == "1")
                     {
-                        
-                        Console.WriteLine("\nPress any key to return to the main menu.");
                         BookingForums.Start(specificFlight, DateTime.Today.ToString("yyyy-MM-dd"));
-                        Console.ReadKey();
                         break;
                     }
                     else if (bookingChoice == "2")
