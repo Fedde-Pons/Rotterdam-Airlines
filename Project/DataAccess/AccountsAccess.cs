@@ -53,8 +53,7 @@ public class AccountsAccess
     public AccountModel GetByEmail(string email)
     {
         using var connection = new SqliteConnection(_connectionString);
-
-        string sql = $@"SELECT * FROM {Table} WHERE emailAddress = @Email;";
+        string sql = $@"SELECT * FROM {Table} WHERE LOWER(emailAddress) = LOWER(@Email);";
         return connection.QueryFirstOrDefault<AccountModel>(sql, new { Email = email });
     }
 
