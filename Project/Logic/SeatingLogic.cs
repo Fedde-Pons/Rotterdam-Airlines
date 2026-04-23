@@ -7,6 +7,7 @@ public static class SeatingLogic
         int bookedSeats)
     {
         Console.Clear();
+        Console.Write("\x1b[3J");
         Console.WriteLine($"=== SEAT SELECTION FOR FLIGHT {selectedFlight.FlightNumber} ===");
 
         double demandFactor = FactoringLogic.CalculateDemandFactor(bookedSeats, totalSeats);
