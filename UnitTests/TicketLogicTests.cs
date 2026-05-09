@@ -28,7 +28,8 @@ public sealed class TestTicketLogic
         // Assert.AreEqual(false, result);
     // }
 
-    // [DataTestMethod]    // [DataRow("kevin@kevin.nl", "wrong")] // wrong password 
+    // [DataTestMethod]
+    // [DataRow("kevin@kevin.nl", "wrong")] // wrong password
     // [DataRow("wrong1", "kevin")] // wrong email
     // [DataRow("wrong2", "wrong")] // everything wrong
     // [DataRow("", "")]
