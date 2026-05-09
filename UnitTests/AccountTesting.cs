@@ -16,8 +16,7 @@ public sealed class AccountTesting
 
     // ===== H1 / S2: ValidateFirstName =====
 
-    [DataTestMethod]
-    [DataRow("John")]
+    [TestMethod]    [DataRow("John")]
     [DataRow("Mary")]
     [DataRow("Anne")]
     public void ValidateFirstName_ValidInput_ReturnsTrue(string firstName)
@@ -32,8 +31,7 @@ public sealed class AccountTesting
         Assert.IsTrue(result);
     }
 
-    [DataTestMethod]
-    [DataRow("John1")]   // contains number
+    [TestMethod]    [DataRow("John1")]   // contains number
     [DataRow("Jo hn")]   // contains space
     [DataRow("Ann3")]    // contains number
     public void ValidateFirstName_InvalidInput_ReturnsFalse(string firstName)
@@ -50,8 +48,7 @@ public sealed class AccountTesting
 
     // ===== H1 / S2: ValidateLastName =====
 
-    [DataTestMethod]
-    [DataRow("Smith")]
+    [TestMethod]    [DataRow("Smith")]
     [DataRow("Van der Berg")]   // Dutch last name with spaces is allowed
     [DataRow("De Vries")]
     public void ValidateLastName_ValidInput_ReturnsTrue(string lastName)
@@ -66,8 +63,7 @@ public sealed class AccountTesting
         Assert.IsTrue(result);
     }
 
-    [DataTestMethod]
-    [DataRow("Smith1")]     // contains number
+    [TestMethod]    [DataRow("Smith1")]     // contains number
     [DataRow("Van2Berg")]   // contains number
     public void ValidateLastName_InvalidInput_ReturnsFalse(string lastName)
     {
@@ -83,8 +79,7 @@ public sealed class AccountTesting
 
     // ===== H1 / S2 / S3: ValidateEmail =====
 
-    [DataTestMethod]
-    [DataRow("user@example.com")]
+    [TestMethod]    [DataRow("user@example.com")]
     [DataRow("test@test.nl")]
     [DataRow("john.doe@domain.org")]
     public void ValidateEmail_ValidInput_ReturnsTrue(string email)
@@ -99,8 +94,7 @@ public sealed class AccountTesting
         Assert.IsTrue(result);
     }
 
-    [DataTestMethod]
-    [DataRow("notanemail")]         // no @ and no .
+    [TestMethod]    [DataRow("notanemail")]         // no @ and no .
     [DataRow("@nodomain.com")]      // nothing before @
     [DataRow("noatsign.com")]       // no @
     [DataRow("double@@test.com")]   // two @ signs
@@ -119,8 +113,7 @@ public sealed class AccountTesting
 
     // ===== H1 / S2 / S3: ValidatePassword =====
 
-    [DataTestMethod]
-    [DataRow("Password1!")]
+    [TestMethod]    [DataRow("Password1!")]
     [DataRow("Secure@99")]
     [DataRow("MyPass#1word")]
     public void ValidatePassword_ValidInput_ReturnsTrue(string password)
@@ -135,8 +128,7 @@ public sealed class AccountTesting
         Assert.IsTrue(result);
     }
 
-    [DataTestMethod]
-    [DataRow("short1!")]           // too short 
+    [TestMethod]    [DataRow("short1!")]           // too short 
     [DataRow("abc")]                // S2: too short
     [DataRow("nouppercase1!")]      // no uppercase
     [DataRow("NOLOWERCASE1!")]      // S2: no lowercase // ERROR, fix this
@@ -157,8 +149,7 @@ public sealed class AccountTesting
 
     // ===== H1 / S2 / S3: ValidateDateOfBirth =====
 
-    [DataTestMethod]
-    [DataRow("01/01/1990")]
+    [TestMethod]    [DataRow("01/01/1990")]
     [DataRow("15/06/2000")]
     [DataRow("29/02/2000")]     // leap year
     public void ValidateDateOfBirth_ValidInput_ReturnsTrue(string dob)
@@ -173,8 +164,7 @@ public sealed class AccountTesting
         Assert.IsTrue(result);
     }
 
-    [DataTestMethod]
-    [DataRow("1/1/1990")]           // wrong format (no leading zeros)
+    [TestMethod]    [DataRow("1/1/1990")]           // wrong format (no leading zeros)
     [DataRow("31/13/2000")]         // invalid month
     [DataRow("32/01/2000")]         // invalid day
     [DataRow("29/02/1999")]         // not a leap year
@@ -194,8 +184,7 @@ public sealed class AccountTesting
 
     // ===== H1 / S2 / S3: ValidatePhoneNumber =====
 
-    [DataTestMethod]
-    [DataRow("31", "612345678")]    // Netherlands
+    [TestMethod]    [DataRow("31", "612345678")]    // Netherlands
     [DataRow("1", "2025550100")]    // USA
     [DataRow("X", "X")]            // optional field skipped
     public void ValidatePhoneNumber_ValidInput_ReturnsTrue(string countryCode, string phoneNumber)
@@ -210,8 +199,7 @@ public sealed class AccountTesting
         Assert.IsTrue(result);
     }
 
-    [DataTestMethod]
-    [DataRow("999", "123456")]      // invalid country code
+    [TestMethod]    [DataRow("999", "123456")]      // invalid country code
     [DataRow("31", "12abc")]        // phone contains letters
     [DataRow("31", "123")]          // phone too short
     [DataRow("31", "")]             // S3: empty phone
@@ -258,13 +246,12 @@ public sealed class AccountTesting
         logic.CreateAccount(first);
 
         // act & assert
-        Assert.ThrowsException<ArgumentException>(() => logic.CreateAccount(duplicate));
+        Assert.ThrowsExactly<ArgumentException>(() => logic.CreateAccount(duplicate));
     }
 
     // ===== S1: Missing required fields are rejected =====
 
-    [DataTestMethod]
-    [DataRow("", "User", "unittest_account@example.com", "31 612345678", "Password1!", "01/01/1990")]     // missing first name
+    [TestMethod]    [DataRow("", "User", "unittest_account@example.com", "31 612345678", "Password1!", "01/01/1990")]     // missing first name
     [DataRow("Test", "", "unittest_account@example.com", "31 612345678", "Password1!", "01/01/1990")]     // missing last name
     [DataRow("Test", "User", "", "31 612345678", "Password1!", "01/01/1990")]                             // missing email
     [DataRow("Test", "User", "unittest_account@example.com", "31 612345678", "abc", "01/01/1990")]        // password too short
@@ -276,6 +263,6 @@ public sealed class AccountTesting
         AccountModel account = new(firstName, lastName, email, phone, password, dob);
 
         // act & assert
-        Assert.ThrowsException<ArgumentException>(() => logic.CreateAccount(account));
+        Assert.ThrowsExactly<ArgumentException>(() => logic.CreateAccount(account));
     }
 }

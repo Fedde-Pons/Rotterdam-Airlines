@@ -1,4 +1,4 @@
-static class VerificationToolbox
+public static class VerificationToolbox
 {
     private static readonly DateTime MinimumBirthDate = new DateTime(1909, 1, 1);
 
@@ -153,70 +153,6 @@ static class VerificationToolbox
         return true;
     }
 
-    public static bool ValidateDateOfBirth(string dateOfBirth)
-    {
-        // Check format dd/mm/yyyy - must have exactly 2 slashes
-        int slashCount = 0;
-        foreach (char c in dateOfBirth)
-        {
-            if (c == '/')
-                slashCount++;
-        }
-
-        if (slashCount != 2)
-        {
-            return false;
-        }
-
-        // Split by /
-        string[] parts = dateOfBirth.Split('/');
-
-        if (parts.Length != 3)
-        {
-            return false;
-        }
-
-        // Check each part is only digits
-        foreach (string part in parts)
-        {
-            if (part.Length == 0)
-                return false;
-
-            foreach (char c in part)
-            {
-                if (!char.IsDigit(c))
-                    return false;
-            }
-        }
-
-        // Check format is dd/mm/yyyy (2 digits, 2 digits, 4 digits)
-        if (parts[0].Length != 2 || parts[1].Length != 2 || parts[2].Length != 4)
-        {
-            return false;
-        }
-
-        int day = int.Parse(parts[0]);
-        int month = int.Parse(parts[1]);
-        int year = int.Parse(parts[2]);
-
-        // Check if year is at least 1909
-        if (year < 1909)
-        {
-            return false;
-        }
-
-        // Check if date is valid
-        try
-        {
-            DateTime dob = new DateTime(year, month, day);
-        }
-        catch
-        {
-            return false;
-        }
-
-        return true;
-    }
 
     public static string ReadPassword()
     {
