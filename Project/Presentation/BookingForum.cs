@@ -13,7 +13,7 @@ public static class BookingForums
         int accountID = AccountsLogic.CurrentAccount != null ? AccountsLogic.CurrentAccount.Id : 1; // edited this so we dont need to be logged in atm  
         BookingModel booking = new BookingModel(accountID, date, "ongoing");
         int numberOfTickets = NumberOfTickets();
-        List<(PassangerModel passanger, TicketModel ticket)> bookingValues = [];
+        List<(PassangerModel passanger, TicketModel ticket, SeatModel seat)> bookingValues = [];
 
         FlightAccess dbAccess = new FlightAccess();
         var seatData = dbAccess.GetLiveSeatData(flight.Id, flight.AircraftId);
@@ -42,30 +42,46 @@ public static class BookingForums
             
             //TODO: the 0's need to be adjusted based on pricing
             TicketModel ticket = CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice);
-            bookingValues.Add((passanger, ticket));
+            bookingValues.Add((passanger, ticket, pickedSeat));
         }
 
+        // ── CONFIRMATION STEP ──────────────────────────────────────────
         Console.Clear();
         Console.WriteLine("======================================");
-        Console.WriteLine("          BOOKING SUCCESSFUL!         ");
-        Console.WriteLine("======================================");
-        Console.WriteLine($"\nFlight:   {flight.FlightNumber}");
-        Console.WriteLine($"Tickets:  {numberOfTickets}");
-        Console.WriteLine();
-        Console.WriteLine("  #  Passenger                   Price");
-        Console.WriteLine("  -  ---------                   -----");
+        Console.WriteLine("        BOOKING CONFIRMATION          ");
+        Console.WriteLine("======================================\n");
+        Console.WriteLine($"Flight:     {flight.FlightNumber}");
+        Console.WriteLine($"From:       {flight.DepartureAirportName} ({flight.DepartureCity}) at {flight.DepartureTime}");
+        Console.WriteLine($"To:         {flight.DestinationAirportName} ({flight.DestinationCity}) at {flight.ArrivalTime}");
+        Console.WriteLine($"Date:       {date}\n");
+        Console.WriteLine($"  #  {"Passenger",-28} {"Seat",-8} {"Class",-12} Price");
+        Console.WriteLine($"  -  {new string('-', 28)} {"----",-8} {"-----",-12} -----");
+
         for (int i = 0; i < bookingValues.Count; i++)
         {
-            var item = bookingValues[i];
-            string name = $"{item.passanger.FirstName} {item.passanger.LastName}";
-            Console.WriteLine($"  {i + 1}  {name,-28} €{item.ticket.Price}");
+            var (passanger, ticket, seat) = bookingValues[i];
+            string name = $"{passanger.FirstName} {passanger.LastName}";
+            Console.WriteLine($"  {i + 1}  {name,-28} {seat.SeatNumber,-8} {seat.Seatclass,-12} €{ticket.Price}");
         }
 
-        Console.WriteLine("\nPress any key to return to the main menu...");
-        Console.ReadKey();
+        double totalPrice = bookingValues.Sum(bv => bv.ticket.Price);
+        Console.WriteLine($"\n  Total: €{totalPrice}\n");
+        Console.WriteLine("Confirm this booking? [Y] Yes  [N] No (cancel)");
 
-        // Save booking + passengers + tickets to the database
-        booking.TotalPrice = bookingValues.Sum(bv => bv.ticket.Price);
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Y) break;
+            if (key.Key == ConsoleKey.N)
+            {
+                Console.WriteLine("\n\nBooking cancelled. Returning to main menu...");
+                Console.ReadKey();
+                return;
+            }
+        }
+
+        // ── SAVE TO DATABASE ───────────────────────────────────────────
+        booking.TotalPrice = totalPrice;
 
         BookingAccess bookingAccess = new();
         PassangerAccess passangerAccess = new();
@@ -73,12 +89,35 @@ public static class BookingForums
 
         int bookingId = bookingAccess.Write(booking);
 
-        foreach (var (passanger, ticket) in bookingValues)
+        foreach (var (passanger, ticket, _) in bookingValues)
         {
             int passangerId = passangerAccess.Write(passanger);
             TicketModel dbTicket = new(bookingId, ticket.FlightId, ticket.SeatId, passangerId, ticket.Price, ticket.ExtraBaggageKg);
             ticketAccess.Write(dbTicket);
         }
+
+        // ── TICKET DISPLAY ─────────────────────────────────────────────
+        Console.Clear();
+        Console.WriteLine("======================================");
+        Console.WriteLine("          BOOKING CONFIRMED!          ");
+        Console.WriteLine("======================================\n");
+        Console.WriteLine($"Booking reference: #{bookingId}\n");
+
+        for (int i = 0; i < bookingValues.Count; i++)
+        {
+            var (passanger, ticket, seat) = bookingValues[i];
+            Console.WriteLine($"  ── Ticket {i + 1} ──────────────────────");
+            Console.WriteLine($"  Passenger:   {passanger.FirstName} {passanger.LastName}");
+            Console.WriteLine($"  Flight:      {flight.FlightNumber}");
+            Console.WriteLine($"  From:        {flight.DepartureAirportName} ({flight.DepartureCity})");
+            Console.WriteLine($"  Departure:   {flight.DepartureTime}");
+            Console.WriteLine($"  To:          {flight.DestinationAirportName} ({flight.DestinationCity})");
+            Console.WriteLine($"  Arrival:     {flight.ArrivalTime}");
+            Console.WriteLine($"  Seat:        {seat.SeatNumber}  ({seat.Seatclass})");
+            Console.WriteLine($"  Price:       €{ticket.Price}\n");
+        }
+
+        Console.WriteLine($"  Total paid: €{totalPrice}");
     }
     private static int NumberOfTickets()
     {
