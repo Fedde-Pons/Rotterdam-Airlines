@@ -6,6 +6,8 @@ public class BookingModel
     public double TotalPrice { get; set; }
     public string Status { get; set; }
 
+    public BookingModel() { }
+
     public BookingModel(int accountId, string date, double totalPrice, string status)
     {
         AccountId = accountId;

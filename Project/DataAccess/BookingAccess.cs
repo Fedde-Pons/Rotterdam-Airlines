@@ -6,6 +6,13 @@ public class BookingAccess
     private readonly string _connectionString = "Data Source=DataSources/project.db";
     private readonly string Table = "Bookings";
 
+    public List<BookingModel> GetAll()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        string sql = $@"SELECT * FROM {Table};";
+        return connection.Query<BookingModel>(sql).ToList();
+    }
+
     public int Write(BookingModel booking)
     {
         using var connection = new SqliteConnection(_connectionString);
