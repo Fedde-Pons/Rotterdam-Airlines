@@ -43,7 +43,7 @@ static class AdminDashboard
         Console.Clear();
         Console.WriteLine("=== All Bookings ===\n");
 
-        var bookings = new BookingAccess().GetAll();
+        List<BookingModel> bookings = new BookingAccess().GetAll();
 
         if (bookings.Count == 0)
         {
@@ -53,12 +53,14 @@ static class AdminDashboard
         {
             Console.WriteLine($"{"ID",-6} {"Account ID",-12} {"Date",-22} {"Total Price",-14} {"Status"}");
             Console.WriteLine(new string('-', 70));
-            foreach (var b in bookings)
+            int count = 0;
+            foreach (BookingModel booking in bookings)
             {
-                Console.WriteLine($"{b.Id,-6} {b.AccountId,-12} {b.Date,-22} {"€" + b.TotalPrice.ToString("F2"),-14} {b.Status}");
+                Console.WriteLine($"{booking.Id,-6} {booking.AccountId,-12} {booking.Date,-22} {"€" + booking.TotalPrice.ToString("F2"),-14} {booking.Status}");
             }
         }
-
+        
+        Console.WriteLine("3 edit status by id\n");
         Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
         Console.ReadKey();
         Start();
@@ -69,13 +71,13 @@ static class AdminDashboard
         Console.Clear();
         Console.WriteLine("=== All Accounts ===\n");
 
-        var accounts = new AccountsAccess().GetAll();
+        List<AccountModel> accounts = new AccountsAccess().GetAll();
 
         Console.WriteLine($"{"ID",-6} {"Name",-24} {"Email",-30} {"Phone",-16} {"Admin"}");
         Console.WriteLine(new string('-', 85));
-        foreach (var a in accounts)
+        foreach (AccountModel account in accounts)
         {
-            Console.WriteLine($"{a.Id,-6} {a.FullName,-24} {a.EmailAddress,-30} {a.PhoneNumber,-16} {(a.IsAdmin ? "Yes" : "No")}");
+            Console.WriteLine($"{account.Id,-6} {account.FullName,-24} {account.EmailAddress,-30} {account.PhoneNumber,-16} {(account.IsAdmin ? "Yes" : "No")}");
         }
 
         Console.WriteLine("\nPress any key to return to the Admin Dashboard...");

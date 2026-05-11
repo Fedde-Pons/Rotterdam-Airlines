@@ -12,6 +12,13 @@ public class BookingAccess
         string sql = $@"SELECT * FROM {Table};";
         return connection.Query<BookingModel>(sql).ToList();
     }
+    
+    public List<BookingModel> GetAllPending()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        string sql = $@"SELECT * FROM {Table} WHERE status = 'pending';";
+        return connection.Query<BookingModel>(sql).ToList();
+    }
 
     public int Write(BookingModel booking)
     {

@@ -33,19 +33,7 @@ static class FlightList
                 }
 
                 Console.WriteLine("Press any key to return to the menu...");
-            }
-
-            DateTime waitUntil = DateTime.Now.AddSeconds(5);
-            while (DateTime.Now < waitUntil)
-            {
-                if (Console.KeyAvailable)
-                {
-                    Console.ReadKey(true);
-                    Menu.Start();
-                    return;
-                }
-                Thread.Sleep(100);
-            }
+            }            
         }
     }
 
