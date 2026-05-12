@@ -81,20 +81,22 @@ static class AdminDashboard
             {
                 if (int.TryParse(param[1], out int id))
                 {
-                    Console.WriteLine(param[1]);
-                    Console.WriteLine("something went wrong");
-                    Console.ReadKey();
-                }
-                if(bookings.FirstOrDefault(x => x.Id == id) != null)
-                {
-                    Console.WriteLine("test");
-                    EditBookingStatus(bookings, id);
+                    if (bookings.FirstOrDefault(x => x.Id == id) != null)
+                    {
+                        Console.WriteLine("test");
+                        EditBookingStatus(bookings, id);
+                    }
+                    else
+                    {
+                        Console.WriteLine("something went wrong with id selection");
+                        Console.ReadKey();
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("something went wrong with id selection");
-                    Console.ReadKey();
+                    Console.WriteLine("please only put numbers in this forum");
                 }
+
             }
             else
             {
@@ -138,6 +140,19 @@ static class AdminDashboard
         BookingModel result = bookings.First(x => x.Id == id);
         while (true)
         {
+            Console.Clear();
+            Console.WriteLine($"current status of booking with {result.Id}: {result.Status}");
+            Console.WriteLine("+---------------------------+");
+            Console.WriteLine("| number |  change status to|");
+            Console.WriteLine("+---------------------------+");
+            Console.WriteLine("| 1 |               pending |");
+            Console.WriteLine("| 2 |              complete |");
+            Console.WriteLine("| 3 |              canceled |");
+            Console.WriteLine("+---------------------------+");
+            Console.WriteLine("| press 0 to cancel and     |");
+            Console.WriteLine("| return to admin screen    |");
+            Console.WriteLine("+---------------------------+ \n");
+            Console.Write(">");
             string input = Console.ReadLine();
             switch (input)
             {
@@ -151,7 +166,7 @@ static class AdminDashboard
                     return;
                 //cancel
                 case "3":
-                    BookingLogic.EditBookingStatus(result, "cancel");
+                    BookingLogic.EditBookingStatus(result, "canceled");
                     return;
                 case "0":
                     return;
