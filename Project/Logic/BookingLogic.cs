@@ -22,7 +22,11 @@ public static class BookingLogic
         }
     }
 
-    public static void EditBookingStatus(BookingModel booking, string changeInStatus) => booking.Status = changeInStatus;
+    public static void EditBookingStatus(BookingModel booking, string changeInStatus) 
+    {
+        BookingAccess db = new();
+        db.UpdateBookingStatus(changeInStatus, booking.Id);
+    }
     // private bool IsValidateSeatAvailable(Plane plane)
     // {
     //     return false;

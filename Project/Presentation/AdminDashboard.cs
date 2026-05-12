@@ -1,3 +1,7 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Common;
+using System.Xml.Schema;
+
 static class AdminDashboard
 {
     public static void Start()
@@ -29,7 +33,7 @@ static class AdminDashboard
                     ShowAccounts();
                     break;
                 case "5":
-                    break;
+                    return;
                 default:
                     Console.Clear();
                     Console.WriteLine("Invalid input, please try again.");
@@ -46,11 +50,14 @@ static class AdminDashboard
         Console.Clear();
         Console.WriteLine("=== All Bookings ===\n");
 
-        List<BookingModel> bookings = new BookingAccess().GetAll();
+        List<BookingModel> bookings = new BookingAccess().GetAll().Where(x => x.Status == "pending").ToList();
 
         if (bookings.Count == 0)
         {
             Console.WriteLine("No bookings found.");
+            Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
+            Console.ReadKey();
+
         }
         else
         {
@@ -61,11 +68,40 @@ static class AdminDashboard
             {
                 Console.WriteLine($"{booking.Id,-6} {booking.AccountId,-12} {booking.Date,-22} {"€" + booking.TotalPrice.ToString("F2"),-14} {booking.Status}");
             }
-            Console.WriteLine("1 edit status by id\n");
+            Console.WriteLine("1 [id] to edit status by id\n");
+            string? input = Console.ReadLine();
+            string[] param = input.Split(" ");
+            if (param.Length == 1)
+            {
+                Console.WriteLine("No bookings found.");
+                Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
+                Console.ReadKey();
+            }
+            else if (param.Length == 2)
+            {
+                if (int.TryParse(param[1], out int id))
+                {
+                    Console.WriteLine(param[1]);
+                    Console.WriteLine("something went wrong");
+                    Console.ReadKey();
+                }
+                if(bookings.FirstOrDefault(x => x.Id == id) != null)
+                {
+                    Console.WriteLine("test");
+                    EditBookingStatus(bookings, id);
+                }
+                else
+                {
+                    Console.WriteLine("something went wrong with id selection");
+                    Console.ReadKey();
+                }
+            }
+            else
+            {
+
+            }
         }
 
-        Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
-        Console.ReadKey();
     }
 
     private static void ShowAccounts()
@@ -95,5 +131,37 @@ static class AdminDashboard
         Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
         Console.ReadKey();
         Start();
+    }
+
+    private static void EditBookingStatus(List<BookingModel> bookings, int id)
+    {
+        BookingModel result = bookings.First(x => x.Id == id);
+        while (true)
+        {
+            string input = Console.ReadLine();
+            switch (input)
+            {
+                // pending
+                case "1":
+                    BookingLogic.EditBookingStatus(result, "pending");
+                    return;
+                // complete
+                case "2":
+                    BookingLogic.EditBookingStatus(result, "complete");
+                    return;
+                //cancel
+                case "3":
+                    BookingLogic.EditBookingStatus(result, "cancel");
+                    return;
+                case "0":
+                    return;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Invalid input, please try again.");
+                    Console.WriteLine("Press any key to return to the menu...");
+                    Console.ReadKey();
+                    break;
+            }
+        }
     }
 }
