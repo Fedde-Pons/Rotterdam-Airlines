@@ -1,3 +1,5 @@
+using System.Net;
+
 /// <summary>
 /// this class is for handling the booking logic within the project
 /// </summary>
@@ -20,6 +22,7 @@ public static class BookingLogic
         }
     }
 
+    public static void EditBookingStatus(BookingModel booking, string changeInStatus) => booking.Status = changeInStatus;
     // private bool IsValidateSeatAvailable(Plane plane)
     // {
     //     return false;

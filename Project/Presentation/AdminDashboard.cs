@@ -2,39 +2,42 @@ static class AdminDashboard
 {
     public static void Start()
     {
-        Console.Clear();
-        Console.WriteLine("=== Admin Dashboard ===\n");
-        Console.WriteLine("1: Flights");
-        Console.WriteLine("2: Airports");
-        Console.WriteLine("3: Bookings");
-        Console.WriteLine("4: Accounts");
-        Console.WriteLine("5: Back to main menu");
-        Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
-
-        string input = Console.ReadLine();
-        switch (input)
+        while (true)
         {
-            case "1":
-                FlightList.ShowAllAvailableFlightsList();
-                break;
-            case "2":
-                ShowAirports();
-                break;
-            case "3":
-                ShowBookings();
-                break;
-            case "4":
-                ShowAccounts();
-                break;
-            case "5":
-                break;
-            default:
-                Console.Clear();
-                Console.WriteLine("Invalid input, please try again.");
-                Console.WriteLine("Press any key to return to the Admin Dashboard...");
-                Console.ReadKey();
-                Start();
-                break;
+            Console.Clear();
+            Console.WriteLine("=== Admin Dashboard ===\n");
+            Console.WriteLine("1: Flights");
+            Console.WriteLine("2: Airports");
+            Console.WriteLine("3: Bookings");
+            Console.WriteLine("4: Accounts");
+            Console.WriteLine("5: Back to main menu");
+            Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
+
+            string input = Console.ReadLine();
+            switch (input)
+            {
+                case "1":
+                    FlightList.ShowAllAvailableFlightsList();
+                    break;
+                case "2":
+                    ShowAirports();
+                    break;
+                case "3":
+                    ShowBookings();
+                    break;
+                case "4":
+                    ShowAccounts();
+                    break;
+                case "5":
+                    break;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Invalid input, please try again.");
+                    Console.WriteLine("Press any key to return to the Admin Dashboard...");
+                    Console.ReadKey();
+                    Start();
+                    break;
+            }
         }
     }
 
@@ -58,12 +61,11 @@ static class AdminDashboard
             {
                 Console.WriteLine($"{booking.Id,-6} {booking.AccountId,-12} {booking.Date,-22} {"€" + booking.TotalPrice.ToString("F2"),-14} {booking.Status}");
             }
+            Console.WriteLine("1 edit status by id\n");
         }
-        
-        Console.WriteLine("3 edit status by id\n");
+
         Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
         Console.ReadKey();
-        Start();
     }
 
     private static void ShowAccounts()

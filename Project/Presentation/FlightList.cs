@@ -33,6 +33,11 @@ static class FlightList
                 }
 
                 Console.WriteLine("Press any key to return to the menu...");
+            }
+            if(Console.KeyAvailable)
+            {
+                Console.ReadKey();
+                break;
             }            
         }
     }
