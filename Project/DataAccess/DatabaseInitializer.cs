@@ -112,6 +112,6 @@ public class DatabaseInitializer
             FOREIGN KEY (passengerId) REFERENCES Passengers(id)
         );");
 
-        FlightSeeder.Run(_connectionString);
+        DatabaseSeeder.Run(_connectionString);
     }
 }

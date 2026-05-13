@@ -10,6 +10,8 @@ public class SeatModel
     public bool IsFirstRow {get; set;}
     public bool IsLastRow {get; set;}
 
+    public SeatModel() { }
+    
     public SeatModel(int aircraftId, string seatNumber, int rowNumber, string seatclass, bool isWindows, bool isExitRow, bool isFirstRow, bool isLastRow)
     {
         AircraftId = aircraftId ; 

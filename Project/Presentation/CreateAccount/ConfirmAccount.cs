@@ -144,7 +144,7 @@ static class ConfirmAccount
                         if (Validated) 
                         {
                             LoopValidation = false;
-                            account.EmailAddress = NewEmailAddress;
+                            account.EmailAddress = NewEmailAddress.ToLower();
                             Console.WriteLine($"Successfully updated email address to:\n- {account.EmailAddress}");
                         }
                         else
@@ -274,7 +274,7 @@ static class ConfirmAccount
         {
             Console.WriteLine("Opt out of account creation process?\nY/N");
             string Response1 = (Console.ReadLine() ?? "").ToUpper();
-            if (Response1 == "N") {return false;}
+            if (Response1 == "N") {return true;}
             else if (Response1 == "Y")
             {
                 Console.WriteLine("Are you sure you want to stop? \nCreating an account only takes a minute and gives you full access to discounts and member benefits.\n\nYour progress will be lost.\nY/N");
@@ -285,9 +285,9 @@ static class ConfirmAccount
                     Console.WriteLine("We're sorry to see you going, you can always sign up and still earn membership benefits!");
                     Console.WriteLine("Press enter to continue...");
                     Console.ReadLine();
-                    return true;
+                    return false;
                 }
-                return false;
+                return true;
             }
             else { Console.WriteLine("Invalid Entry, try again."); }
         }

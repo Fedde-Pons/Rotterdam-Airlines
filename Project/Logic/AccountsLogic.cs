@@ -24,7 +24,7 @@ public class AccountsLogic
     {
 
 
-        AccountModel acc = _access.GetByEmail(email);
+        AccountModel acc = _access.GetByEmail(email.ToLower());
         if (acc != null && acc.Password == password)
         {
             CurrentAccount = acc;

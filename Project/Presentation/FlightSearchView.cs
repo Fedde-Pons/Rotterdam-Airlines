@@ -1,13 +1,36 @@
 public static class FlightSearch
 {
     public static void StartSearch()
-    {
-        FlightList.ShowAllAvailableFlightsShortList();
-
-        Console.WriteLine("\nSEARCH FOR A FLIGHT");
+    {   Console.Clear();
 
         FlightLogic flightLogic = new FlightLogic();
         List<FlightModel> flights = flightLogic.GetAllFlights();
+
+        List<string> availableRoutes = new List<string>();
+
+       
+        foreach (FlightModel flight in flights)
+        {
+            
+            string routeStr = $"{flight.DepartureCity} -> {flight.DestinationCity}";
+            
+            
+            if (!availableRoutes.Contains(routeStr))
+            {
+                availableRoutes.Add(routeStr);
+            }
+        }
+
+        availableRoutes.Sort();
+
+        Console.WriteLine("\nAvailable Routes:");
+        foreach (string route in availableRoutes)
+        {
+            Console.WriteLine($"- {route}");
+        }
+
+        Console.WriteLine("\nSEARCH FOR A FLIGHT");
+
         
         Console.Write("Enter your departure city: ");
         string searchDeparture = Console.ReadLine();
@@ -36,7 +59,6 @@ public static class FlightSearch
         }
 
         Console.Clear();
-        Console.WriteLine("\x1b[3J");
 
         Console.WriteLine($"\nAVAILABLE FLIGHTS: {searchDeparture.ToUpper()} TO {searchDestination.ToUpper()}");
         foreach (FlightModel f in routeMatches)
@@ -84,7 +106,7 @@ public static class FlightSearch
         Console.WriteLine($"\n FLIGHTS ON {searchDate.ToShortDateString()}");
         foreach (FlightModel f in finalMatches)
         {
-            Console.WriteLine($"Flight Number: {f.FlightNumber} | Price: €{f.BasePrice}");
+            Console.WriteLine($"Flight Number: {f.FlightNumber}");
         }
 
         Console.WriteLine("\nEnter the flight number for more details/booking. Or type X to return to main menu.");
@@ -108,17 +130,37 @@ public static class FlightSearch
         {
             if (specificFlight.FlightNumber.Equals(userChoice, StringComparison.OrdinalIgnoreCase))
             {
+
+                specificFlightFound = true;
+                FlightAccess flightAccess = new FlightAccess();
+                var (availableSeatsList, allSeatsList, bookedSeats) = flightAccess.GetLiveSeatData(specificFlight.Id, specificFlight.AircraftId);
+                int totalSeats = allSeatsList.Count;
+
+                int totalEconomy = allSeatsList.Count(s => s.Seatclass.Equals("Economy", StringComparison.OrdinalIgnoreCase));
+                int totalBusiness = allSeatsList.Count(s => s.Seatclass.Equals("Business", StringComparison.OrdinalIgnoreCase));
+                int availableEconomy = availableSeatsList.Count(s => s.Seatclass.Equals("Economy", StringComparison.OrdinalIgnoreCase));
+                int availableBusiness = availableSeatsList.Count(s => s.Seatclass.Equals("Business", StringComparison.OrdinalIgnoreCase));
+                int bookedEconomy = totalEconomy - availableEconomy;
+                int bookedBusiness = totalBusiness - availableBusiness;
+
+                double economyDemandFactor = FactoringLogic.CalculateDemandFactor(bookedEconomy, totalEconomy);
+                double businessDemandFactor = FactoringLogic.CalculateDemandFactor(bookedBusiness, totalBusiness);
+                DateTime departureDate = DateTime.Parse(specificFlight.DepartureTime);
+                double timeFactor = FactoringLogic.CalculateTimeUntilDepartureFactor(departureDate);
+
+                double economyPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, economyDemandFactor, timeFactor, "economy");
+                double businessPrice = PricingCoreLogic.CalculateFlightPrice(specificFlight.BasePrice, businessDemandFactor, timeFactor, "business");
+
                 Console.Clear();
                 Console.WriteLine($"Flight Number: {specificFlight.FlightNumber}");
                 Console.WriteLine($"Route: {specificFlight.DepartureCity} to {specificFlight.DestinationCity}");
                 Console.WriteLine($"Departure: {specificFlight.DepartureTime}");
-                Console.WriteLine($"Economy: €{specificFlight.BasePrice}");
-                Console.WriteLine("Available Seats: 42");
+                Console.WriteLine($"Economy: €{economyPrice:F2} | Available: {availableEconomy} / {totalEconomy}");
+                Console.WriteLine($"Business: €{businessPrice:F2} | Available: {availableBusiness} / {totalBusiness}");
 
-                specificFlightFound = true;
 
                 Console.WriteLine("\nOptions:");
-                Console.WriteLine("1. Proceed to Booking");
+                Console.WriteLine("1. Proceed to Booking (Seat selection)");
                 Console.WriteLine("2. Return to Main Menu");
                 
                 while (true)
@@ -128,9 +170,7 @@ public static class FlightSearch
 
                     if (bookingChoice == "1")
                     {
-                        Console.WriteLine("\nThank you for booking your flight . (dev note: Booking feature isn't complete yet, coming soon.)");
-                        Console.WriteLine("\nPress any key to return to the main menu.");
-                        Console.ReadKey();
+                        BookingForums.Start(specificFlight, DateTime.Today.ToString("yyyy-MM-dd"));
                         break;
                     }
                     else if (bookingChoice == "2")
@@ -156,4 +196,6 @@ public static class FlightSearch
             Menu.Start();
         }
     }
+
+    
 }
