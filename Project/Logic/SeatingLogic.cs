@@ -3,19 +3,12 @@ public static class SeatingLogic
     public static (SeatModel seat, double price)? StartSeatSelection(
         FlightModel selectedFlight, 
         List<SeatModel> availableSeats, 
-        int totalSeats, 
-        int bookedSeats)
+        double economyPrice,
+        double businessPrice)
     {
         Console.Clear();
         Console.Write("\x1b[3J");
         Console.WriteLine($"=== SEAT SELECTION FOR FLIGHT {selectedFlight.FlightNumber} ===");
-
-        double demandFactor = FactoringLogic.CalculateDemandFactor(bookedSeats, totalSeats);
-        DateTime departureDate = DateTime.Parse(selectedFlight.DepartureTime);
-        double timeFactor = FactoringLogic.CalculateTimeUntilDepartureFactor(departureDate);
-
-        double economyPrice = PricingCoreLogic.CalculateFlightPrice(selectedFlight.BasePrice, demandFactor, timeFactor, "economy");
-        double businessPrice = PricingCoreLogic.CalculateFlightPrice(selectedFlight.BasePrice, demandFactor, timeFactor, "business");
 
         Console.WriteLine("\n--- Business Class ---");
         foreach (SeatModel seat in availableSeats)
