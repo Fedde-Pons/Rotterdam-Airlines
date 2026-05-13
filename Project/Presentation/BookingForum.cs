@@ -22,12 +22,18 @@ public static class BookingForums
         int totalSeats = seatData.allSeats.Count;
         int bookedSeats = seatData.bookedSeats;
 
+        // Calculate prices once for the entire booking so all tickets share the same price
+        double demandFactor = FactoringLogic.CalculateDemandFactor(bookedSeats, totalSeats);
+        DateTime departureDate = DateTime.Parse(flight.DepartureTime);
+        double timeFactor = FactoringLogic.CalculateTimeUntilDepartureFactor(departureDate);
+        double economyPrice = PricingCoreLogic.CalculateFlightPrice(flight.BasePrice, demandFactor, timeFactor, "economy");
+        double businessPrice = PricingCoreLogic.CalculateFlightPrice(flight.BasePrice, demandFactor, timeFactor, "business");
 
         for(int i = 0; i < numberOfTickets; i++)
         {
             PassangerModel passanger = CreatePassanger(i + 1, numberOfTickets);
             // seat and price logic goes here
-            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, totalSeats, bookedSeats);
+            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, economyPrice, businessPrice);
 
             if (seatingResult == null)
             {
