@@ -29,8 +29,9 @@ static class Menu
         else
         {
             Console.WriteLine("2: Book a flight");
-            Console.WriteLine("3: My Account");
-            Console.WriteLine("4: Exit program");
+            Console.WriteLine("3: My Bookings");
+            Console.WriteLine("4: My Account");
+            Console.WriteLine("5: Exit program");
         }
         Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
 
@@ -70,9 +71,13 @@ static class Menu
                     Start();
                     break;
                 case "3":
-                    AccountMenu();
+                    MyBookings.Start();
+                    Start();
                     break;
                 case "4":
+                    AccountMenu();
+                    break;
+                case "5":
                     Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
                     Environment.Exit(0);
                     break;

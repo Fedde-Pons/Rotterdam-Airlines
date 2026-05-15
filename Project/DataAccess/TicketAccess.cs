@@ -20,4 +20,16 @@ public class TicketAccess
 
         return connection.ExecuteScalar<int>(sql, ticket);
     }
+
+    public List<TicketModel> GetByBookingId(int bookingId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        string sql = $@"
+        SELECT id, bookingId, flightId, seatId, passengerId, price, extraBaggageKg
+        FROM {Table}
+        WHERE bookingId = @BookingId;";
+
+        return connection.Query<TicketModel>(sql, new { BookingId = bookingId }).ToList();
+    }
 }

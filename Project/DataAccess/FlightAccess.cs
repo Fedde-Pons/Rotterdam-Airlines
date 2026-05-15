@@ -104,13 +104,24 @@ public class FlightAccess
         List<SeatModel> allSeats = _connection.Query<SeatModel>(getSeatsQuery, new { AircraftId = aircraftId }).ToList();
 
 
-        string getBookedSeatsQuery = "SELECT seatId FROM Tickets WHERE flightId = @FlightId";
+        string getBookedSeatsQuery = @"
+            SELECT t.seatId
+            FROM Tickets t
+            INNER JOIN Bookings b ON b.id = t.bookingId
+            WHERE t.flightId = @FlightId
+              AND LOWER(b.status) != 'cancelled'";
         List<int> bookedSeatIds = _connection.Query<int>(getBookedSeatsQuery, new { FlightId = flightId }).ToList();
 
 
         List<SeatModel> availableSeats = allSeats.Where(seat => !bookedSeatIds.Contains(seat.Id)).ToList();
 
         return (availableSeats, allSeats, bookedSeatIds.Count);
+    }
+
+    public SeatModel? RetrieveSeat(int seatId)
+    {
+        string sql = "SELECT * FROM Seats WHERE id = @Id";
+        return _connection.QueryFirstOrDefault<SeatModel>(sql, new { Id = seatId });
     }
 
 

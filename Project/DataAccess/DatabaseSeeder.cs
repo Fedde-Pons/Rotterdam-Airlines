@@ -12,8 +12,111 @@ public static class DatabaseSeeder
         InsertAircrafts(connection);
         InsertSeats(connection);
         InsertFlights(connection);
+        InsertAccounts(connection);
+        InsertPassengers(connection);
+        InsertBookings(connection);
+        InsertTickets(connection);
 
-        //Console.WriteLine("✅ Database gevuld met mock data");
+    }
+
+    private static void InsertAccounts(SqliteConnection connection)
+    {
+        string query = @"
+        INSERT OR IGNORE INTO Accounts (id, emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt) VALUES
+        (1, 'jan.jansen@example.com', '0612345678', 'Jan', 'Jansen', '1990-05-12', 'password123', '2026-01-01 10:00:00'),
+        (2, 'emma.devries@example.com', '0698765432', 'Emma', 'de Vries', '1985-09-23', 'password123', '2026-01-02 11:15:00'),
+        (3, 'lucas.bakker@example.com', '0611223344', 'Lucas', 'Bakker', '1995-03-08', 'password123', '2026-01-03 09:30:00');";
+
+        using var cmd = new SqliteCommand(query, connection);
+        cmd.ExecuteNonQuery();
+    }
+
+    private static void InsertPassengers(SqliteConnection connection)
+    {
+        var passengerCountCmd = new SqliteCommand("SELECT COUNT(*) FROM Passengers", connection);
+        long count = (long)passengerCountCmd.ExecuteScalar()!;
+        if (count > 0) return;
+
+        string query = @"
+        INSERT INTO Passengers (id, firstName, lastName, dateOfBirth, passportNumber) VALUES
+        (1, 'Jan', 'Jansen', '1990-05-12', '1234567'),
+        (2, 'Sophie', 'Jansen', '1992-07-21', '2345678'),
+        (3, 'Emma', 'de Vries', '1985-09-23', '3456789'),
+        (4, 'Lucas', 'Bakker', '1995-03-08', '4567890'),
+        (5, 'Mila', 'Bakker', '2018-11-04', '5678901');";
+
+        using var cmd = new SqliteCommand(query, connection);
+        cmd.ExecuteNonQuery();
+    }
+
+    private static void InsertBookings(SqliteConnection connection)
+    {
+        var bookings = new[]
+        {
+            (Id: 1, AccountId: 1, Date: "2026-03-15 14:20:00", TotalPrice: 260.00, Status: "Confirmed"),
+            (Id: 2, AccountId: 1, Date: "2026-04-01 09:45:00", TotalPrice: 130.00, Status: "Confirmed"),
+            (Id: 3, AccountId: 2, Date: "2026-03-20 16:10:00", TotalPrice: 150.00, Status: "Confirmed"),
+            (Id: 4, AccountId: 2, Date: "2026-04-05 12:00:00", TotalPrice: 175.00, Status: "Cancelled"),
+            (Id: 5, AccountId: 3, Date: "2026-04-10 18:30:00", TotalPrice: 390.00, Status: "Confirmed"),
+        };
+
+        foreach (var b in bookings)
+        {
+            var bookingExistsCmd = new SqliteCommand("SELECT COUNT(*) FROM Bookings WHERE id = @id", connection);
+            bookingExistsCmd.Parameters.AddWithValue("@id", b.Id);
+            long exists = (long)bookingExistsCmd.ExecuteScalar()!;
+            if (exists > 0) continue;
+
+            string insertQuery = @"
+            INSERT INTO Bookings (id, accountId, date, totalPrice, status)
+            VALUES (@id, @accountId, @date, @totalPrice, @status);";
+
+            using var cmd = new SqliteCommand(insertQuery, connection);
+            cmd.Parameters.AddWithValue("@id", b.Id);
+            cmd.Parameters.AddWithValue("@accountId", b.AccountId);
+            cmd.Parameters.AddWithValue("@date", b.Date);
+            cmd.Parameters.AddWithValue("@totalPrice", b.TotalPrice);
+            cmd.Parameters.AddWithValue("@status", b.Status);
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    private static void InsertTickets(SqliteConnection connection)
+    {
+        var ticketCountCmd = new SqliteCommand("SELECT COUNT(*) FROM Tickets", connection);
+        long count = (long)ticketCountCmd.ExecuteScalar()!;
+        if (count > 0) return;
+
+        var tickets = new[]
+        {
+            (BookingId: 1, FlightId: 1, SeatId: 1,   PassengerId: 1, Price: 130.00, ExtraBaggageKg: 0),
+            (BookingId: 1, FlightId: 1, SeatId: 2,   PassengerId: 2, Price: 130.00, ExtraBaggageKg: 0),
+
+            (BookingId: 2, FlightId: 3, SeatId: 541, PassengerId: 1, Price: 130.00, ExtraBaggageKg: 0),
+
+            (BookingId: 3, FlightId: 9, SeatId: 542, PassengerId: 3, Price: 150.00, ExtraBaggageKg: 0),
+
+            (BookingId: 4, FlightId: 4, SeatId: 181, PassengerId: 3, Price: 175.00, ExtraBaggageKg: 0),
+
+            (BookingId: 5, FlightId: 17, SeatId: 543, PassengerId: 4, Price: 195.00, ExtraBaggageKg: 0),
+            (BookingId: 5, FlightId: 17, SeatId: 544, PassengerId: 5, Price: 195.00, ExtraBaggageKg: 0),
+        };
+
+        foreach (var t in tickets)
+        {
+            string insertQuery = @"
+            INSERT INTO Tickets (bookingId, flightId, seatId, passengerId, price, extraBaggageKg)
+            VALUES (@bookingId, @flightId, @seatId, @passengerId, @price, @extraBaggageKg);";
+
+            using var cmd = new SqliteCommand(insertQuery, connection);
+            cmd.Parameters.AddWithValue("@bookingId", t.BookingId);
+            cmd.Parameters.AddWithValue("@flightId", t.FlightId);
+            cmd.Parameters.AddWithValue("@seatId", t.SeatId);
+            cmd.Parameters.AddWithValue("@passengerId", t.PassengerId);
+            cmd.Parameters.AddWithValue("@price", t.Price);
+            cmd.Parameters.AddWithValue("@extraBaggageKg", t.ExtraBaggageKg);
+            cmd.ExecuteNonQuery();
+        }
     }
 
     private static void InsertAirports(SqliteConnection connection)
@@ -47,11 +150,10 @@ public static class DatabaseSeeder
 
     private static void InsertSeats(SqliteConnection connection)
     {
-        var checkCmd = new SqliteCommand("SELECT COUNT(*) FROM Seats", connection);
-        long count = (long)checkCmd.ExecuteScalar()!;
+        var seatCountCmd = new SqliteCommand("SELECT COUNT(*) FROM Seats", connection);
+        long count = (long)seatCountCmd.ExecuteScalar()!;
         if (count > 0)
         {
-            //Console.WriteLine("⏩ Seats bestaan al, worden overgeslagen.");
             return;
         }
 
@@ -196,13 +298,12 @@ public static class DatabaseSeeder
 
         foreach (var flight in flights)
         {
-            var checkCmd = new SqliteCommand("SELECT COUNT(*) FROM Flights WHERE id = @id", connection);
-            checkCmd.Parameters.AddWithValue("@id", flight.Id);
-            long count = (long)checkCmd.ExecuteScalar()!;
+            var flightExistsCmd = new SqliteCommand("SELECT COUNT(*) FROM Flights WHERE id = @id", connection);
+            flightExistsCmd.Parameters.AddWithValue("@id", flight.Id);
+            long count = (long)flightExistsCmd.ExecuteScalar()!;
 
             if (count > 0)
             {
-                //Console.WriteLine($"⏩ Vlucht {flight.FlightNumber} bestaat al, wordt overgeslagen.");
                 continue;
             }
 
@@ -224,7 +325,6 @@ public static class DatabaseSeeder
             cmd.Parameters.AddWithValue("@status", flight.Status);
             cmd.ExecuteNonQuery();
 
-            //Console.WriteLine($"✅ Vlucht {flight.FlightNumber} toegevoegd.");
         }
     }
 } 
