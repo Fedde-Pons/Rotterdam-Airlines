@@ -6,6 +6,7 @@ static class Menu
     //You could edit this to show different menus depending on the user's role
     static public void Start()
     {
+        Console.SetCursorPosition(0, 0);
         Console.Clear();
         Console.WriteLine(@"
   ____       _   _               _                      _    _      _ _                 
