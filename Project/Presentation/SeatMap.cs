@@ -1,21 +1,21 @@
 public static class SeatMap
 {
-    public static void ShowSeatMap(FlightModel flight)
+    public static void ShowSeatMap(FlightModel flight, List<SeatModel> availableSeats)
     {
         Console.Clear();
 
         switch (flight.AircraftId)
         {
             case 1:
-                PrintAircraft("BOEING 737", 10, ["A", "B", "C"], ["D", "E", "F"]);
+                PrintAircraft("BOEING 737", 10, availableSeats, [["A","B","C"], ["D","E","F"]]);
                 break;
 
             case 2:
-                PrintAircraft("AIRBUS 330", 10, ["A", "B"], ["C", "D", "E", "F"], ["G", "H"]);
+                PrintAircraft("AIRBUS 330", 10, availableSeats, [["A","B"], ["C","D","E","F"], ["G","H"]]);
                 break;
 
             case 3:
-                PrintAircraft("BOEING 787", 10, ["A", "B", "C"], ["D", "E", "F"], ["G", "H", "I"]);
+                PrintAircraft("BOEING 787", 10, availableSeats, [["A","B","C"], ["D","E","F"]]);
                 break;
 
             default:
@@ -24,7 +24,7 @@ public static class SeatMap
         }
     }
 
-    private static void PrintAircraft(string aircraftName, int rows, params string[][] sections)
+    private static void PrintAircraft(string aircraftName, int rows, List<SeatModel> availableSeats, List<string[]> sections)
     {
         Console.WriteLine();
         Console.WriteLine("                              /^\\");
@@ -45,7 +45,7 @@ public static class SeatMap
                 Console.WriteLine("========/                                              \\========");
             }
 
-            string seatLine = BuildSeatLine(row, sections);
+            string seatLine = BuildSeatLine(row, sections, availableSeats);
 
             Console.WriteLine($"        ||  {seatLine.PadRight(45)} ||");
 
@@ -66,17 +66,24 @@ public static class SeatMap
         Console.WriteLine("Legend: spaces between seats = aisles");
     }
 
-    private static string BuildSeatLine(int row, string[][] sections)
+    private static string BuildSeatLine(int row, List<string[]> sections, List<SeatModel> availableSeats)
     {
-        List<string> sectionLines = [];
+        List<string> sectionLines = new();
 
         foreach (string[] section in sections)
         {
-            List<string> seats = [];
+            List<string> seats = new();
 
             foreach (string seatLetter in section)
             {
-                seats.Add($"{row}{seatLetter}".PadRight(4));
+                string seatCode = $"{row}{seatLetter}";
+
+                bool isAvailable = availableSeats.Any(s => s.SeatNumber == seatCode);
+
+                if (isAvailable)
+                    seats.Add($"\x1b[32m{seatCode.PadRight(4)}\x1b[0m");
+                else
+                    seats.Add($"\x1b[31m{"XX".PadRight(4)}\x1b[0m");
             }
 
             sectionLines.Add(string.Join("", seats));

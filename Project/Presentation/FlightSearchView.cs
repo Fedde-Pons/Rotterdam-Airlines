@@ -175,6 +175,7 @@ public static class FlightSearch
                     }
                     else if (bookingChoice == "2")
                     {
+                        Console.Clear();
                         Menu.Start();
                         break;
                     }
@@ -193,6 +194,7 @@ public static class FlightSearch
             Console.WriteLine("\nSorry, we couldn't find a flight with that number.");
             Console.WriteLine("Press any key to return to the menu...");
             Console.ReadKey();
+            Console.Clear();
             Menu.Start();
         }
     }

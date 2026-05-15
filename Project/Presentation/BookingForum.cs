@@ -23,7 +23,6 @@ public static class BookingForums
         int bookedSeats = seatData.bookedSeats;
 
         Console.Clear();
-        SeatMap.ShowSeatMap(flight);
         Console.WriteLine("\nPress any key to continue to passenger details...");
         Console.ReadKey();
 
