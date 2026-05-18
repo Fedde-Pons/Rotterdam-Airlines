@@ -6,7 +6,7 @@ public static class BookingForums
     /// </summary>
     /// <param name="flight"></param>
     /// <param name="date"></param>
-   public static void Start(FlightModel flight, string date)
+    public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount != null ? AccountsLogic.CurrentAccount.Id : 1; // edited this so we dont need to be logged in atm  
         BookingModel booking = new BookingModel(accountID, date, "pending");
@@ -20,12 +20,21 @@ public static class BookingForums
         int totalSeats = seatData.allSeats.Count;
         int bookedSeats = seatData.bookedSeats;
 
+        Console.Clear();
+        Console.WriteLine("\nPress any key to continue to passenger details...");
+        Console.ReadKey();
+        // Calculate prices once for the entire booking so all tickets share the same price
+        double demandFactor = FactoringLogic.CalculateDemandFactor(bookedSeats, totalSeats);
+        DateTime departureDate = DateTime.Parse(flight.DepartureTime);
+        double timeFactor = FactoringLogic.CalculateTimeUntilDepartureFactor(departureDate);
+        double economyPrice = PricingCoreLogic.CalculateFlightPrice(flight.BasePrice, demandFactor, timeFactor, "economy");
+        double businessPrice = PricingCoreLogic.CalculateFlightPrice(flight.BasePrice, demandFactor, timeFactor, "business");
 
-        for(int i = 0; i < numberOfTickets; i++)
+        for (int i = 0; i < numberOfTickets; i++)
         {
             PassangerModel passanger = CreatePassanger(i + 1, numberOfTickets);
             // seat and price logic goes here
-            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, totalSeats, bookedSeats);
+            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, economyPrice, businessPrice);
 
             if (seatingResult == null)
             {
@@ -51,6 +60,7 @@ public static class BookingForums
         Console.WriteLine();
         Console.WriteLine("  #  Passenger                   Price");
         Console.WriteLine("  -  ---------                   -----");
+
         for (int i = 0; i < bookingValues.Count; i++)
         {
             var item = bookingValues[i];
@@ -61,7 +71,6 @@ public static class BookingForums
         Console.WriteLine("\nPress any key to return to the main menu...");
         Console.ReadKey();
 
-        // Save booking + passengers + tickets to the database
         booking.TotalPrice = bookingValues.Sum(bv => bv.ticket.Price);
 
         BookingAccess bookingAccess = new();
@@ -77,36 +86,37 @@ public static class BookingForums
             ticketAccess.Write(dbTicket);
         }
     }
+
     private static int NumberOfTickets()
     {
         Console.Clear();
         Console.WriteLine("======================================");
         Console.WriteLine("             BOOK A FLIGHT            ");
         Console.WriteLine("======================================\n");
+
         while (true)
         {
             Console.WriteLine("How many tickets would you like to buy? ");
             string? UserInput = Console.ReadLine();
+
             if (int.TryParse(UserInput, out int userInput) && userInput > 0)
             {
                 return userInput;
             }
-            else
-            {
-                Console.WriteLine("\nInvalid input. Please enter a valid number greater than 0.");
-                Console.WriteLine("Press any key to try again...");
-                Console.ReadKey();
-                Console.Clear();
-                Console.WriteLine("======================================");
-                Console.WriteLine("             BOOK A FLIGHT            ");
-                Console.WriteLine("======================================\n");
-            }
+
+            Console.WriteLine("\nInvalid input. Please enter a valid number greater than 0.");
+            Console.WriteLine("Press any key to try again...");
+            Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine("======================================");
+            Console.WriteLine("             BOOK A FLIGHT            ");
+            Console.WriteLine("======================================\n");
         }
     }
-    private static TicketModel CreateTicket(int bookingID ,int flightId,int seatID,int price)
+
+    private static TicketModel CreateTicket(int bookingID, int flightId, int seatID, int price)
     {
-        // replace the 0 with extra baggage later
-        TicketModel ticket = new(bookingID, flightId, seatID ,price, 0);
+        TicketModel ticket = new(bookingID, flightId, seatID, price, 0);
         return ticket;
     }
 
@@ -128,8 +138,10 @@ public static class BookingForums
         {
             Console.WriteLine("\nPlease enter date of birth (YYYY-MM-DD): ");
             dateOfBirth = Console.ReadLine();
+
             if (DateTime.TryParse(dateOfBirth, out _))
                 break;
+
             Console.WriteLine("Invalid date format. Please use YYYY-MM-DD.\n");
         }
 
@@ -138,8 +150,10 @@ public static class BookingForums
         {
             Console.WriteLine("\nPlease enter passport number: ");
             string? userInput = Console.ReadLine();
+
             if (int.TryParse(userInput, out passportNumber))
                 break;
+
             Console.WriteLine("Invalid passport number. Please enter a numeric value.\n");
         }
 

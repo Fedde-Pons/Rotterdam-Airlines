@@ -8,8 +8,9 @@ static class Menu
     {
         while (true)
         {
-            Console.Clear();
-            Console.WriteLine(@"
+        Console.SetCursorPosition(0, 0);
+        Console.Clear();
+        Console.WriteLine(@"
   ____       _   _               _                      _    _      _ _                 
  |  _ \ ___ | |_| |_ ___ _ __ __| | __ _ _ __ ___      / \  (_)_ __| (_)_ __   ___  ___ 
  | |_) / _ \| __| __/ _ \ '__/ _` |/ _` | '_ ` _ \    / _ \ | | '__| | | '_ \ / _ \/ __|
@@ -23,6 +24,7 @@ static class Menu
 
             Console.WriteLine("1: View all available flights");
             if (AccountsLogic.CurrentAccount == null)
+
             {
                 Console.WriteLine("2: Login/Register");
                 Console.WriteLine("3: Exit program");

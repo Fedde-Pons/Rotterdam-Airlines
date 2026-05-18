@@ -3,48 +3,28 @@ public static class SeatingLogic
     public static (SeatModel seat, double price)? StartSeatSelection(
         FlightModel selectedFlight, 
         List<SeatModel> availableSeats, 
-        int totalSeats, 
-        int bookedSeats)
+        double economyPrice,
+        double businessPrice)
     {
         Console.Clear();
-        Console.Write("\x1b[3J");
-        Console.WriteLine($"=== SEAT SELECTION FOR FLIGHT {selectedFlight.FlightNumber} ===");
+        
+        SeatMap.ShowSeatMap(selectedFlight, availableSeats);
+        
+        Console.WriteLine($"\n=== SEAT SELECTION FOR FLIGHT {selectedFlight.FlightNumber} ===");
 
-        double demandFactor = FactoringLogic.CalculateDemandFactor(bookedSeats, totalSeats);
-        DateTime departureDate = DateTime.Parse(selectedFlight.DepartureTime);
-        double timeFactor = FactoringLogic.CalculateTimeUntilDepartureFactor(departureDate);
-
-        double economyPrice = PricingCoreLogic.CalculateFlightPrice(selectedFlight.BasePrice, demandFactor, timeFactor, "economy");
-        double businessPrice = PricingCoreLogic.CalculateFlightPrice(selectedFlight.BasePrice, demandFactor, timeFactor, "business");
-
-        Console.WriteLine("\n--- Business Class ---");
-        foreach (SeatModel seat in availableSeats)
-        {
-            if (seat.Seatclass.Equals("Business", StringComparison.OrdinalIgnoreCase))
-            {
-                string windowText = seat.IsWindows ? " (Window)" : "";
-                Console.WriteLine($"- Seat {seat.SeatNumber} | €{businessPrice:F2}{windowText}");
-            }
-        }
-
-        Console.WriteLine("\n--- Economy Class ---");
-        foreach (SeatModel seat in availableSeats)
-        {
-            if (seat.Seatclass.Equals("Economy", StringComparison.OrdinalIgnoreCase))
-            {
-                string windowText = seat.IsWindows ? " (Window)" : "";
-                Console.WriteLine($"- Seat {seat.SeatNumber} | €{economyPrice:F2}{windowText}");
-            }
-        }
+        Console.WriteLine($"* Business Class: €{businessPrice:F2}");
+        Console.WriteLine($"* Economy Class:  €{economyPrice:F2}");
+        Console.WriteLine("--------------------------------------------------");
 
         SeatModel chosenSeatModel = null;
         while (true)
         {
-            Console.Write("\nEnter the Seat Number you want to book (or type X to cancel): ");
+            Console.Write("\nEnter the Seat Number you want to book from (or type X to cancel): ");
             string userInput = Console.ReadLine()?.Trim().ToUpper();
 
             if (userInput == "X") 
             {
+                Console.Clear();
                 return null; 
             }
 
@@ -63,7 +43,7 @@ public static class SeatingLogic
             }
             else 
             {
-                Console.WriteLine("Invalid seat number. Please choose an available seat from the list above.");
+                Console.WriteLine("Invalid or taken seat number. Please choose an available seat from the map.");
             }
         }
         
@@ -78,8 +58,5 @@ public static class SeatingLogic
         }
         
         return (chosenSeatModel, finalPrice);
-
-
     }
 }
-

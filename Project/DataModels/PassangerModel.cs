@@ -6,6 +6,8 @@ public class PassangerModel
     public string DateOfBirth { get; set; }
     public int PassportNumber { get; set; }
 
+    public PassangerModel() { }
+
     public PassangerModel(string firstName, string lastName, string dateOfBirth, int passportNumber)
     {
         FirstName = firstName;

@@ -21,6 +21,14 @@ public class PassangerAccess
         return connection.ExecuteScalar<int>(sql, passanger);
     }
 
+    public PassangerModel? GetById(int id)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        string sql = $@"SELECT * FROM {Table} WHERE id = @Id;";
+        return connection.QueryFirstOrDefault<PassangerModel>(sql, new { Id = id });
+    }
+
     public List<PassangerModel> GetByBookingId(int bookingId)
     {
         using var connection = new SqliteConnection(_connectionString);
