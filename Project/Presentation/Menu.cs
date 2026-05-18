@@ -6,6 +6,8 @@ static class Menu
     //You could edit this to show different menus depending on the user's role
     static public void Start()
     {
+        while (true)
+        {
         Console.SetCursorPosition(0, 0);
         Console.Clear();
         Console.WriteLine(@"
@@ -15,82 +17,102 @@ static class Menu
  |  _ < (_) | |_| ||  __/ | | (_| | (_| | | | | | |  / ___ \| | |  | | | | | |  __/\__ \
  |_| \_\___/ \__|\__\___|_|  \__,_|\__,_|_| |_| |_| /_/   \_\_|_|  |_|_|_| |_|\___||___/
 ");
-        if (AccountsLogic.CurrentAccount != null)
-            Console.WriteLine($"Welcome to Rotterdam Airlines, {AccountsLogic.CurrentAccount.FullName}!\n");
-        else
-            Console.WriteLine("Welcome to Rotterdam Airlines!\n");
+            if (AccountsLogic.CurrentAccount != null)
+                Console.WriteLine($"Welcome to Rotterdam Airlines, {AccountsLogic.CurrentAccount.FullName}!\n");
+            else
+                Console.WriteLine("Welcome to Rotterdam Airlines!\n");
 
-        Console.WriteLine("1: View all available flights");
-        if (AccountsLogic.CurrentAccount == null)
-        {
-            Console.WriteLine("2: Login/Register");
-            Console.WriteLine("3: Exit program");
-        }
-        else
-        {
-            Console.WriteLine("2: Book a flight");
-            Console.WriteLine("3: My Bookings");
-            Console.WriteLine("4: My Account");
-            Console.WriteLine("5: Exit program");
-        }
-        Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
+            Console.WriteLine("1: View all available flights");
+            if (AccountsLogic.CurrentAccount == null)
 
-        string input = Console.ReadLine();
-        if (AccountsLogic.CurrentAccount == null)
-        {
-            switch (input)
             {
-                case "1":
-                    FlightList.ShowAllAvailableFlightsList();
-                    break;
-                case "2":
-                    AccountMenu();
-                    break;
-                case "3":
-                    Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.Clear();
-                    Console.WriteLine("Invalid input, please try again.");
-                    Console.WriteLine("Press any key to return to the menu...");
-                    Console.ReadKey();
-                    Start();
-                    break;
+                Console.WriteLine("2: Login/Register");
+                Console.WriteLine("3: Exit program");
+            }
+            else
+            {
+                Console.WriteLine("2: Book a flight");
+                Console.WriteLine("3: My Account");
+                if (AccountsLogic.CurrentAccount.IsAdmin)
+                {
+                    Console.WriteLine("4: Admin Dashboard");
+                    Console.WriteLine("5: Exit program");
+                }
+                else
+                {
+                    Console.WriteLine("4: Exit program");
+                }
+            }
+            Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
+
+            string input = Console.ReadLine();
+            if (AccountsLogic.CurrentAccount == null)
+            {
+                switch (input)
+                {
+                    case "1":
+                        FlightList.ShowAllAvailableFlightsList();
+                        break;
+                    case "2":
+                        AccountMenu();
+                        break;
+                    case "3":
+                        Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Invalid input, please try again.");
+                        Console.WriteLine("Press any key to return to the menu...");
+                        Console.ReadKey();
+                        Start();
+                        break;
+                }
+            }
+            else
+            {
+                switch (input)
+                {
+                    case "1":
+                        FlightList.ShowAllAvailableFlightsList();
+                        break;
+                    case "2":
+                        FlightSearch.StartSearch();
+                        Start();
+                        break;
+                    case "3":
+                        AccountMenu();
+                        break;
+                    case "4":
+                        if (AccountsLogic.CurrentAccount.IsAdmin)
+                        {
+                            AdminDashboard.Start();
+                            Start();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
+                            Environment.Exit(0);
+                        }
+                        break;
+                    case "5":
+                        if (AccountsLogic.CurrentAccount != null && AccountsLogic.CurrentAccount.IsAdmin)
+                        {
+                            Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
+                            Environment.Exit(0);
+                        }
+                        else goto default;
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Invalid input, please try again.");
+                        Console.WriteLine("Press any key to return to the menu...");
+                        Console.ReadKey();
+                        Start();
+                        break;
+                }
             }
         }
-        else
-        {
-            switch (input)
-            {
-                case "1":
-                    FlightList.ShowAllAvailableFlightsList();
-                    break;
-                case "2":
-                    FlightSearch.StartSearch();
-                    Start();
-                    break;
-                case "3":
-                    MyBookings.Start();
-                    Start();
-                    break;
-                case "4":
-                    AccountMenu();
-                    break;
-                case "5":
-                    Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.Clear();
-                    Console.WriteLine("Invalid input, please try again.");
-                    Console.WriteLine("Press any key to return to the menu...");
-                    Console.ReadKey();
-                    Start();
-                    break;
-            }
-        }
-
     }
 
     static public void AccountMenu()

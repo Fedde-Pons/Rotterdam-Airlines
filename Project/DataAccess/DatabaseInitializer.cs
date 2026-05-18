@@ -19,8 +19,16 @@ public class DatabaseInitializer
             lastName TEXT,
             dateOfBirth TEXT,
             password TEXT,
-            createdAt TEXT
+            createdAt TEXT,
+            isAdmin INTEGER DEFAULT 0
         );");
+
+        // Migration: add isAdmin column if it doesn't exist yet (for existing databases)
+        var columns = connection.Query<string>("SELECT name FROM pragma_table_info('Accounts');").ToList();
+        if (!columns.Contains("isAdmin"))
+        {
+            connection.Execute("ALTER TABLE Accounts ADD COLUMN isAdmin INTEGER DEFAULT 0;");
+        }
 
         // BOOKINGS
         connection.Execute(@"
