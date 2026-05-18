@@ -115,7 +115,8 @@ public class AccountsAccess
             lastName TEXT,
             dateOfBirth TEXT,
             password TEXT,
-            createdAt TEXT
+            createdAt TEXT,
+            isAdmin INTEGER DEFAULT 0
         );";
 
         connection.Execute(createSql);

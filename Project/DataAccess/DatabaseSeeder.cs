@@ -12,6 +12,7 @@ public static class DatabaseSeeder
         InsertAircrafts(connection);
         InsertSeats(connection);
         InsertFlights(connection);
+        InsertAdminAccount(connection);
 
         //Console.WriteLine("✅ Database gevuld met mock data");
     }
@@ -89,6 +90,21 @@ public static class DatabaseSeeder
                 }
             }
         }
+    }
+
+    private static void InsertAdminAccount(SqliteConnection connection)
+    {
+        var checkCmd = new SqliteCommand("SELECT COUNT(*) FROM Accounts WHERE emailAddress = 'admin@ra.nl'", connection);
+        long count = (long)checkCmd.ExecuteScalar()!;
+        if (count > 0) return;
+
+        string query = @"
+        INSERT INTO Accounts (emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt, isAdmin)
+        VALUES ('admin@ra.nl', '0000000000', 'Admin', 'RA', '01/01/1990', 'admin', @createdAt, 1);";
+
+        using var cmd = new SqliteCommand(query, connection);
+        cmd.Parameters.AddWithValue("@createdAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        cmd.ExecuteNonQuery();
     }
 
     private static void InsertFlights(SqliteConnection connection)

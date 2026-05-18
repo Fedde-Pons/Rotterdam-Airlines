@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 public static class BookingForums
 {
     /// <summary>
@@ -11,7 +9,7 @@ public static class BookingForums
    public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount != null ? AccountsLogic.CurrentAccount.Id : 1; // edited this so we dont need to be logged in atm  
-        BookingModel booking = new BookingModel(accountID, date, "ongoing");
+        BookingModel booking = new BookingModel(accountID, date, "pending");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket)> bookingValues = [];
 
@@ -40,7 +38,6 @@ public static class BookingForums
             availableSeats.Remove(pickedSeat);
             bookedSeats++;
             
-            //TODO: the 0's need to be adjusted based on pricing
             TicketModel ticket = CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice);
             bookingValues.Add((passanger, ticket));
         }
