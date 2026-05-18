@@ -14,11 +14,7 @@ public class BookingAccess
         string sql = $@"SELECT * FROM {Table};";
         return connection.Query<BookingModel>(sql).ToList();
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 8763069ef1687f6d75ae65e8fb096b34f1b99d5c
     public int Write(BookingModel booking)
     {
         using var connection = new SqliteConnection(_connectionString);
@@ -33,8 +29,6 @@ public class BookingAccess
 
         return connection.ExecuteScalar<int>(sql, booking);
     }
-<<<<<<< HEAD
-=======
 
     public List<BookingModel> GetByAccountId(int accountId)
     {
@@ -68,8 +62,6 @@ public class BookingAccess
         string sql = $@"UPDATE {Table} SET status = 'Cancelled' WHERE id = @Id;";
         return connection.Execute(sql, new { Id = id });
     }
-
->>>>>>> 8763069ef1687f6d75ae65e8fb096b34f1b99d5c
     public int UpdateBookingStatus(string status, int id)
     {
         using var connection =  new SqliteConnection(_connectionString);
