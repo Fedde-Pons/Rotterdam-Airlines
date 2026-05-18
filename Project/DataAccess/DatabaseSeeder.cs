@@ -23,9 +23,9 @@ public static class DatabaseSeeder
     {
         string query = @"
         INSERT OR IGNORE INTO Accounts (id, emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt) VALUES
-        (1, 'jan.jansen@example.com', '0612345678', 'Jan', 'Jansen', '1990-05-12', 'password123', '2026-01-01 10:00:00'),
-        (2, 'emma.devries@example.com', '0698765432', 'Emma', 'de Vries', '1985-09-23', 'password123', '2026-01-02 11:15:00'),
-        (3, 'lucas.bakker@example.com', '0611223344', 'Lucas', 'Bakker', '1995-03-08', 'password123', '2026-01-03 09:30:00');";
+        (2, 'jan.jansen@example.com', '0612345678', 'Jan', 'Jansen', '1990-05-12', 'password123', '2026-01-01 10:00:00'),
+        (3, 'emma.devries@example.com', '0698765432', 'Emma', 'de Vries', '1985-09-23', 'password123', '2026-01-02 11:15:00'),
+        (4, 'lucas.bakker@example.com', '0611223344', 'Lucas', 'Bakker', '1995-03-08', 'password123', '2026-01-03 09:30:00');";
 
         using var cmd = new SqliteCommand(query, connection);
         cmd.ExecuteNonQuery();
@@ -53,11 +53,11 @@ public static class DatabaseSeeder
     {
         var bookings = new[]
         {
-            (Id: 1, AccountId: 1, Date: "2026-03-15 14:20:00", TotalPrice: 260.00, Status: "Confirmed"),
-            (Id: 2, AccountId: 1, Date: "2026-04-01 09:45:00", TotalPrice: 130.00, Status: "Confirmed"),
-            (Id: 3, AccountId: 2, Date: "2026-03-20 16:10:00", TotalPrice: 150.00, Status: "Confirmed"),
-            (Id: 4, AccountId: 2, Date: "2026-04-05 12:00:00", TotalPrice: 175.00, Status: "Cancelled"),
-            (Id: 5, AccountId: 3, Date: "2026-04-10 18:30:00", TotalPrice: 390.00, Status: "Confirmed"),
+            (Id: 1, AccountId: 2, Date: "2026-03-15 14:20:00", TotalPrice: 260.00, Status: "pending"),
+            (Id: 2, AccountId: 2, Date: "2026-04-01 09:45:00", TotalPrice: 130.00, Status: "confirmed"),
+            (Id: 3, AccountId: 3, Date: "2026-03-20 16:10:00", TotalPrice: 150.00, Status: "pending"),
+            (Id: 4, AccountId: 3, Date: "2026-04-05 12:00:00", TotalPrice: 175.00, Status: "cancelled"),
+            (Id: 5, AccountId: 4, Date: "2026-04-10 18:30:00", TotalPrice: 390.00, Status: "confirmed"),
         };
 
         foreach (var b in bookings)
@@ -200,8 +200,8 @@ public static class DatabaseSeeder
         if (count > 0) return;
 
         string query = @"
-        INSERT INTO Accounts (emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt, isAdmin)
-        VALUES ('admin@ra.nl', '0000000000', 'Admin', 'RA', '01/01/1990', 'admin', @createdAt, 1);";
+        INSERT INTO Accounts (id, emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt, isAdmin)
+        VALUES (1, 'admin@ra.nl', '0000000000', 'Admin', 'RA', '01/01/1990', 'admin', @createdAt, 1);";
 
         using var cmd = new SqliteCommand(query, connection);
         cmd.Parameters.AddWithValue("@createdAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
