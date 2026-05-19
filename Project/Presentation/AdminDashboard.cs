@@ -39,7 +39,6 @@ static class AdminDashboard
                     Console.WriteLine("Invalid input, please try again.");
                     Console.WriteLine("Press any key to return to the Admin Dashboard...");
                     Console.ReadKey();
-                    Start();
                     break;
             }
         }
@@ -68,7 +67,7 @@ static class AdminDashboard
             {
                 Console.WriteLine($"{booking.Id,-6} {booking.AccountId,-12} {booking.Date,-22} {"€" + booking.TotalPrice.ToString("F2"),-14} {booking.Status}");
             }
-            Console.WriteLine("1 [id] to edit status by id\n");
+            Console.WriteLine("select 1 [id] to edit status by id\n");
             string? input = Console.ReadLine();
             string[] param = input.Split(" ");
             if (param.Length == 1)
@@ -83,7 +82,6 @@ static class AdminDashboard
                 {
                     if (bookings.FirstOrDefault(x => x.Id == id) != null)
                     {
-                        Console.WriteLine("test");
                         EditBookingStatus(bookings, id);
                     }
                     else
@@ -122,7 +120,6 @@ static class AdminDashboard
 
         Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
         Console.ReadKey();
-        Start();
     }
 
     private static void ShowAirports()
@@ -132,7 +129,6 @@ static class AdminDashboard
         Console.WriteLine("Airport management is not yet implemented.");
         Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
         Console.ReadKey();
-        Start();
     }
 
     private static void EditBookingStatus(List<BookingModel> bookings, int id)
@@ -145,9 +141,9 @@ static class AdminDashboard
             Console.WriteLine("+---------------------------+");
             Console.WriteLine("| number |  change status to|");
             Console.WriteLine("+---------------------------+");
-            Console.WriteLine("| 1 |               pending |");
-            Console.WriteLine("| 2 |              complete |");
-            Console.WriteLine("| 3 |              canceled |");
+            Console.WriteLine("| 1      |          pending |");
+            Console.WriteLine("| 2      |         complete |");
+            Console.WriteLine("| 3      |         canceled |");
             Console.WriteLine("+---------------------------+");
             Console.WriteLine("| press 0 to cancel and     |");
             Console.WriteLine("| return to admin screen    |");

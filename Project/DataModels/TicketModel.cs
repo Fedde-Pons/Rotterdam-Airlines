@@ -8,6 +8,8 @@
     public float Price { get; set; }
     public int ExtraBaggageKg { get; set; }
 
+    public TicketModel() { }
+
     public TicketModel(int bookingId, int flightId, int seatId, int passengerId, float price, int extraBaggageKg)
     {
         BookingId = bookingId;
