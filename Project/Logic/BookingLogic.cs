@@ -22,10 +22,27 @@ public static class BookingLogic
         }
     }
 
-    public static void EditBookingStatus(BookingModel booking, string changeInStatus) 
+    public static void EditBookingStatus(BookingModel booking, string changeInStatus)
     {
         BookingAccess db = new();
         db.UpdateBookingStatus(changeInStatus, booking.Id);
+    }
+
+    public static List<BookingModel> GetBookingsForAccount(int accountId)
+    {
+        BookingAccess db = new();
+        return db.GetByAccountId(accountId);
+    }
+
+    public static void CancelBooking(int bookingId)
+    {
+        BookingAccess db = new();
+        db.UpdateBookingStatus("Cancelled", bookingId);
+    }
+
+    public static bool IsCancelled(BookingModel booking)
+    {
+        return booking.Status == "Cancelled";
     }
     // private bool IsValidateSeatAvailable(Plane plane)
     // {

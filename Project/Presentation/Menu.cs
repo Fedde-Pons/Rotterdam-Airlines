@@ -35,9 +35,10 @@ static class Menu
                 {
 
                     Console.WriteLine("2: Book a flight");
-                    Console.WriteLine("3: My Account");
-                    Console.WriteLine("4: Admin Dashboard");
-                    Console.WriteLine("5: Exit program");
+                    Console.WriteLine("3: My Bookings");
+                    Console.WriteLine("4: My Account");
+                    Console.WriteLine("5: Admin Dashboard");
+                    Console.WriteLine("6: Exit program");
                 }
                 else
                 {
@@ -116,21 +117,21 @@ static class Menu
                         Start();
                         break;
                     case "3":
-                        AccountMenu();
+                        MyBookings.Start();
+                        Start();
                         break;
                     case "4":
+                        AccountMenu();
+                        break;
+                    case "5":
                         if (AccountsLogic.CurrentAccount.IsAdmin)
                         {
                             AdminDashboard.Start();
                             Start();
                         }
-                        else
-                        {
-                            Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
-                            Environment.Exit(0);
-                        }
+                        else goto default;
                         break;
-                    case "5":
+                    case "6":
                         if (AccountsLogic.CurrentAccount != null && AccountsLogic.CurrentAccount.IsAdmin)
                         {
                             Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
