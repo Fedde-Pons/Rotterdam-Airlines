@@ -126,9 +126,16 @@ static class AdminDashboard
     {
         Console.Clear();
         Console.WriteLine("=== Airports ===\n");
-        Console.WriteLine("Airport management is not yet implemented.");
-        Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
-        Console.ReadKey();
+        Console.WriteLine("| 1| create new airport location|");
+        string? input = Console.ReadLine();
+        switch(input)
+        {
+            case "1":
+                CreateAirport();
+                return;
+            default:
+                return;
+        }
     }
 
     private static void EditBookingStatus(List<BookingModel> bookings, int id)
@@ -149,7 +156,7 @@ static class AdminDashboard
             Console.WriteLine("| return to admin screen    |");
             Console.WriteLine("+---------------------------+ \n");
             Console.Write(">");
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
             switch (input)
             {
                 // pending
@@ -173,6 +180,12 @@ static class AdminDashboard
                     Console.ReadKey();
                     break;
             }
-        }
+        }      
+    }
+    
+    private static void CreateAirport()
+    {
+        Console.WriteLine("WIP");
+        Console.ReadKey();
     }
 }
