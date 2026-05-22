@@ -124,8 +124,12 @@ static class AdminDashboard
     private static void ShowAirports()
     {
         Console.Clear();
-        Console.WriteLine("=== Airports ===\n");
-        Console.WriteLine("| 1| create new airport location|");
+        Console.WriteLine("+----------------------Airports--------------------+");
+        Console.WriteLine("| number |                                  action |");
+        Console.WriteLine("+--------------------------------------------------+");
+        Console.WriteLine("| 1      |             create new airport location |");
+        Console.WriteLine("+--------------------------------------------------+\n");
+        Console.Write("> ");
         string? input = Console.ReadLine();
         switch (input)
         {
@@ -154,7 +158,7 @@ static class AdminDashboard
             Console.WriteLine("| press 0 to cancel and     |");
             Console.WriteLine("| return to admin screen    |");
             Console.WriteLine("+---------------------------+ \n");
-            Console.Write(">");
+            Console.Write("> ");
             string? input = Console.ReadLine();
             switch (input)
             {
@@ -184,9 +188,13 @@ static class AdminDashboard
 
     private static void CreateAirport()
     {
-
-        Console.WriteLine("write down the added location in the following format");
-        Console.WriteLine("[name],[address],[city],[country]\n");
+        Console.Clear();
+        Console.WriteLine("+-----------------------------------------------------------------+");
+        Console.WriteLine("| write down the location you want to add in the following format |");
+        Console.WriteLine("+-----------------------------------------------------------------+");
+        Console.WriteLine("| [name],[address],[city],[country]                               |");
+        Console.WriteLine("+-----------------------------------------------------------------+\n");
+        Console.Write("> ");
         string? input = Console.ReadLine();
         if (input == null)
         {
