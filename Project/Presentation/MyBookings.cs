@@ -1,9 +1,6 @@
 public static class MyBookings
 {
-    private static readonly BookingAccess _bookingAccess = new();
-    private static readonly TicketAccess _ticketAccess = new();
-    private static readonly PassangerAccess _passangerAccess = new();
-    private static readonly FlightAccess _flightAccess = new();
+    private static readonly FlightLogic _flightLogic = new();
 
     public static void Start()
     {
@@ -23,7 +20,7 @@ public static class MyBookings
             Console.WriteLine("             MY BOOKINGS              ");
             Console.WriteLine("======================================\n");
 
-            List<BookingModel> bookings = _bookingAccess.GetByAccountId(AccountsLogic.CurrentAccount.Id);
+            List<BookingModel> bookings = BookingLogic.GetBookingsForAccount(AccountsLogic.CurrentAccount.Id);
 
             if (bookings.Count == 0)
             {
@@ -68,7 +65,7 @@ public static class MyBookings
             Console.WriteLine($"Status:  {booking.Status}");
             Console.WriteLine($"Total:   €{booking.TotalPrice}\n");
 
-            List<TicketModel> tickets = _ticketAccess.GetByBookingId(booking.Id);
+            List<TicketModel> tickets = TicketLogic.GetTicketsForBooking(booking.Id);
 
             if (tickets.Count == 0)
             {
@@ -81,9 +78,9 @@ public static class MyBookings
                 for (int i = 0; i < tickets.Count; i++)
                 {
                     var t = tickets[i];
-                    PassangerModel? passanger = _passangerAccess.GetById(t.PassengerId);
-                    SeatModel? seat = _flightAccess.RetrieveSeat(t.SeatId);
-                    FlightModel? flight = _flightAccess.RetrieveFlight(t.FlightId);
+                    PassangerModel? passanger = PassangerLogic.GetById(t.PassengerId);
+                    SeatModel? seat = _flightLogic.GetSeatById(t.SeatId);
+                    FlightModel? flight = _flightLogic.GetFlightById(t.FlightId);
 
                     string passangerName = passanger != null
                         ? $"{passanger.FirstName} {passanger.LastName}"
@@ -103,7 +100,7 @@ public static class MyBookings
                 }
             }
 
-            bool isCancelled = booking.Status == "Cancelled";
+            bool isCancelled = BookingLogic.IsCancelled(booking);
 
             if (!isCancelled)
                 Console.WriteLine("1: Cancel this booking");
@@ -124,7 +121,7 @@ public static class MyBookings
                 switch (input)
                 {
                     case "1":
-                        if (ConfirmCancellation(booking, tickets))
+                        if (ConfirmCancellation(booking))
                             return;
                         break;
                     case "2":
@@ -138,7 +135,7 @@ public static class MyBookings
         }
     }
 
-    private static bool ConfirmCancellation(BookingModel booking, List<TicketModel> tickets)
+    private static bool ConfirmCancellation(BookingModel booking)
     {
         Console.Clear();
         Console.WriteLine("======================================");
@@ -158,7 +155,7 @@ public static class MyBookings
             return false;
         }
 
-        _bookingAccess.UpdateBookingStatus("Cancelled", booking.Id);
+        BookingLogic.CancelBooking(booking.Id);
 
         Console.Clear();
         Console.WriteLine("======================================");

@@ -14,9 +14,15 @@ public static class TicketLogic
             TicketModel ticket = new TicketModel(bookingID, flightId, seatId, passangerID, price, extraBaggadeKg);
             return (true, "", ticket);
         }
-        catch 
+        catch
         {
             return (false, "couldnt create a booking", null);
         }
-    } 
+    }
+
+    public static List<TicketModel> GetTicketsForBooking(int bookingId)
+    {
+        TicketAccess db = new();
+        return db.GetByBookingId(bookingId);
+    }
 }

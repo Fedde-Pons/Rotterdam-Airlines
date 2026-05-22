@@ -15,6 +15,16 @@ public class FlightLogic
         return flights.OrderBy(f => f.DepartureTime).ToList();
     }
 
+    public FlightModel? GetFlightById(int id)
+    {
+        return flightAccess.RetrieveFlight(id);
+    }
+
+    public SeatModel? GetSeatById(int id)
+    {
+        return flightAccess.RetrieveSeat(id);
+    }
+
     public static string CreateFlightsSummary(List<FlightModel>? flights)
     {
         if (flights == null || flights.Count == 0) return "";
