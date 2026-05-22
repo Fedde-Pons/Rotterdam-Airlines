@@ -5,7 +5,7 @@ public class SeatModel
     public string SeatNumber { get; set; }
     public int RowNumber { get; set; }
     public string Seatclass { get; set; }
-    public bool IsWindows {get; set;}
+    public bool IsWindow {get; set;}
     public bool IsExitRow {get; set;}
     public bool IsFirstRow {get; set;}
     public bool IsLastRow {get; set;}
@@ -18,7 +18,7 @@ public class SeatModel
         SeatNumber = seatNumber;
         RowNumber = rowNumber;
         Seatclass = seatclass;
-        IsWindows = isWindows;
+        IsWindow = isWindows;
         IsExitRow =  isExitRow;
         IsFirstRow = isFirstRow;
         IsLastRow = isLastRow;

@@ -8,7 +8,7 @@ public static class BookingForums
     /// <param name="date"></param>
     public static void Start(FlightModel flight, string date)
     {
-        int accountID = AccountsLogic.CurrentAccount != null ? AccountsLogic.CurrentAccount.Id : 1; // edited this so we dont need to be logged in atm  
+        int accountID = AccountsLogic.CurrentAccount.Id;
         BookingModel booking = new BookingModel(accountID, date, "pending");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket)> bookingValues = [];
@@ -34,7 +34,7 @@ public static class BookingForums
         {
             PassangerModel passanger = CreatePassanger(i + 1, numberOfTickets);
             // seat and price logic goes here
-            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, economyPrice, businessPrice);
+            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, seatData.allSeats, economyPrice, businessPrice);
 
             if (seatingResult == null)
             {
