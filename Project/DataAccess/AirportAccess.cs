@@ -9,7 +9,7 @@ public class AirportAccess
     public List<AirportModel> GetAllAirports()
     {
         using var connection = new SqliteConnection(_connectionString);
-        string sql = $@"SELECT * FROM {Table}";
+        string sql = $@"SELECT * FROM {Table};";
         return connection.Query<AirportModel>(sql).ToList();
     }
 

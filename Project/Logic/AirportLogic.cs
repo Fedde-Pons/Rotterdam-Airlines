@@ -12,7 +12,12 @@ public static class AirportLogic
             {
                 return (false, airport.message);   
             }
+
             AirportAccess db = new();
+            if (AirportExists(airport.airport, db.GetAllAirports()))
+            {
+                return (false, "airport already exists");
+            }
             db.WriteAirport(airport.airport);
             return (true, "airport successfully added");
         }
@@ -32,5 +37,16 @@ public static class AirportLogic
         {
             return (null, false, "couldnt convert to airport model");
         }
+    }
+    private static bool AirportExists(AirportModel airport, List<AirportModel> allAirports)
+    {
+        foreach (AirportModel existingAirport in allAirports)
+        {
+            if (airport.Name == existingAirport.Name)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -62,7 +62,6 @@ static class AdminDashboard
         {
             Console.WriteLine($"{"ID",-6} {"Account ID",-12} {"Date",-22} {"Total Price",-14} {"Status"}");
             Console.WriteLine(new string('-', 70));
-            int count = 0;
             foreach (BookingModel booking in bookings)
             {
                 Console.WriteLine($"{booking.Id,-6} {booking.AccountId,-12} {booking.Date,-22} {"€" + booking.TotalPrice.ToString("F2"),-14} {booking.Status}");
