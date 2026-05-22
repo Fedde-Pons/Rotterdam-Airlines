@@ -128,7 +128,7 @@ static class AdminDashboard
         Console.WriteLine("=== Airports ===\n");
         Console.WriteLine("| 1| create new airport location|");
         string? input = Console.ReadLine();
-        switch(input)
+        switch (input)
         {
             case "1":
                 CreateAirport();
@@ -180,12 +180,30 @@ static class AdminDashboard
                     Console.ReadKey();
                     break;
             }
-        }      
+        }
     }
-    
+
     private static void CreateAirport()
     {
-        Console.WriteLine("WIP");
+
+        Console.WriteLine("write down the added location in the following format");
+        Console.WriteLine("[name],[address],[city],[country]\n");
+        string? input = Console.ReadLine();
+        if (input == null)
+        {
+            Console.WriteLine("please put in a valid input as described");
+            return;
+        }
+        string[] param = input.Split(",");
+        if (param.Length == 4)
+        {
+            (bool isSucces, string message) result = AirportLogic.AddAirport(param[0],param[1],param[2],param[3]);
+            Console.WriteLine(result.message);
+        }
+        else
+        {
+            Console.WriteLine("please only put numbers in this forum");
+        }
         Console.ReadKey();
     }
 }

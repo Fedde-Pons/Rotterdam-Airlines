@@ -17,10 +17,11 @@ public class AirportAccess
     {
         using var connection = new SqliteConnection(_connectionString);
         string sql = $@"
-            INSERT INTO {Table}
-            (name, address, city, county)
+            INSERT INTO Airports
+            (name, address, city, country)
             VALUES
-            (@Name, @Address, @City, @country)
+            (@Name, @Address, @City, @Country);
+            SELECT last_insert_rowid();
         ";
         return connection.ExecuteScalar<int>(sql, airport);
     }
