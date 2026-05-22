@@ -1,16 +1,22 @@
 using System.Data.Common;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 public static class AirportLogic
 {
-    public static (bool, string) AddAirport(string name, string address, string city, string country )
+    public static (bool, string) AddAirport(string name, string address, string city, string country)
     {
         try
         {
+            if(!ValidateLocation(city) || !ValidateLocation(country))
+            {
+                return (false, "not a real location or city");
+            }
+
             (AirportModel? airport, bool isSucces, String message) airport = ConvertToAirportModel(name, address, city, country);
             if (airport.airport == null || !airport.isSucces)
             {
-                return (false, airport.message);   
+                return (false, airport.message);
             }
 
             AirportAccess db = new();
@@ -26,7 +32,7 @@ public static class AirportLogic
             return (false, "undefined behavior happend");
         }
     }
-    public static (AirportModel?, bool, string) ConvertToAirportModel(string name, string address, string city, string country )
+    public static (AirportModel?, bool, string) ConvertToAirportModel(string name, string address, string city, string country)
     {
         try
         {
@@ -49,4 +55,16 @@ public static class AirportLogic
         }
         return false;
     }
+    private static bool ValidateLocation(string location)
+    {
+        if (string.IsNullOrWhiteSpace(location))
+            return false;
+
+        if (!Regex.IsMatch(location, @"^[a-zA-Z\s-]+$"))
+            return false;
+
+        return true;
+    }
+
+
 }
