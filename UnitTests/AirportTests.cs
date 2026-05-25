@@ -235,7 +235,7 @@ public class AirportTests
         // arrange & act 
         var result = AirportLogic.AddAirport(null, "Address", "ValidCity", "ValidCountry");
 
-        // assert - Should fail because the model cannot be created with null values
+        // assert 
         Assert.IsFalse(result.Item1);
     }
 
@@ -245,7 +245,7 @@ public class AirportTests
         // arrange & act 
         var result = AirportLogic.AddAirport(null, "Address", "City", null);
 
-        // assert - Should fail due to null country
+        // assert 
         Assert.IsFalse(result.Item1);
     }
 
@@ -255,7 +255,7 @@ public class AirportTests
         // arrange & act 
         var result = AirportLogic.AddAirport("Name", "Address", null, "Country");
 
-        // assert - Should fail due to null city (first validation check)
+        // assert 
         Assert.IsFalse(result.Item1);
     }
 
