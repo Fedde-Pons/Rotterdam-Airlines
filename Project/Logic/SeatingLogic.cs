@@ -1,52 +1,58 @@
 public static class SeatingLogic
 {
+    // Returns the cabin layout for a given aircraft.
+    public static AircraftLayoutModel GetLayout(int aircraftId)
+    {
+        return aircraftId switch
+        {
+            1 => new AircraftLayoutModel("B O E I N G   7 3 7",
+                    new[] { "F", "E", "D", "C", "B", "A" }, 33, 3, 11, 26),
+            2 => new AircraftLayoutModel("A I R B U S   A 3 3 0",
+                    new[] { "H", "G", "F", "E", "D", "C", "B", "A" }, 43, 10, 18, 33),
+            3 => new AircraftLayoutModel("B O E I N G   7 8 7",
+                    new[] { "F", "E", "D", "C", "B", "A" }, 38, 6, 10, 20),
+            _ => new AircraftLayoutModel("U N K N O W N",
+                    new[] { "A" }, 1, 0, 0, 0)
+        };
+    }
+
+    public static bool IsBusinessRow(int row, AircraftLayoutModel layout)
+    {
+        return row <= layout.BusinessRows;
+    }
+
+    public static double GetSeatPrice(int row, AircraftLayoutModel layout, double economyPrice, double businessPrice)
+    {
+        return IsBusinessRow(row, layout) ? businessPrice : economyPrice;
+    }
+
+    public static (int row, int letterIndex)? GetFirstAvailableSeat(List<SeatModel> availableSeats, AircraftLayoutModel layout)
+    {
+        for (int li = 0; li < layout.Letters.Length; li++)
+            for (int r = 1; r <= layout.TotalRows; r++)
+                if (availableSeats.Any(s => s.SeatNumber == $"{r}{layout.Letters[li]}"))
+                    return (r, li);
+
+        return null;
+    }
+
     public static (SeatModel seat, double price)? StartSeatSelection(
-        FlightModel selectedFlight, 
-        List<SeatModel> availableSeats, 
+        FlightModel selectedFlight,
+        List<SeatModel> availableSeats,
+        List<SeatModel> allSeats,
         double economyPrice,
         double businessPrice)
     {
-        Console.Clear();
-        
-        SeatMap.ShowSeatMap(selectedFlight, availableSeats);
-        
-        Console.WriteLine($"\n=== SEAT SELECTION FOR FLIGHT {selectedFlight.FlightNumber} ===");
+        string? selectedCode = SeatMap.NavigateSeatMap(selectedFlight, availableSeats, allSeats, economyPrice, businessPrice);
 
-        Console.WriteLine($"* Business Class: €{businessPrice:F2}");
-        Console.WriteLine($"* Economy Class:  €{economyPrice:F2}");
-        Console.WriteLine("--------------------------------------------------");
-
-        SeatModel chosenSeatModel = null;
-        while (true)
+        if (selectedCode == null)
         {
-            Console.Write("\nEnter the Seat Number you want to book from (or type X to cancel): ");
-            string userInput = Console.ReadLine()?.Trim().ToUpper();
-
-            if (userInput == "X") 
-            {
-                Console.Clear();
-                return null; 
-            }
-
-            foreach (SeatModel seat in availableSeats)
-            {
-                if (seat.SeatNumber.ToUpper() == userInput)
-                {
-                    chosenSeatModel = seat;
-                    break;
-                }
-            }
-
-            if (chosenSeatModel != null)
-            {
-                break;
-            }
-            else 
-            {
-                Console.WriteLine("Invalid or taken seat number. Please choose an available seat from the map.");
-            }
+            Console.Clear();
+            return null;
         }
-        
+
+        SeatModel chosenSeatModel = availableSeats.First(s => s.SeatNumber == selectedCode);
+
         double finalPrice = 0;
         if (chosenSeatModel.Seatclass.Equals("Business", StringComparison.OrdinalIgnoreCase))
         {
@@ -56,7 +62,7 @@ public static class SeatingLogic
         {
             finalPrice = economyPrice;
         }
-        
+
         return (chosenSeatModel, finalPrice);
     }
 }
