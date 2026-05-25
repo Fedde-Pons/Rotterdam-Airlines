@@ -12,6 +12,11 @@ public static class AirportLogic
             {
                 return (false, "not a real location or city");
             }
+            
+            if(name == "" || address == ""|| city == "" || country == "")
+            {
+                return (false, "please dont leave a value empty");
+            }
 
             (AirportModel? airport, bool isSucces, String message) airport = ConvertToAirportModel(name, address, city, country);
             if (airport.airport == null || !airport.isSucces)
