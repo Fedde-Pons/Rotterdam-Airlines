@@ -1,15 +1,12 @@
 static class Menu
 {
-
-    //This shows the menu. You can call back to this method to show the menu again
-    //after another presentation method is completed.
-    //You could edit this to show different menus depending on the user's role
     static public void Start()
     {
         while (true)
         {
             Console.SetCursorPosition(0, 0);
             Console.Clear();
+
             Console.WriteLine(@"
   ____       _   _               _                      _    _      _ _                 
  |  _ \ ___ | |_| |_ ___ _ __ __| | __ _ _ __ ___      / \  (_)_ __| (_)_ __   ___  ___ 
@@ -39,7 +36,8 @@ static class Menu
                     Console.WriteLine("4: My Account");
                     Console.WriteLine("5: Admin Dashboard");
                     Console.WriteLine("6: View All Accounts");
-                    Console.WriteLine("7: Exit program");
+                    Console.WriteLine("7: Add Flight");
+                    Console.WriteLine("8: Exit program");
                 }
                 else
                 {
@@ -141,6 +139,10 @@ static class Menu
                         break;
 
                     case "7":
+                        AdminFlightMenu.Start();
+                        break;
+
+                    case "8":
                         Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
                         Environment.Exit(0);
                         break;
