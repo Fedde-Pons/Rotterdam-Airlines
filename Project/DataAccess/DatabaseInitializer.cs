@@ -114,6 +114,7 @@ public class DatabaseInitializer
             passengerId INTEGER,
             price REAL,
             extraBaggageKg INTEGER,
+            isCheckedIn INTEGER DEFAULT 0,
             FOREIGN KEY (bookingId) REFERENCES Bookings(id),
             FOREIGN KEY (flightId) REFERENCES Flights(id),
             FOREIGN KEY (seatId) REFERENCES Seats(id),

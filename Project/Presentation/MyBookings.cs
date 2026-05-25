@@ -96,17 +96,23 @@ public static class MyBookings
                     Console.WriteLine($"    Seat:      {seatLabel}");
                     Console.WriteLine($"    Price:     €{t.Price}");
                     Console.WriteLine($"    Baggage:   {t.ExtraBaggageKg} kg extra");
+                    Console.WriteLine($"    Status:    {(t.IsCheckedIn ? "\x1b[32mChecked In\x1b[0m" : "\x1b[31mNot Checked In\x1b[0m")}");
                     Console.WriteLine();
                 }
             }
 
             bool isCancelled = BookingLogic.IsCancelled(booking);
-
+            
             if (!isCancelled)
+                {
                 Console.WriteLine("1: Cancel this booking");
-            Console.WriteLine($"{(isCancelled ? "1" : "2")}: Back to my bookings");
-            Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
-
+                Console.WriteLine("2: Check in online");
+                Console.WriteLine("3: Back to my bookings");
+                }
+            else
+                {
+                Console.WriteLine("1: Back to my bookings");
+                }
             string? input = Console.ReadLine();
 
             if (isCancelled)
@@ -125,6 +131,9 @@ public static class MyBookings
                             return;
                         break;
                     case "2":
+                        PerformCheckIn(booking, tickets);
+                        break;
+                    case "3":
                         return;
                     default:
                         Console.WriteLine("\nInvalid input. Press any key to try again...");
@@ -166,4 +175,69 @@ public static class MyBookings
         Console.ReadKey();
         return true;
     }
-}
+
+private static void PerformCheckIn(BookingModel booking, List<TicketModel> tickets)
+    {
+        Console.Clear();
+        Console.WriteLine("======================================");
+        Console.WriteLine($"         ONLINE CHECK-IN #{booking.Id}");
+        Console.WriteLine("======================================\n");
+
+        List<TicketModel> pendingTickets = new List<TicketModel>();
+        foreach (var t in tickets)
+        {
+            if (!t.IsCheckedIn) pendingTickets.Add(t);
+        }
+
+        if (pendingTickets.Count == 0)
+        {
+            Console.WriteLine("All passengers for this booking are already checked in!");
+            Console.WriteLine("\nPress any key to return...");
+            Console.ReadKey();
+            return;
+        }
+
+        Console.WriteLine($"You are about to check in the following {pendingTickets.Count} passenger(s):\n");
+        Console.WriteLine("------------------------------------------------------------");
+
+
+        foreach (var t in pendingTickets)
+        {
+            PassangerModel? passanger = PassangerLogic.GetById(t.PassengerId);
+            SeatModel? seat = _flightLogic.GetSeatById(t.SeatId);
+            FlightModel? flight = _flightLogic.GetFlightById(t.FlightId);
+
+            string passangerName = passanger != null ? $"{passanger.FirstName} {passanger.LastName}" : "(unknown passenger)";
+            string seatLabel = seat != null ? seat.SeatNumber : "(unknown)";
+            string flightLabel = flight != null ? flight.FlightNumber : $"(Flight #{t.FlightId})";
+
+            
+            Console.WriteLine($" * {passangerName,-20} | Flight: {flightLabel,-8} | Seat: {seatLabel}");
+        }
+        Console.WriteLine("------------------------------------------------------------\n");
+
+        Console.WriteLine("Do you want to confirm check-in for these passengers? (Y/N):");
+        
+        string? input = Console.ReadLine()?.ToUpper();
+
+        if (input == "Y")
+        {
+            TicketAccess db = new TicketAccess();
+            foreach (var t in pendingTickets)
+            {
+                db.UpdateCheckInStatus(t.Id); 
+                t.IsCheckedIn = true;         
+            }
+
+            Console.WriteLine("\nSuccess! Online check-in is confirmed.");
+            Console.WriteLine("We have sent the boarding pass(es) to your registered email address.");
+        }
+        else
+        {
+            Console.WriteLine("\nCheck-in cancelled.");
+        }
+
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey();
+    }
+    }

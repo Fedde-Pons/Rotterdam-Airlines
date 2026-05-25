@@ -7,6 +7,7 @@
     public int PassengerId { get; set; }
     public float Price { get; set; }
     public int ExtraBaggageKg { get; set; }
+    public bool IsCheckedIn { get; set; }
 
     public TicketModel() { }
 
