@@ -19,7 +19,8 @@ public class AccountsAccess
             lastName TEXT,
             dateOfBirth TEXT,
             password TEXT,
-            createdAt TEXT
+            createdAt TEXT,
+            isAdmin INTEGER DEFAULT 0
         );";
 
         connection.Execute(sql);
@@ -33,9 +34,9 @@ public class AccountsAccess
 
         string sql = $@"
         INSERT INTO {Table}
-        (emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt)
+        (emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt, isAdmin)
         VALUES
-        (@EmailAddress, @PhoneNumber, @FirstName, @LastName, @DateOfBirth, @Password, @CreatedAt);";
+        (@EmailAddress, @PhoneNumber, @FirstName, @LastName, @DateOfBirth, @Password, @CreatedAt, @IsAdmin);";
 
         connection.Execute(sql, account);
     }
@@ -53,7 +54,9 @@ public class AccountsAccess
     public AccountModel GetByEmail(string email)
     {
         using var connection = new SqliteConnection(_connectionString);
+
         string sql = $@"SELECT * FROM {Table} WHERE LOWER(emailAddress) = LOWER(@Email);";
+
         return connection.QueryFirstOrDefault<AccountModel>(sql, new { Email = email });
     }
 
@@ -62,6 +65,7 @@ public class AccountsAccess
         using var connection = new SqliteConnection(_connectionString);
 
         string sql = $@"SELECT * FROM {Table} WHERE id = @Id;";
+
         return connection.QueryFirstOrDefault<AccountModel>(sql, new { Id = id });
     }
 
@@ -70,7 +74,25 @@ public class AccountsAccess
         using var connection = new SqliteConnection(_connectionString);
 
         string sql = $@"SELECT * FROM {Table};";
+
         return connection.Query<AccountModel>(sql).ToList();
+    }
+
+    public List<AccountModel> Search(string searchTerm)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        string sql = $@"
+        SELECT * FROM {Table}
+        WHERE
+            LOWER(firstName) LIKE LOWER(@Search)
+            OR LOWER(lastName) LIKE LOWER(@Search)
+            OR LOWER(emailAddress) LIKE LOWER(@Search);";
+
+        return connection.Query<AccountModel>(sql, new
+        {
+            Search = $"%{searchTerm}%"
+        }).ToList();
     }
 
     public void Update(AccountModel account)
@@ -85,7 +107,8 @@ public class AccountsAccess
             firstName = @FirstName,
             lastName = @LastName,
             dateOfBirth = @DateOfBirth,
-            password = @Password
+            password = @Password,
+            isAdmin = @IsAdmin
         WHERE id = @Id;";
 
         connection.Execute(sql, account);
@@ -95,8 +118,34 @@ public class AccountsAccess
     {
         using var connection = new SqliteConnection(_connectionString);
 
-        string sql = $@"DELETE FROM {Table} WHERE id = @Id;";
-        connection.Execute(sql, new { Id = id });
+        try
+        {
+            string deleteTicketsSql = @"
+            DELETE FROM Tickets
+            WHERE bookingId IN (
+                SELECT id FROM Bookings WHERE accountId = @Id
+            );";
+
+            connection.Execute(deleteTicketsSql, new { Id = id });
+
+            string deleteBookingsSql = @"
+            DELETE FROM Bookings
+            WHERE accountId = @Id;";
+
+            connection.Execute(deleteBookingsSql, new { Id = id });
+
+            string deleteAccountSql = $@"
+            DELETE FROM {Table}
+            WHERE id = @Id;";
+
+            connection.Execute(deleteAccountSql, new { Id = id });
+        }
+        catch (SqliteException ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\nCould not delete account. Database error: {ex.Message}");
+            Console.ResetColor();
+        }
     }
 
     public void ResetAccountsTable()
