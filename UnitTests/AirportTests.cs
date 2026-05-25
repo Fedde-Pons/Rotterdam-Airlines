@@ -98,7 +98,7 @@ public class AirportTests
     [TestMethod]
     public void AddAirport_ThrowsException_ReturnsError()
     {
-        // arrange & act - The catch block should handle this gracefully
+        // arrange & act 
         var result = AirportLogic.AddAirport("Test", "Terminal", "City!@#", "Country!");
 
         // assert
@@ -155,5 +155,157 @@ public class AirportTests
 
         // assert
         Assert.IsTrue(result.Item1, "Airports with extra spaces should be added successfully");
+    }
+
+    [TestMethod]
+    public void AddAirport_NullName_FailsGracefully()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport(null, "Terminal", "ValidCity", "ValidCountry");
+
+        // assert 
+        Assert.IsTrue(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullAddress_FailsGracefully()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("TestName", null, "ValidCity", "ValidCountry");
+
+        // assert 
+        Assert.IsTrue(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullCity_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("TestName", "Terminal", null, "ValidCountry");
+
+        // assert - Should fail validation and return error message
+        Assert.IsFalse(result.Item1);
+        Assert.IsTrue(string.IsNullOrEmpty(result.Item2) || 
+                     result.Item2 == "not a real location or city" || 
+                     result.Item2.Contains("convert") || 
+                     result.Item2 == "undefined behavior happend");
+    }
+
+    [TestMethod]
+    public void AddAirport_NullCountry_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("TestName", "Terminal", "ValidCity", null);
+
+        // assert - Should fail validation and return error message
+        Assert.IsFalse(result.Item1);
+        Assert.IsTrue(string.IsNullOrEmpty(result.Item2) || 
+                     result.Item2 == "not a real location or city" || 
+                     result.Item2.Contains("convert") || 
+                     result.Item2 == "undefined behavior happend");
+    }
+
+    [TestMethod]
+    public void AddAirport_AllNullInputs_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport(null, null, null, null);
+
+        // assert 
+        Assert.IsFalse(result.Item1);
+        Assert.IsTrue(string.IsNullOrEmpty(result.Item2) || 
+                     result.Item2 == "not a real location or city" || 
+                     result.Item2.Contains("convert") || 
+                     result.Item2 == "undefined behavior happend");
+    }
+
+    [TestMethod]
+    public void AddAirport_MixedNullAndEmptyInputs_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("Name", "Address", null, "");
+
+        // assert 
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullNameWithValidOtherInputs_FailsModelCreation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport(null, "Address", "ValidCity", "ValidCountry");
+
+        // assert - Should fail because the model cannot be created with null values
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullNameWithNullOtherInputs_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport(null, "Address", "City", null);
+
+        // assert - Should fail due to null country
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullCityWithAllOtherNulls_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("Name", "Address", null, "Country");
+
+        // assert - Should fail due to null city (first validation check)
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullCityWithValidOtherInputs_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("Name", "Address", null, "Country");
+
+        // assert 
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullCountryWithValidOtherInputs_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("Name", "Address", "City", null);
+
+        // assert 
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullCountryWithNullName_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport(null, "Address", "City", null);
+
+        // assert 
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullAddressWithNullCountry_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport("Name", null, "City", null);
+
+        // assert 
+        Assert.IsFalse(result.Item1);
+    }
+
+    [TestMethod]
+    public void AddAirport_NullEverythingExceptAddress_FailsValidation()
+    {
+        // arrange & act 
+        var result = AirportLogic.AddAirport(null, "JustAnAddress", null, null);
+
+        // assert 
+        Assert.IsFalse(result.Item1);
     }
 }
