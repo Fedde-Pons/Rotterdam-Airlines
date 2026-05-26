@@ -85,18 +85,28 @@ public static class MyBookings
                     string passangerName = passanger != null
                         ? $"{passanger.FirstName} {passanger.LastName}"
                         : "(unknown passenger)";
-                    string seatLabel = seat != null ? seat.SeatNumber : "(unknown)";
-                    string flightLabel = flight != null
-                        ? $"{flight.FlightNumber} ({flight.DepartureCity} -> {flight.DestinationCity})"
-                        : $"Flight #{t.FlightId}";
 
-                    Console.WriteLine($"  Ticket {i + 1}");
-                    Console.WriteLine($"    Flight:    {flightLabel}");
-                    Console.WriteLine($"    Passenger: {passangerName}");
-                    Console.WriteLine($"    Seat:      {seatLabel}");
-                    Console.WriteLine($"    Price:     €{t.Price}");
-                    Console.WriteLine($"    Baggage:   {t.ExtraBaggageKg} kg extra");
-                    Console.WriteLine($"    Status:    {(t.IsCheckedIn ? "\x1b[32mChecked In\x1b[0m" : "\x1b[31mNot Checked In\x1b[0m")}");
+                    Console.WriteLine($"  ── Ticket {i + 1} ──────────────────────");
+                    Console.WriteLine($"  Passenger:   {passangerName}");
+                    if (flight != null)
+                    {
+                        Console.WriteLine($"  Flight:      {flight.FlightNumber}");
+                        Console.WriteLine($"  From:        {flight.DepartureAirportName} ({flight.DepartureCity})");
+                        Console.WriteLine($"  Departure:   {flight.DepartureTime}");
+                        Console.WriteLine($"  To:          {flight.DestinationAirportName} ({flight.DestinationCity})");
+                        Console.WriteLine($"  Arrival:     {flight.ArrivalTime}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"  Flight:      #{t.FlightId}");
+                    }
+                    if (seat != null)
+                        Console.WriteLine($"  Seat:        {seat.SeatNumber}  ({seat.Seatclass})");
+                    else
+                        Console.WriteLine($"  Seat:        (unknown)");
+                    Console.WriteLine($"  Price:       €{t.Price}");
+                    Console.WriteLine($"  Baggage:     {t.ExtraBaggageKg} kg extra");
+                    Console.WriteLine($"  Status:      {(t.IsCheckedIn ? "\x1b[32mChecked In\x1b[0m" : "\x1b[31mNot Checked In\x1b[0m")}");
                     Console.WriteLine();
                 }
             }

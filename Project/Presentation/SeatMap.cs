@@ -9,6 +9,7 @@ public static class SeatMap
     private const string YELLOW = "\x1b[93m";
     private const string BOLD_YELLOW = "\x1b[1;93m";
     private const string BOLD_CYAN = "\x1b[1;96m";
+    private const string BOLD_GREEN = "\u001b[1;32m";
     private const string CURSOR = "\x1b[7m"; // reverse for cursor highlight
 
     public static void ShowSeatMap(FlightModel flight, List<SeatModel> availableSeats)
@@ -157,7 +158,7 @@ public static class SeatMap
         sb.Append(new string(' ', 10));
         sb.Append($"{BOLD_YELLOW}{Center("BUSINESS", bizGridWidth)}{RESET}");
         sb.Append("  ");
-        sb.Append($"{BOLD_CYAN}{Center("ECONOMY", econGridWidth)}{RESET}");
+        sb.Append($"{BOLD_GREEN}{Center("ECONOMY", econGridWidth)}{RESET}");
         Console.WriteLine(sb);
 
         // Nose — body inner width = space between the │ borders of a seat row
@@ -205,7 +206,7 @@ public static class SeatMap
         sb.Append(new string(' ', 10));
         sb.Append($"{BOLD_YELLOW}{Center("BUSINESS", bizGridWidth)}{RESET}");
         sb.Append("  ");
-        sb.Append($"{BOLD_CYAN}{Center("ECONOMY", econGridWidth)}{RESET}");
+        sb.Append($"{BOLD_GREEN}{Center("ECONOMY", econGridWidth)}{RESET}");
         Console.WriteLine(sb);
 
         // Nose

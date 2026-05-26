@@ -76,14 +76,15 @@ public static class BookingForums
 
         while (true)
         {
-            var key = Console.ReadKey(intercept: true);
-            if (key.Key == ConsoleKey.Y) break;
-            if (key.Key == ConsoleKey.N)
+            string? input = Console.ReadLine()?.Trim().ToUpper();
+            if (input == "Y") break;
+            if (input == "N")
             {
-                Console.WriteLine("\n\nBooking cancelled. Returning to main menu...");
+                Console.WriteLine("\nBooking cancelled. Returning to main menu...");
                 Console.ReadKey();
                 return;
             }
+            Console.WriteLine("Invalid input. Please type Y or N and press Enter:");
         }
 
         // ── SAVE TO DATABASE ───────────────────────────────────────────
@@ -124,6 +125,10 @@ public static class BookingForums
         }
 
         Console.WriteLine($"  Total paid: €{totalPrice}");
+
+        Console.WriteLine("\nYou can find this booking back in 'My Bookings' from the main menu.");
+        Console.WriteLine("\nPress any key to return to the main menu...");
+        Console.ReadKey();
     }
     private static int NumberOfTickets()
     {
