@@ -24,20 +24,21 @@ static class FlightList
                 }
                 else
                 {
-                    var leftBoard = BuildBoardLines("ALL FLIGHTS", flights, isDeparture: true);
-                    var rightBoard = new List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)>();
+                    var departures = flights.Where(f => f.DepartureAirportId == 8).ToList();
+                    var arrivals = flights.Where(f => f.DestinationAirportId == 8).ToList();
 
+                    var leftBoard = BuildBoardLines("DEPARTURES", departures, isDeparture: true);
+                    var rightBoard = BuildBoardLines("ARRIVALS", arrivals, isDeparture: false);
                     PrintBoardsSideBySide(leftBoard, rightBoard);
                 }
 
                 Console.WriteLine("Press any key to return to the menu...");
             }
-
-            if (Console.KeyAvailable)
+            if(Console.KeyAvailable)
             {
                 Console.ReadKey();
                 break;
-            }
+            }            
         }
     }
 
@@ -45,7 +46,6 @@ static class FlightList
     {
         if (DateTime.TryParse(dateTime, out var dt))
             return dt.ToString("dd-MM-yyyy HH:mm:ss");
-
         return dateTime ?? "";
     }
 
@@ -59,24 +59,18 @@ static class FlightList
             string t1 = $"  {title} - Rotterdam Airlines";
             string t2 = "  No flights available.";
             int w = Math.Max(t1.Length, t2.Length);
-
             lines.Add((t1.PadRight(w), null, ConsoleColor.White, w));
             lines.Add((t2.PadRight(w), null, ConsoleColor.White, w));
-
             return lines;
         }
 
         var rows = new List<string[]>();
-
         foreach (var f in flights)
         {
             string city = isDeparture
                 ? $"{f.DestinationCity} ({f.DestinationCountry})"
                 : $"{f.DepartureCity} ({f.DepartureCountry})";
-
-            string time = isDeparture
-                ? FormatShortTime(f.DepartureTime)
-                : FormatShortTime(f.ArrivalTime);
+            string time = isDeparture ? FormatShortTime(f.DepartureTime) : FormatShortTime(f.ArrivalTime);
 
             rows.Add(new[]
             {
@@ -89,24 +83,18 @@ static class FlightList
 
         string directionHeader = isDeparture ? "To" : "From";
         string timeHeader = isDeparture ? "Departure" : "Arrival";
-
         string[] headers = { "Flight", directionHeader, timeHeader, "Status" };
         int[] widths = new int[headers.Length];
-
         for (int c = 0; c < headers.Length; c++)
         {
             widths[c] = headers[c].Length;
-
             foreach (var row in rows)
-            {
                 if (row[c].Length > widths[c])
                     widths[c] = row[c].Length;
-            }
         }
 
         string fmt = " " + string.Join("  ", widths.Select((w, i) => $"{{{i},-{w}}}"));
         string headerLine = string.Format(fmt, headers);
-
         int boardWidth = headerLine.Length;
         string separator = new string('=', boardWidth);
 
@@ -122,9 +110,7 @@ static class FlightList
         {
             string status = row[^1];
             string[] rowWithoutStatus = row.Take(row.Length - 1).ToArray();
-
             string text = string.Format(fmtNoStatus, rowWithoutStatus) + "  ";
-
             ConsoleColor color = status switch
             {
                 "Scheduled" => ConsoleColor.Green,
@@ -132,7 +118,6 @@ static class FlightList
                 "Cancelled" => ConsoleColor.Red,
                 _ => ConsoleColor.White
             };
-
             lines.Add((text, status.PadRight(widths[^1]), color, boardWidth));
         }
 
@@ -157,18 +142,14 @@ static class FlightList
             if (i < left.Count)
             {
                 var l = left[i];
-
                 Console.Write(l.Text);
-
                 if (l.Status != null)
                 {
                     Console.ForegroundColor = l.Color;
                     Console.Write(l.Status);
                     Console.ResetColor();
                 }
-
                 int written = l.Text.Length + (l.Status?.Length ?? 0);
-
                 if (written < leftWidth)
                     Console.Write(new string(' ', leftWidth - written));
             }
@@ -182,9 +163,7 @@ static class FlightList
             if (i < right.Count)
             {
                 var r = right[i];
-
                 Console.Write(r.Text);
-
                 if (r.Status != null)
                 {
                     Console.ForegroundColor = r.Color;
@@ -208,7 +187,6 @@ static class FlightList
             "Cancelled" => ConsoleColor.Red,
             _ => ConsoleColor.White
         };
-
         Console.ForegroundColor = color;
         Console.Write(status.PadRight(width));
         Console.ResetColor();
@@ -233,7 +211,6 @@ static class FlightList
         }
 
         Console.WriteLine("\nAvailable Flights:");
-
         foreach (var flight in flights)
         {
             Console.WriteLine($"- {flight.FlightNumber}: {flight.DepartureCity} to {flight.DestinationCity} at {flight.DepartureTime}");
