@@ -17,7 +17,7 @@ public static class MyBookings
         {
             Console.Clear();
             Console.WriteLine("======================================");
-            Console.WriteLine("             MY BOOKINGS              ");
+            Console.WriteLine("            MY BOOKINGS               ");
             Console.WriteLine("======================================\n");
 
             List<BookingModel> bookings = BookingLogic.GetBookingsForAccount(AccountsLogic.CurrentAccount.Id);
@@ -39,7 +39,7 @@ public static class MyBookings
             Console.WriteLine("\nEnter the number of a booking to view it, or q to return to the main menu:");
             string? input = Console.ReadLine();
 
-            if (input.ToLower() == "q")
+            if (input?.ToLower() == "q")
                 return;
 
             if (!int.TryParse(input, out int choice) || choice < 1 || choice > bookings.Count)
@@ -112,17 +112,37 @@ public static class MyBookings
             }
 
             bool isCancelled = BookingLogic.IsCancelled(booking);
-            
+
+            bool needsCheckIn = false;
+            foreach (var t in tickets)
+            {
+                if (!t.IsCheckedIn)
+                {
+                    needsCheckIn = true;
+                    break;
+                }
+            }
+
             if (!isCancelled)
-                {
+            {
                 Console.WriteLine("1: Cancel this booking");
-                Console.WriteLine("2: Check in online");
-                Console.WriteLine("3: Back to my bookings");
-                }
-            else
+
+                if (needsCheckIn)
                 {
-                Console.WriteLine("1: Back to my bookings");
+                    Console.WriteLine("2: Check in online");
+                    Console.WriteLine("3: Back to my bookings");
                 }
+                else
+                {
+                    Console.WriteLine("2: Back to my bookings");
+                }
+            }
+            else
+            {
+                Console.WriteLine("1: Back to my bookings");
+            }
+
+            Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
             string? input = Console.ReadLine();
 
             if (isCancelled)
@@ -134,21 +154,22 @@ public static class MyBookings
             }
             else
             {
-                switch (input)
+                if (input == "1")
                 {
-                    case "1":
-                        if (ConfirmCancellation(booking))
-                            return;
-                        break;
-                    case "2":
-                        PerformCheckIn(booking, tickets);
-                        break;
-                    case "3":
-                        return;
-                    default:
-                        Console.WriteLine("\nInvalid input. Press any key to try again...");
-                        Console.ReadKey();
-                        break;
+                    if (ConfirmCancellation(booking)) return;
+                }
+                else if (input == "2" && needsCheckIn)
+                {
+                    PerformCheckIn(booking, tickets);
+                }
+                else if ((input == "2" && !needsCheckIn) || (input == "3" && needsCheckIn))
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("\nInvalid input. Press any key to try again...");
+                    Console.ReadKey();
                 }
             }
         }
@@ -186,7 +207,7 @@ public static class MyBookings
         return true;
     }
 
-private static void PerformCheckIn(BookingModel booking, List<TicketModel> tickets)
+    private static void PerformCheckIn(BookingModel booking, List<TicketModel> tickets)
     {
         Console.Clear();
         Console.WriteLine("======================================");
@@ -210,7 +231,6 @@ private static void PerformCheckIn(BookingModel booking, List<TicketModel> ticke
         Console.WriteLine($"You are about to check in the following {pendingTickets.Count} passenger(s):\n");
         Console.WriteLine("------------------------------------------------------------");
 
-
         foreach (var t in pendingTickets)
         {
             PassangerModel? passanger = PassangerLogic.GetById(t.PassengerId);
@@ -221,13 +241,12 @@ private static void PerformCheckIn(BookingModel booking, List<TicketModel> ticke
             string seatLabel = seat != null ? seat.SeatNumber : "(unknown)";
             string flightLabel = flight != null ? flight.FlightNumber : $"(Flight #{t.FlightId})";
 
-            
             Console.WriteLine($" * {passangerName,-20} | Flight: {flightLabel,-8} | Seat: {seatLabel}");
         }
         Console.WriteLine("------------------------------------------------------------\n");
 
         Console.WriteLine("Do you want to confirm check-in for these passengers? (Y/N):");
-        
+
         string? input = Console.ReadLine()?.ToUpper();
 
         if (input == "Y")
@@ -235,8 +254,8 @@ private static void PerformCheckIn(BookingModel booking, List<TicketModel> ticke
             TicketAccess db = new TicketAccess();
             foreach (var t in pendingTickets)
             {
-                db.UpdateCheckInStatus(t.Id); 
-                t.IsCheckedIn = true;         
+                db.UpdateCheckInStatus(t.Id);
+                t.IsCheckedIn = true;
             }
 
             Console.WriteLine("\nSuccess! Online check-in is confirmed.");
@@ -250,4 +269,4 @@ private static void PerformCheckIn(BookingModel booking, List<TicketModel> ticke
         Console.WriteLine("\nPress any key to return...");
         Console.ReadKey();
     }
-    }
+}
