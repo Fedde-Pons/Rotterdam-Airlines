@@ -53,11 +53,11 @@ public static class DatabaseSeeder
     {
         var bookings = new[]
         {
-            (Id: 1, AccountId: 2, Date: "2026-03-15 14:20:00", TotalPrice: 260.00, Status: "pending"),
-            (Id: 2, AccountId: 2, Date: "2026-04-01 09:45:00", TotalPrice: 130.00, Status: "confirmed"),
-            (Id: 3, AccountId: 3, Date: "2026-03-20 16:10:00", TotalPrice: 150.00, Status: "pending"),
-            (Id: 4, AccountId: 3, Date: "2026-04-05 12:00:00", TotalPrice: 175.00, Status: "cancelled"),
-            (Id: 5, AccountId: 4, Date: "2026-04-10 18:30:00", TotalPrice: 390.00, Status: "confirmed"),
+            (Id: 1, AccountId: 2, Date: "2026-03-15 14:20:00", TotalPrice: 260.00, Status: "Pending"),
+            (Id: 2, AccountId: 2, Date: "2026-04-01 09:45:00", TotalPrice: 130.00, Status: "Confirmed"),
+            (Id: 3, AccountId: 3, Date: "2026-03-20 16:10:00", TotalPrice: 150.00, Status: "Pending"),
+            (Id: 4, AccountId: 3, Date: "2026-04-05 12:00:00", TotalPrice: 175.00, Status: "Cancelled"),
+            (Id: 5, AccountId: 4, Date: "2026-04-10 18:30:00", TotalPrice: 390.00, Status: "Confirmed"),
         };
 
         foreach (var b in bookings)

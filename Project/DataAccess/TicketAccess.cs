@@ -44,4 +44,16 @@ public class TicketAccess
 
         connection.Execute(sql, new { TicketId = ticketId });
     }
+
+    public void ResetCheckInForBooking(int bookingId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        string sql = $@"
+        UPDATE {Table}
+        SET isCheckedIn = 0
+        WHERE bookingId = @BookingId;";
+
+        connection.Execute(sql, new { BookingId = bookingId });
+    }
 }

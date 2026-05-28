@@ -9,7 +9,7 @@ public static class BookingForums
     public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount.Id;
-        BookingModel booking = new BookingModel(accountID, date, "pending");
+        BookingModel booking = new BookingModel(accountID, date, "Pending");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket, SeatModel seat)> bookingValues = [];
 
