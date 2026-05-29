@@ -33,7 +33,7 @@ public static class MyBookings
             for (int i = 0; i < bookings.Count; i++)
             {
                 var b = bookings[i];
-                Console.WriteLine($"{i + 1}: Booking #{b.Id}  |  Date: {b.Date}  |  Status: {b.Status}  |  Total: €{b.TotalPrice}");
+                Console.WriteLine($"{i + 1}: Booking #{b.Id}  |  Date: {b.Date}  |  Status: {FormatStatus(b.Status)}  |  Total: €{b.TotalPrice}");
             }
 
             Console.WriteLine("\nEnter the number of a booking to view it, or q to return to the main menu:");
@@ -53,6 +53,23 @@ public static class MyBookings
         }
     }
 
+    private static string FormatStatus(string status)
+    {
+        if (string.IsNullOrEmpty(status))
+            return status;
+
+        string label = char.ToUpper(status[0]) + status.Substring(1);
+
+        if (status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+            return $"\x1b[31m{label}\x1b[0m";
+        if (status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase))
+            return $"\x1b[32m{label}\x1b[0m";
+        if (status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+            return $"\x1b[38;5;208m{label}\x1b[0m";
+
+        return label;
+    }
+
     private static void ShowBookingDetails(BookingModel booking)
     {
         while (true)
@@ -62,7 +79,7 @@ public static class MyBookings
             Console.WriteLine($"          BOOKING #{booking.Id}");
             Console.WriteLine("======================================\n");
             Console.WriteLine($"Date:    {booking.Date}");
-            Console.WriteLine($"Status:  {booking.Status}");
+            Console.WriteLine($"Status:  {FormatStatus(booking.Status)}");
             Console.WriteLine($"Total:   €{booking.TotalPrice}\n");
 
             List<TicketModel> tickets = TicketLogic.GetTicketsForBooking(booking.Id);

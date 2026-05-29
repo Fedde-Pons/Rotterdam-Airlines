@@ -170,7 +170,7 @@ public static class FlightSearch
 
                     if (bookingChoice == "1")
                     {
-                        BookingForums.Start(specificFlight, DateTime.Today.ToString("yyyy-MM-dd"));
+                        BookingForums.Start(specificFlight, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                         break;
                     }
                     else if (bookingChoice == "2")
