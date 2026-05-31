@@ -165,8 +165,9 @@ static class Menu
         if (AccountsLogic.CurrentAccount != null)
         {
             Console.WriteLine($"Logged in as {AccountsLogic.CurrentAccount.FullName}\n");
-            Console.WriteLine("1: Logout");
-            Console.WriteLine("2: Go back to the main menu");
+            Console.WriteLine("1: View account details");
+            Console.WriteLine("2: Logout");
+            Console.WriteLine("3: Go back to the main menu");
             Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
 
             string input = Console.ReadLine();
@@ -174,6 +175,10 @@ static class Menu
             switch (input)
             {
                 case "1":
+                    AccountDetails.Start();
+                    break;
+
+                case "2":
                     AccountsLogic.Logout();
                     Console.Clear();
                     Console.WriteLine("You have been logged out.");
@@ -181,7 +186,7 @@ static class Menu
                     Console.ReadKey();
                     break;
 
-                case "2":
+                case "3":
                     return;
 
                 default:
