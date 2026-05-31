@@ -4,7 +4,7 @@ public static class FlightSearch
     {   Console.Clear();
 
         FlightLogic flightLogic = new FlightLogic();
-        List<FlightModel> flights = flightLogic.GetAllFlights();
+        List<FlightModel> flights = flightLogic.GetAllFutureFlights();
 
         List<string> availableRoutes = new List<string>();
 

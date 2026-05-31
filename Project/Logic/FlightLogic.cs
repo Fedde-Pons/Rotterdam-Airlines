@@ -13,15 +13,48 @@ public class FlightLogic
         return flightList;
     }
 
+    public List<FlightModel> GetAllFutureFlights()
+    {
+        List<FlightModel> flights = flightAccess.GetAllFlights();
+
+        return flights
+            .Where(f => DateTime.TryParse(f.DepartureTime, out DateTime departureTime)
+                        && departureTime > DateTime.Now)
+            .OrderBy(f => DateTime.Parse(f.DepartureTime))
+            .ToList();
+    }
+
     public List<FlightModel> GetAllAvailableFlightsSorted()
     {
         List<FlightModel> flights = flightAccess.GetAllAvailableFlights();
-        return flights.OrderBy(f => f.DepartureTime).ToList();
+
+        return flights
+            .Where(f => DateTime.TryParse(f.DepartureTime, out DateTime departureTime)
+                        && departureTime > DateTime.Now)
+            .OrderBy(f => DateTime.Parse(f.DepartureTime))
+            .ToList();
     }
 
     public FlightModel? GetFlightById(int id)
     {
-        return flightAccess.RetrieveFlight(id);
+        FlightModel? flight = flightAccess.RetrieveFlight(id);
+
+        if (flight == null)
+        {
+            return null;
+        }
+
+        if (!DateTime.TryParse(flight.DepartureTime, out DateTime departureTime))
+        {
+            return null;
+        }
+
+        if (departureTime <= DateTime.Now)
+        {
+            return null;
+        }
+
+        return flight;
     }
 
     public SeatModel? GetSeatById(int id)
@@ -68,6 +101,9 @@ public class FlightLogic
 
         if (!DateTime.TryParse(arrivalTimeInput, out DateTime arrivalTime))
             return (false, "Invalid arrival time.");
+
+        if (departureTime <= DateTime.Now)
+            return (false, "Departure time must be in the future.");
 
         if (arrivalTime <= departureTime)
             return (false, "Arrival time must be after departure time.");
