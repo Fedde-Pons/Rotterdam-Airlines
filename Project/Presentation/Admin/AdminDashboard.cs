@@ -91,6 +91,8 @@ static class AdminDashboard
             switch (input)
             {
                 case "1":
+                    AdminFlightList flights  = new();
+                    flights.ShowAllAvailableFlightsList();
                     break;
                 case "2":
                     AdminFlightMenu.Start();
