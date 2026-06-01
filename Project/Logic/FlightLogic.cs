@@ -145,4 +145,8 @@ public class FlightLogic
 
         return sb.ToString();
     }
+    public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
+    {
+        return (false, "not implemented yet");
+    }
 }

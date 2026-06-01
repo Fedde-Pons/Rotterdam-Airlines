@@ -81,7 +81,8 @@ public class AdminFlightList : FlightList
             }
             else if (flights.Where(f => f.FlightNumber == input).ToList().Any()) 
             {
-                Console.WriteLine("test");
+                FlightModel flight = flights.Where(f => f.FlightNumber == input).ToList().First();
+                Console.WriteLine($"you selected {flight.FlightNumber}");
                 Console.ReadKey();
             }
             else
