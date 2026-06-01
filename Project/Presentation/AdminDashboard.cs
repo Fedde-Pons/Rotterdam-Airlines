@@ -24,7 +24,7 @@ static class AdminDashboard
                     AdminFlightManagement();
                     break;
                 case "2":
-                    ShowAirports();
+                    AdminAirportManagement();
                     break;
                 case "3":
                     ShowBookings();
@@ -33,6 +33,38 @@ static class AdminDashboard
                     AdminAccountManagement();
                     break;
                 case "5":
+                    return;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Invalid input, please try again.");
+                    Console.WriteLine("Press any key to return to the Admin Dashboard...");
+                    Console.ReadKey();
+                    break;
+            }
+        }
+    }
+
+    private static void AdminAirportManagement()
+    {
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("=== Airport Management ===\n");
+            Console.WriteLine("1: View All Airports");
+            Console.WriteLine("2: Add An Airport");
+            Console.WriteLine("3: Return to Admin Dashboard");
+            Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
+
+            string input = Console.ReadLine();
+            switch (input)
+            {
+                case "1":
+                    AirportManagement.ViewAllAirports();
+                    break;
+                case "2":
+                    ShowAirports();
+                    break;
+                case "3":
                     return;
                 default:
                     Console.Clear();
@@ -113,7 +145,7 @@ static class AdminDashboard
         Console.Clear();
         Console.WriteLine("=== All Bookings ===\n");
 
-        List<BookingModel> bookings = new BookingAccess().GetAll().Where(x => x.Status.ToLower() == "pending").ToList();
+        List<BookingModel> bookings = new BookingAccess().GetAll().ToList();
 
         if (bookings.Count == 0)
         {

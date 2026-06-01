@@ -9,7 +9,7 @@ public static class BookingForums
     public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount.Id;
-        BookingModel booking = new BookingModel(accountID, date, "Pending");
+        BookingModel booking = new BookingModel(accountID, date, "Confirmed");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket, SeatModel seat)> bookingValues = [];
 
@@ -33,7 +33,6 @@ public static class BookingForums
         for (int i = 0; i < numberOfTickets; i++)
         {
             PassangerModel passanger = CreatePassanger(i + 1, numberOfTickets);
-            // seat and price logic goes here
             var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, seatData.allSeats, economyPrice, businessPrice);
 
             if (seatingResult == null)
