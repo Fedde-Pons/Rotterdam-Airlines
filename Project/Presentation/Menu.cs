@@ -55,7 +55,8 @@ static class Menu
                 switch (input)
                 {
                     case "1":
-                        FlightList.ShowAllAvailableFlightsList();
+                        FlightList flightList = new();
+                        flightList.ShowAllAvailableFlightsList();
                         break;
 
                     case "2":
@@ -80,7 +81,8 @@ static class Menu
                 switch (input)
                 {
                     case "1":
-                        FlightList.ShowAllAvailableFlightsList();
+                        FlightList flightList = new();
+                        flightList.ShowAllAvailableFlightsList();
                         break;
 
                     case "2":
@@ -113,8 +115,8 @@ static class Menu
                 switch (input)
                 {
                     case "1":
-                        FlightList.ShowAllAvailableFlightsList();
-                        break;
+                        FlightList flightList = new();
+                        flightList.ShowAllAvailableFlightsList();                        break;
 
                     case "2":
                         FlightSearch.StartSearch();
