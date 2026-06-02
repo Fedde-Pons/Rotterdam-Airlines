@@ -40,4 +40,27 @@ public class PassangerAccess
 
         return connection.Query<PassangerModel>(sql, new { BookingId = bookingId }).ToList();
     }
+
+    public List<PassangerListEntry> GetPassengerListForFlight(int flightId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        string sql = $@"
+        SELECT
+            p.firstName     AS FirstName,
+            p.lastName      AS LastName,
+            p.passportNumber AS PassportNumber,
+            s.seatNumber    AS SeatNumber,
+            s.seatclass     AS SeatClass,
+            t.extraBaggageKg AS ExtraBaggageKg
+        FROM Tickets t
+        INNER JOIN {Table} p ON p.id = t.passengerId
+        INNER JOIN Seats s   ON s.id = t.seatId
+        INNER JOIN Bookings b ON b.id = t.bookingId
+        WHERE t.flightId = @FlightId
+          AND LOWER(b.status) != 'cancelled'
+        ORDER BY s.rowNumber, s.seatNumber;";
+
+        return connection.Query<PassangerListEntry>(sql, new { FlightId = flightId }).ToList();
+    }
 }

@@ -82,7 +82,7 @@ static class AdminDashboard
         {
             Console.Clear();
             Console.WriteLine("=== Flight Management ===\n");
-            Console.WriteLine("1: View All Flights)");
+            Console.WriteLine("1: View All Flights");
             Console.WriteLine("2: Add a flight");
             Console.WriteLine("3: Return to Admin Dashboard");
             Console.WriteLine("\nPlease enter the number of the option you would like to choose:");
