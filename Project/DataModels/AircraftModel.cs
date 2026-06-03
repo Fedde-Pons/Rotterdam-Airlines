@@ -4,16 +4,18 @@ public class AircraftModel
     public string Manufacturer { get; set; }
     public string Model { get; set; }
     public int TotalSeats { get; set; }
-    public int BuisnessSeats { get; set; }
+    public int BusinessSeats { get; set; }
     public int EconomySeats { get; set; }
 
 
-    public AircraftModel(string manufacturer, string model, int buisnessSeats, int economySeats)
+    public AircraftModel() { }
+
+    public AircraftModel(string manufacturer, string model, int businessSeats, int economySeats)
     {
         Manufacturer = manufacturer;
         Model = model;
-        BuisnessSeats = buisnessSeats;
+        BusinessSeats = businessSeats;
         EconomySeats = economySeats;
-        TotalSeats = economySeats + buisnessSeats;
+        TotalSeats = economySeats + businessSeats;
     }
 }

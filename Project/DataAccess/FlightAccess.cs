@@ -58,8 +58,6 @@ public class FlightAccess
             (@FlightNumber, @AircraftId, @DepartureAirportId, @DestinationAirportId, @DepartureTime, @ArrivalTime, @BasePrice, @Status)";
 
             int result = _connection.Execute(sql, flight);
-            Console.WriteLine($"Inserted rows: {result}");
-
             return result > 0;
         }
         catch (Exception ex)
@@ -168,5 +166,11 @@ public class FlightAccess
     {
         string sql = "SELECT * FROM Seats WHERE id = @Id";
         return _connection.QueryFirstOrDefault<SeatModel>(sql, new { Id = seatId });
+    }
+
+    public List<AircraftModel> GetAllAircrafts()
+    {
+        string sql = "SELECT * FROM Aircrafts";
+        return _connection.Query<AircraftModel>(sql).ToList();
     }
 }
