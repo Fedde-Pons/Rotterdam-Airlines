@@ -3,48 +3,46 @@ public class AdminFlightMenu
     public static void Start()
     {
         FlightLogic flightLogic = new FlightLogic();
+        var aircrafts = flightLogic.GetAllAircrafts();
+        var airports = flightLogic.GetAllAirports();
 
         Console.Clear();
-
         Console.WriteLine("=== ADD NEW FLIGHT ===");
+        Console.WriteLine();
 
-        Console.Write("Flight Number: ");
-        string flightNumber = Console.ReadLine();
+        string flightNumber = ReadFlightNumber(flightLogic);
+        int aircraftIndex = ReadAircraftChoice(aircrafts);
+        int departureIndex = ReadDepartureAirport(airports);
+        string departureTime = ReadDepartureDateTime();
+        int arrivalIndex = ReadArrivalAirport(airports, departureIndex);
+        string arrivalTime = ReadArrivalDateTime(departureTime);
+        string basePrice = ReadBasePrice();
 
-        Console.Write("Aircraft Id: ");
-        string aircraftId = Console.ReadLine();
+        PrintOverview(flightNumber, aircrafts, aircraftIndex, airports, departureIndex, departureTime, arrivalIndex, arrivalTime, basePrice);
 
-        Console.Write("Departure Airport Id: ");
-        string departureAirportId = Console.ReadLine();
+        Console.Write("Do you want to confirm this flight? (Y/N): ");
+        string confirm = Console.ReadLine()?.Trim().ToLower();
 
-        Console.Write("Destination Airport Id: ");
-        string destinationAirportId = Console.ReadLine();
-
-        Console.Write("Departure Time (yyyy-MM-dd HH:mm): ");
-        string departureTime = Console.ReadLine();
-
-        Console.Write("Arrival Time (yyyy-MM-dd HH:mm): ");
-        string arrivalTime = Console.ReadLine();
-
-        Console.Write("Base Price: ");
-        string basePrice = Console.ReadLine();
-
-        Console.Write("Status: ");
-        string status = Console.ReadLine();
+        if (confirm != "y")
+        {
+            Console.Clear();
+            Console.WriteLine("Flight not added.");
+            Console.WriteLine("Press any key to return to Flight Management...");
+            Console.ReadKey();
+            return;
+        }
 
         var result = flightLogic.AddFlight(
             flightNumber,
-            aircraftId,
-            departureAirportId,
-            destinationAirportId,
+            aircrafts[aircraftIndex].Id.ToString(),
+            airports[departureIndex].Id.ToString(),
+            airports[arrivalIndex].Id.ToString(),
             departureTime,
             arrivalTime,
-            basePrice,
-            status
+            basePrice
         );
 
         Console.WriteLine();
-
         if (result.Success)
         {
             Console.WriteLine(result.ErrorMessage);
@@ -54,6 +52,176 @@ public class AdminFlightMenu
             Console.WriteLine("ERROR: " + result.ErrorMessage);
         }
 
+        Console.WriteLine("Press any key to return to Flight Management...");
         Console.ReadKey();
+    }
+
+    private static void PrintOverview(string flightNumber, List<AircraftModel> aircrafts, int aircraftIndex, List<AirportModel> airports, int departureIndex, string departureTime, int arrivalIndex, string arrivalTime, string basePrice)
+    {
+        var ac = aircrafts[aircraftIndex];
+        var dep = airports[departureIndex];
+        var arr = airports[arrivalIndex];
+
+        Console.Clear();
+        Console.WriteLine();
+        Console.WriteLine("=== FLIGHT OVERVIEW ===");
+        Console.WriteLine($"  1. Flight Number : {flightNumber}");
+        Console.WriteLine($"  2. Aircraft      : {ac.Manufacturer} {ac.Model}  (Business: {ac.BusinessSeats} | Economy: {ac.EconomySeats})");
+        Console.WriteLine($"  3. Departure     : {dep.Name} — {dep.City}, {dep.Country}");
+        Console.WriteLine($"  4. Departure Time: {departureTime}");
+        Console.WriteLine($"  5. Arrival       : {arr.Name} — {arr.City}, {arr.Country}");
+        Console.WriteLine($"  6. Arrival Time  : {arrivalTime}");
+        Console.WriteLine($"  7. Base Price    : {basePrice}");
+        Console.WriteLine();
+    }
+
+    private static string ReadFlightNumber(FlightLogic flightLogic)
+    {
+        string? error = null;
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("=== ADD NEW FLIGHT ===");
+            Console.WriteLine();
+            if (error != null)
+                Console.WriteLine(error);
+            Console.Write("Flight Number: ");
+            string input = Console.ReadLine()?.Trim() ?? "";
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                error = "Flight number cannot be empty.";
+                continue;
+            }
+            if (flightLogic.FlightNumberExists(input))
+            {
+                error = $"Flight number '{input}' already exists. Please enter a different number.";
+                continue;
+            }
+            return input;
+        }
+    }
+
+    private static int ReadAircraftChoice(List<AircraftModel> aircrafts)
+    {
+        Console.Clear();
+        Console.WriteLine("=== ADD NEW FLIGHT ===");
+        Console.WriteLine();
+        Console.WriteLine("Select Aircraft Type:");
+        for (int i = 0; i < aircrafts.Count; i++)
+        {
+            var a = aircrafts[i];
+            Console.WriteLine($"  {i + 1}. {a.Manufacturer} {a.Model}  (Business: {a.BusinessSeats} | Economy: {a.EconomySeats})");
+        }
+        return ReadMenuChoice(aircrafts.Count);
+    }
+
+    private static int ReadDepartureAirport(List<AirportModel> airports)
+    {
+        Console.Clear();
+        Console.WriteLine("=== ADD NEW FLIGHT ===");
+        Console.WriteLine();
+        Console.WriteLine("Select Departure Airport:");
+        for (int i = 0; i < airports.Count; i++)
+        {
+            var ap = airports[i];
+            Console.WriteLine($"  {i + 1}. {ap.Name} — {ap.City}, {ap.Country}");
+        }
+        return ReadMenuChoice(airports.Count);
+    }
+
+    private static string ReadDepartureDateTime()
+    {
+        string? error = null;
+        while (true)
+        {
+            if (error != null)
+                Console.WriteLine(error);
+            string date = ReadDate("Departure Date (yyyy-MM-dd): ");
+            string time = ReadTime("Departure Time (HH:mm): ");
+            string combined = $"{date} {time}";
+            if (DateTime.Parse(combined) > DateTime.Now)
+                return combined;
+            error = "\nDeparture must be in the future.";
+        }
+    }
+
+    private static int ReadArrivalAirport(List<AirportModel> airports, int departureIndex)
+    {
+        var arrivalOptions = airports[departureIndex].Id == 7
+            ? airports.Where((ap, i) => i != departureIndex).ToList()
+            : airports.Where(ap => ap.Id == 7).ToList();
+
+        Console.Clear();
+        Console.WriteLine("=== ADD NEW FLIGHT ===");
+        Console.WriteLine();
+        Console.WriteLine("Select Arrival Airport:");
+        for (int i = 0; i < arrivalOptions.Count; i++)
+        {
+            var ap = arrivalOptions[i];
+            Console.WriteLine($"  {i + 1}. {ap.Name} — {ap.City}, {ap.Country}");
+        }
+        int optionIndex = ReadMenuChoice(arrivalOptions.Count);
+        return airports.IndexOf(arrivalOptions[optionIndex]);
+    }
+
+    private static string ReadArrivalDateTime(string departureTime)
+    {
+        string? error = null;
+        while (true)
+        {
+            if (error != null)
+                Console.WriteLine("\n" + error);
+            string date = ReadDate("Arrival Date (yyyy-MM-dd): ");
+            string time = ReadTime("Arrival Time (HH:mm): ");
+            string combined = $"{date} {time}";
+            if (DateTime.Parse(combined) > DateTime.Parse(departureTime))
+                return combined;
+            error = "The Arrival must be after the Departure, please try again.";
+        }
+    }
+
+    private static string ReadBasePrice()
+    {
+        Console.Clear();
+        Console.WriteLine("=== ADD NEW FLIGHT ===");
+        Console.WriteLine();
+        Console.Write("Base Price: ");
+        return Console.ReadLine();
+    }
+
+    private static int ReadMenuChoice(int max)
+    {
+        while (true)
+        {
+            Console.Write($"Enter choice (1-{max}): ");
+            string input = Console.ReadLine();
+            if (int.TryParse(input, out int choice) && choice >= 1 && choice <= max)
+                return choice - 1;
+            Console.WriteLine($"\nInvalid choice. Please enter a number between 1 and {max}.");
+        }
+    }
+
+    private static string ReadDate(string prompt)
+    {
+        while (true)
+        {
+            Console.Write(prompt);
+            string input = Console.ReadLine();
+            if (DateTime.TryParseExact(input, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out _))
+                return input;
+            Console.WriteLine("Invalid format. Please use yyyy-MM-dd (e.g. 2026-07-15).");
+        }
+    }
+
+    private static string ReadTime(string prompt)
+    {
+        while (true)
+        {
+            Console.Write(prompt);
+            string input = Console.ReadLine();
+            if (DateTime.TryParseExact(input, new[] { "HH:mm", "HH:mm:ss" }, null, System.Globalization.DateTimeStyles.None, out DateTime parsed))
+                return parsed.ToString("HH:mm");
+            Console.WriteLine("Invalid format. Please use HH:mm or HH:mm:ss (e.g. 14:30 or 14:30:00).");
+        }
     }
 }
