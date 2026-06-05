@@ -32,7 +32,18 @@ public class TicketAccess
 
         return connection.Query<TicketModel>(sql, new { BookingId = bookingId }).ToList();
     }
-    
+    public List<TicketModel> GetByFlightId(int flightId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        string sql = $@"
+        SELECT *
+        FROM {Table}
+        WHERE flightID = @FlightId;";
+
+        return connection.Query<TicketModel>(sql, new { FlightId = flightId }).ToList();
+    }
+
     public void UpdateCheckInStatus(int ticketId)
     {
         using var connection = new SqliteConnection(_connectionString);

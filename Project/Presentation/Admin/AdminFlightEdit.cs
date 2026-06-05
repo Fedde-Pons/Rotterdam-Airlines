@@ -57,7 +57,9 @@ static class AdminFlightEdit
     }
     private static void Cancelflight(FlightModel flight)
     {
-        Console.WriteLine("not implemented yet");
-        // FlightLogic.CancelFlight(flight);
+        Console.Clear();
+        FlightLogic.CancelFlight(flight);
+        Console.WriteLine("flight got canceled along side the bookings");
+        Console.ReadKey();
     }
 }

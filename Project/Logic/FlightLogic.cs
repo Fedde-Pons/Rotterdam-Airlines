@@ -176,10 +176,28 @@ public class FlightLogic
         FlightAccess db = new();
         db.EditFlightDetails(flight);
 
-        return (true, "date is editeds in database");
+        return (true, "date is edited in database");
     }
     public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
     {
-        return (false, "not implemented yet");
+        FlightAccess flightDb = new();
+        TicketAccess ticketDb = new();
+        BookingAccess bookingDb = new();
+        List<BookingModel?> cancelBookingsList = [];
+
+        List<TicketModel> tickets = ticketDb.GetByFlightId(flight.Id);
+        foreach(TicketModel ticket in tickets)
+        {
+            cancelBookingsList.Add(bookingDb.GetById(ticket.BookingId));
+        }
+        
+        foreach(BookingModel? booking in cancelBookingsList)
+        {
+            if (booking is not null)
+            bookingDb.Cancel(booking.Id);
+        }
+        flight.Status = "Cancelled"; 
+        flightDb.EditFlightDetails(flight);
+        return (true, "flight with connected bookings are canceld");
     }
 }

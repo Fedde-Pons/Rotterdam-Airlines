@@ -47,8 +47,4 @@ public static class BookingLogic
     {
         return string.Equals(booking.Status, "Cancelled", StringComparison.OrdinalIgnoreCase);
     }
-    // private bool IsValidateSeatAvailable(Plane plane)
-    // {
-    //     return false;
-    // }
 }
