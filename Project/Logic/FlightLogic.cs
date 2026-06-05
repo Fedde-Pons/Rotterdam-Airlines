@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 public class FlightLogic
@@ -161,6 +158,10 @@ public class FlightLogic
         }
 
         return sb.ToString();
+    }
+    public static (bool Success, string ErrorMessage) EditFlight(FlightModel flight)
+    {
+        return (false, "not implemented yet");
     }
     public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
     {

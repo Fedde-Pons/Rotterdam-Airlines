@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 public class AdminFlightList : FlightList
 {
     public override void ShowAllAvailableFlightsList()
@@ -15,14 +13,18 @@ public class AdminFlightList : FlightList
             Console.Write("\x1b[3J");
             Console.Out.Flush();
 
+            Console.Clear();
+            Console.Write("\x1b[3J");
+            Console.Out.Flush();
+
             if (flights == null || flights.Count == 0)
             {
                 Console.WriteLine("\nThere are currently no available flights.\n");
             }
             else
             {
-                var departures = flights.Where(f => f.DepartureAirportId == 8).ToList();
-                var arrivals = flights.Where(f => f.DestinationAirportId == 8).ToList();
+                var departures = flights.Where(f => f.DepartureAirportId == 7).ToList();
+                var arrivals = flights.Where(f => f.DestinationAirportId == 7).ToList();
 
                 var leftBoard = BuildBoardLines("DEPARTURES", departures, isDeparture: true);
                 var rightBoard = BuildBoardLines("ARRIVALS", arrivals, isDeparture: false);
@@ -59,30 +61,33 @@ public class AdminFlightList : FlightList
             Console.Write("\x1b[3J");
             Console.Out.Flush();
 
+            Console.Clear();
+            Console.Write("\x1b[3J");
+            Console.Out.Flush();
+
             if (flights == null || flights.Count == 0)
             {
                 Console.WriteLine("\nThere are currently no available flights.\n");
             }
             else
             {
-                var departures = flights.Where(f => f.DepartureAirportId == 8).ToList();
-                var arrivals = flights.Where(f => f.DestinationAirportId == 8).ToList();
+                var departures = flights.Where(f => f.DepartureAirportId == 7).ToList();
+                var arrivals = flights.Where(f => f.DestinationAirportId == 7).ToList();
 
                 var leftBoard = BuildBoardLines("DEPARTURES", departures, isDeparture: true);
                 var rightBoard = BuildBoardLines("ARRIVALS", arrivals, isDeparture: false);
                 PrintBoardsSideBySide(leftBoard, rightBoard);
             }
-
             Console.WriteLine("put in the flight you want to edit \n press 0 to go back");
             string? input = Console.ReadLine();
             if (input == "0")
             {
                 break;
             }
-            else if (flights.Where(f => f.FlightNumber == input).ToList().Any()) 
+            else if (flights.Where(f => f.FlightNumber == input).ToList().Any())
             {
                 FlightModel flight = flights.Where(f => f.FlightNumber == input).ToList().First();
-                Console.WriteLine($"you selected {flight.FlightNumber}");
+                AdminFlightEdit.ShowflightWithEditValues(flight);
                 Console.ReadKey();
             }
             else
