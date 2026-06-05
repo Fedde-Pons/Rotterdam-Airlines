@@ -12,7 +12,7 @@ static class AdminFlightEdit
             Console.WriteLine("1 to edit departure and arival time");
             Console.WriteLine("2 to edit status");
             Console.WriteLine("3 to cancel the flight (also cancels the bookings for said flight)");
-            Console.WriteLine("0 to go back to the previous menu");
+            Console.WriteLine("4 to go back to the previous menu");
             string? input = Console.ReadLine();
             switch (input)
             {
@@ -25,7 +25,7 @@ static class AdminFlightEdit
                 case "3":
                     Cancelflight(flight);
                     return;
-                case "0":
+                case "4":
                     return;
                 default:
                     Console.WriteLine("please pick of the selected menu options");
@@ -36,10 +36,13 @@ static class AdminFlightEdit
 
     private static void EditArrivalTime(FlightModel flight)
     {
-        Console.WriteLine("not implemented yet");
+        Console.WriteLine("please enter the new departure time");
+        string newDepartureTime = "";
+        Console.WriteLine("please enter the new arival time");
+        string newArivalTime = "";
         // FlightLogic.EditFlight(flight);
     }
-    private static void EditStatusTime(FlightModel flight)
+    private static void EditStatus(FlightModel flight)
     {
         Console.WriteLine("not implemented yet");
         // FlightLogic.EditFlight(flight);

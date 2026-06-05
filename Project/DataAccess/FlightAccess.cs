@@ -67,7 +67,7 @@ public class FlightAccess
         }
     }
 
-    public bool StoreNewFlightDetails(FlightModel flight)
+    public bool EditFlightDetails(FlightModel flight)
     {
         try
         {

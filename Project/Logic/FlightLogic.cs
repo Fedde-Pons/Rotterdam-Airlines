@@ -159,8 +159,17 @@ public class FlightLogic
 
         return sb.ToString();
     }
-    public static (bool Success, string ErrorMessage) EditFlight(FlightModel flight)
+    public static (bool Success, string ErrorMessage) EditFlightTime(FlightModel flight, string departurTimeInput, string arrivalTimeInput)
     {
+        if (!DateTime.TryParseExact(departurTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime departureTime))
+            return (false, "Invalid departure time. Use format yyyy-MM-dd HH:mm.");
+
+        if (!DateTime.TryParseExact(arrivalTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime arrivalTime))
+            return (false, "Invalid arrival time. Use format yyyy-MM-dd HH:mm.");
+        flight.ArrivalTime = arrivalTime.ToString("yyyy-MM-dd HH:mm");
+        flight.DepartureTime = departureTime.ToString("yyyy-MM-dd HH:mm");
+
+
         return (false, "not implemented yet");
     }
     public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
