@@ -159,6 +159,15 @@ public class FlightLogic
 
         return sb.ToString();
     }
+
+    public static (bool Success, string ErrorMessage) EditPrice(FlightModel flight, int price)
+    {
+        flight.BasePrice = price;
+        FlightAccess db = new();
+        db.EditFlightDetails(flight);
+        return (true, "price as been adjusted");
+    }
+
     public static (bool Success, string ErrorMessage) EditFlightTime(FlightModel flight, string? departurTimeInput, string? arrivalTimeInput)
     {
         if (!DateTime.TryParseExact(departurTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime departureTime))
@@ -166,6 +175,8 @@ public class FlightLogic
 
         if (!DateTime.TryParseExact(arrivalTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime arrivalTime))
             return (false, "Invalid arrival time. Use format yyyy-MM-dd HH:mm.");
+        if (departureTime <= DateTime.Parse(flight.DepartureTime))
+            return (false, "Departure must be further in the future.");
         if (departureTime <= DateTime.Now)
             return (false, "Departure time must be in the future.");
         if (arrivalTime <= departureTime)
@@ -173,9 +184,9 @@ public class FlightLogic
             
         flight.ArrivalTime = arrivalTime.ToString("yyyy-MM-dd HH:mm");
         flight.DepartureTime = departureTime.ToString("yyyy-MM-dd HH:mm");
+        flight.Status = "Delayed";
         FlightAccess db = new();
         db.EditFlightDetails(flight);
-
         return (true, "date is edited in database");
     }
     public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)

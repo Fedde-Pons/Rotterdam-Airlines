@@ -10,8 +10,8 @@ static class AdminFlightEdit
             Console.WriteLine($"arrival time: {flight.ArrivalTime}");
             Console.WriteLine($"Status: {flight.Status}");
             Console.WriteLine("1 to edit departure and arival time");
-            Console.WriteLine("2 to edit status");
-            Console.WriteLine("3 to cancel the flight (also cancels the bookings for said flight)");
+            Console.WriteLine("2 to cancel the flight (also cancels the bookings for said flight)");
+            Console.WriteLine("3 to adjust the price");
             Console.WriteLine("4 to go back to the previous menu");
             string? input = Console.ReadLine();
             switch (input)
@@ -20,12 +20,14 @@ static class AdminFlightEdit
                     EditArrivalTime(flight);
                     return;
                 case "2":
-                    EditArrivalTime(flight);
-                    return;
-                case "3":
                     Cancelflight(flight);
                     return;
+                case "3":
+                    EditPrice(flight);
+                    return;
                 case "4":
+                    return;
+                case "5":
                     return;
                 default:
                     Console.WriteLine("please pick of the selected menu options");
@@ -50,10 +52,19 @@ static class AdminFlightEdit
         Console.WriteLine("flight has been sucessfully added");
         Console.ReadKey();
     }
-    private static void EditStatus(FlightModel flight)
+    private static void EditPrice(FlightModel flight)
     {
-        Console.WriteLine("not implemented yet");
-        // FlightLogic.EditFlight(flight);
+        Console.WriteLine("please enter the new price");
+        int price = 0;
+        if(int.TryParse(Console.ReadLine(), out price))
+        {
+            FlightLogic.EditPrice(flight, price);
+            Console.WriteLine("succesfully added the price");
+            return;
+        }
+        Console.WriteLine("please put in a number");
+
+
     }
     private static void Cancelflight(FlightModel flight)
     {
