@@ -159,18 +159,24 @@ public class FlightLogic
 
         return sb.ToString();
     }
-    public static (bool Success, string ErrorMessage) EditFlightTime(FlightModel flight, string departurTimeInput, string arrivalTimeInput)
+    public static (bool Success, string ErrorMessage) EditFlightTime(FlightModel flight, string? departurTimeInput, string? arrivalTimeInput)
     {
         if (!DateTime.TryParseExact(departurTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime departureTime))
             return (false, "Invalid departure time. Use format yyyy-MM-dd HH:mm.");
 
         if (!DateTime.TryParseExact(arrivalTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime arrivalTime))
             return (false, "Invalid arrival time. Use format yyyy-MM-dd HH:mm.");
+        if (departureTime <= DateTime.Now)
+            return (false, "Departure time must be in the future.");
+        if (arrivalTime <= departureTime)
+            return (false, "Arrival time must be after departure time.");
+            
         flight.ArrivalTime = arrivalTime.ToString("yyyy-MM-dd HH:mm");
         flight.DepartureTime = departureTime.ToString("yyyy-MM-dd HH:mm");
+        FlightAccess db = new();
+        db.EditFlightDetails(flight);
 
-
-        return (false, "not implemented yet");
+        return (true, "date is editeds in database");
     }
     public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
     {

@@ -36,11 +36,19 @@ static class AdminFlightEdit
 
     private static void EditArrivalTime(FlightModel flight)
     {
-        Console.WriteLine("please enter the new departure time");
-        string newDepartureTime = "";
-        Console.WriteLine("please enter the new arival time");
-        string newArivalTime = "";
-        // FlightLogic.EditFlight(flight);
+        Console.WriteLine("please enter the new departure time in yyyy-MM-dd HH:mm format");
+        string? departure = Console.ReadLine();
+        Console.WriteLine("please enter the new arival time in yyyy-MM-dd HH:mm format");
+        string? arival = Console.ReadLine();
+        (bool isSuccesfull, string ErrorMessage) edittedFlight = FlightLogic.EditFlightTime(flight, departure, arival);
+        if (!edittedFlight.isSuccesfull)
+        {
+            Console.WriteLine("something went wrong");
+            Console.WriteLine(edittedFlight.ErrorMessage);
+            Console.ReadKey();
+        }
+        Console.WriteLine("flight has been sucessfully added");
+        Console.ReadKey();
     }
     private static void EditStatus(FlightModel flight)
     {
