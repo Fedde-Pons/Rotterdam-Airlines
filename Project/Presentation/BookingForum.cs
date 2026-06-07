@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 public static class BookingForums
 {
     /// <summary>
@@ -42,7 +38,7 @@ public static class BookingForums
             double finalPrice = 0;
             int extraBaggageKg = 0;
 
-            
+            // Loop door elke passagier: laat ze een stoel kiezen, check of ze €15 extra moeten betalen voor beenruimte (alleen in economy), en vraag of ze extra bagage willen.
             while (true)
             {
                 var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, seatData.allSeats, economyPrice, businessPrice);
