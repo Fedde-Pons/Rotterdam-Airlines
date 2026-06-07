@@ -52,7 +52,7 @@ public static class BookingForums
                 finalPrice = seatingResult.Value.price;
 
                 
-                if (pickedSeat.IsExitRow || pickedSeat.IsFirstRow && pickedSeat.Seatclass.ToLower() == "economy")
+                if ((pickedSeat.IsExitRow || pickedSeat.IsFirstRow) && pickedSeat.Seatclass.ToLower() == "economy")
                 {
                     Console.Clear();
                     Console.WriteLine("======================================");
