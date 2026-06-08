@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 public class FlightLogic
@@ -62,6 +59,21 @@ public class FlightLogic
         return flightAccess.RetrieveSeat(id);
     }
 
+    public bool FlightNumberExists(string flightNumber)
+    {
+        return flightAccess.RetrieveFlight(flightNumber) != null;
+    }
+
+    public List<AircraftModel> GetAllAircrafts()
+    {
+        return flightAccess.GetAllAircrafts();
+    }
+
+    public List<AirportModel> GetAllAirports()
+    {
+        return new AirportAccess().GetAllAirports();
+    }
+
     public (bool Success, string ErrorMessage) AddFlight(
         string? flightNumber,
         string? aircraftIdInput,
@@ -69,8 +81,7 @@ public class FlightLogic
         string? destinationAirportIdInput,
         string? departureTimeInput,
         string? arrivalTimeInput,
-        string? basePriceInput,
-        string? status)
+        string? basePriceInput)
     {
         if (string.IsNullOrWhiteSpace(flightNumber) ||
             string.IsNullOrWhiteSpace(aircraftIdInput) ||
@@ -78,8 +89,7 @@ public class FlightLogic
             string.IsNullOrWhiteSpace(destinationAirportIdInput) ||
             string.IsNullOrWhiteSpace(departureTimeInput) ||
             string.IsNullOrWhiteSpace(arrivalTimeInput) ||
-            string.IsNullOrWhiteSpace(basePriceInput) ||
-            string.IsNullOrWhiteSpace(status))
+            string.IsNullOrWhiteSpace(basePriceInput))
         {
             return (false, "All required fields must be filled.");
         }
@@ -96,11 +106,15 @@ public class FlightLogic
         if (departureAirportId == destinationAirportId)
             return (false, "Departure airport and destination airport cannot be the same.");
 
-        if (!DateTime.TryParse(departureTimeInput, out DateTime departureTime))
-            return (false, "Invalid departure time.");
+        const int rotterdamZuidId = 7;
+        if (departureAirportId != rotterdamZuidId && destinationAirportId != rotterdamZuidId)
+            return (false, "One of the airports must be Rotterdam Zuid.");
 
-        if (!DateTime.TryParse(arrivalTimeInput, out DateTime arrivalTime))
-            return (false, "Invalid arrival time.");
+        if (!DateTime.TryParseExact(departureTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime departureTime))
+            return (false, "Invalid departure time. Use format yyyy-MM-dd HH:mm.");
+
+        if (!DateTime.TryParseExact(arrivalTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime arrivalTime))
+            return (false, "Invalid arrival time. Use format yyyy-MM-dd HH:mm.");
 
         if (departureTime <= DateTime.Now)
             return (false, "Departure time must be in the future.");
@@ -108,7 +122,7 @@ public class FlightLogic
         if (arrivalTime <= departureTime)
             return (false, "Arrival time must be after departure time.");
 
-        if (!double.TryParse(basePriceInput, out double basePrice) || basePrice <= 0)
+        if (!double.TryParse(basePriceInput, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double basePrice) || basePrice <= 0)
             return (false, "Invalid base price.");
 
         FlightModel flight = new FlightModel
@@ -120,7 +134,7 @@ public class FlightLogic
             DepartureTime = departureTime.ToString("yyyy-MM-dd HH:mm"),
             ArrivalTime = arrivalTime.ToString("yyyy-MM-dd HH:mm"),
             BasePrice = basePrice,
-            Status = status
+            Status = "Scheduled"
         };
 
         bool saved = flightAccess.AddFlight(flight);
@@ -128,7 +142,7 @@ public class FlightLogic
         if (!saved)
             return (false, "Flight could not be saved.");
 
-        return (true, "Flight saved successfully.");
+        return (true, "Flight created successfully.");
     }
 
     public static string CreateFlightsSummary(List<FlightModel>? flights)
@@ -144,5 +158,57 @@ public class FlightLogic
         }
 
         return sb.ToString();
+    }
+
+    public static (bool Success, string ErrorMessage) EditPrice(FlightModel flight, int price)
+    {
+        flight.BasePrice = price;
+        FlightAccess db = new();
+        db.EditFlightDetails(flight);
+        return (true, "price as been adjusted");
+    }
+
+    public static (bool Success, string ErrorMessage) EditFlightTime(FlightModel flight, string? departurTimeInput, string? arrivalTimeInput)
+    {
+        if (!DateTime.TryParseExact(departurTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime departureTime))
+            return (false, "Invalid departure time. Use format yyyy-MM-dd HH:mm.");
+
+        if (!DateTime.TryParseExact(arrivalTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime arrivalTime))
+            return (false, "Invalid arrival time. Use format yyyy-MM-dd HH:mm.");
+        if (departureTime <= DateTime.Parse(flight.DepartureTime))
+            return (false, "Departure must be further in the future.");
+        if (departureTime <= DateTime.Now)
+            return (false, "Departure time must be in the future.");
+        if (arrivalTime <= departureTime)
+            return (false, "Arrival time must be after departure time.");
+            
+        flight.ArrivalTime = arrivalTime.ToString("yyyy-MM-dd HH:mm");
+        flight.DepartureTime = departureTime.ToString("yyyy-MM-dd HH:mm");
+        flight.Status = "Delayed";
+        FlightAccess db = new();
+        db.EditFlightDetails(flight);
+        return (true, "date is edited in database");
+    }
+    public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
+    {
+        FlightAccess flightDb = new();
+        TicketAccess ticketDb = new();
+        BookingAccess bookingDb = new();
+        List<BookingModel?> cancelBookingsList = [];
+
+        List<TicketModel> tickets = ticketDb.GetByFlightId(flight.Id);
+        foreach(TicketModel ticket in tickets)
+        {
+            cancelBookingsList.Add(bookingDb.GetById(ticket.BookingId));
+        }
+        
+        foreach(BookingModel? booking in cancelBookingsList)
+        {
+            if (booking is not null)
+            bookingDb.Cancel(booking.Id);
+        }
+        flight.Status = "Cancelled"; 
+        flightDb.EditFlightDetails(flight);
+        return (true, "flight with connected bookings are canceld");
     }
 }

@@ -1,6 +1,6 @@
-static class FlightList
+public class FlightList
 {
-    static public void ShowAllAvailableFlightsList()
+    public virtual void ShowAllAvailableFlightsList()
     {
         FlightLogic flightLogic = new FlightLogic();
         string previousList = "";
@@ -42,14 +42,14 @@ static class FlightList
         }
     }
 
-    private static string FormatShortTime(string? dateTime)
+    protected static string FormatShortTime(string? dateTime)
     {
         if (DateTime.TryParse(dateTime, out var dt))
             return dt.ToString("dd-MM-yyyy HH:mm:ss");
         return dateTime ?? "";
     }
 
-    private static List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> BuildBoardLines(
+    protected static List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> BuildBoardLines(
         string title, List<FlightModel> flights, bool isDeparture)
     {
         var lines = new List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)>();
@@ -127,7 +127,7 @@ static class FlightList
         return lines;
     }
 
-    private static void PrintBoardsSideBySide(
+    protected static void PrintBoardsSideBySide(
         List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> left,
         List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> right)
     {
@@ -178,7 +178,7 @@ static class FlightList
         Console.WriteLine();
     }
 
-    private static void WriteColoredStatus(string status, int width)
+    protected static void WriteColoredStatus(string status, int width)
     {
         ConsoleColor color = status switch
         {

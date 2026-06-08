@@ -42,7 +42,6 @@ public class BookingAccess
 
         return connection.Query<BookingModel>(sql, new { AccountId = accountId }).ToList();
     }
-
     public BookingModel? GetById(int id)
     {
         using var connection = new SqliteConnection(_connectionString);
