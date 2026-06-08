@@ -129,7 +129,8 @@ public static class MyBookings
             }
 
             bool isCancelled = BookingLogic.IsCancelled(booking);
-
+            // stukje voor check in validatie zodat er niet 24 uur voor de vluch kan worden ingecheckt.
+            // ook misschien kunnen we dit restructuren naar 3 lagen model. future reference.
             bool needsCheckIn = false;
             foreach (var t in tickets)
             {
@@ -140,11 +141,37 @@ public static class MyBookings
                 }
             }
 
+            bool isCheckInOpen = false;
+            string checkInMessage = "";
+
+            if (tickets.Count > 0)
+            {
+                FlightModel? firstFlight = _flightLogic.GetFlightById(tickets[0].FlightId);
+                if (firstFlight != null && DateTime.TryParse(firstFlight.DepartureTime, out DateTime departureTime))
+                {
+                    TimeSpan timeUntilFlight = departureTime - DateTime.Now;
+                    
+                    if (timeUntilFlight.TotalHours > 24)
+                    {
+                        checkInMessage = "\n  * Online check-in opens 24 hours before departure.";
+                    }
+                    else if (timeUntilFlight.TotalHours <= 24 && timeUntilFlight.TotalHours >= 1)
+                    {
+                        isCheckInOpen = true; 
+                    }
+                    else
+                    {
+                        checkInMessage = "\n  * Online check-in is now closed (closes 1 hour before departure).";
+                    }
+                }
+            }
+            
             if (!isCancelled)
             {
                 Console.WriteLine("1: Cancel this booking");
 
-                if (needsCheckIn)
+                
+                if (needsCheckIn && isCheckInOpen)
                 {
                     Console.WriteLine("2: Check in online");
                     Console.WriteLine("3: Back to my bookings");
@@ -152,6 +179,12 @@ public static class MyBookings
                 else
                 {
                     Console.WriteLine("2: Back to my bookings");
+                    
+                    
+                    if (needsCheckIn && !isCheckInOpen && !string.IsNullOrEmpty(checkInMessage))
+                    {
+                        Console.WriteLine(checkInMessage);
+                    }
                 }
             }
             else
@@ -175,11 +208,13 @@ public static class MyBookings
                 {
                     if (ConfirmCancellation(booking)) return;
                 }
-                else if (input == "2" && needsCheckIn)
+                
+                else if (input == "2" && needsCheckIn && isCheckInOpen)
                 {
                     PerformCheckIn(booking, tickets);
                 }
-                else if ((input == "2" && !needsCheckIn) || (input == "3" && needsCheckIn))
+                
+                else if ((input == "2" && (!needsCheckIn || !isCheckInOpen)) || (input == "3" && needsCheckIn && isCheckInOpen))
                 {
                     return;
                 }
