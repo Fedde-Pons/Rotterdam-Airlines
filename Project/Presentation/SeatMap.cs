@@ -47,6 +47,11 @@ public static class SeatMap
                 bool isBusiness = SeatingLogic.IsBusinessRow(curRow, layout);
                 string statusColor = isCursorAvailable ? (isBusiness ? YELLOW : GREEN) : RED;
                 double price = SeatingLogic.GetSeatPrice(curRow, layout, economyPrice, businessPrice);
+                // zorgt ervoor dat de nieuwe legroom seats de juiste prijs tonen.
+                if (curSeat != null && (curSeat.IsExitRow || curSeat.IsFirstRow) && curSeat.Seatclass.ToLower() == "economy")
+                {
+                    price += 15;
+                }
 
                 Console.WriteLine();
                 Console.WriteLine($"   Flight: {flight.FlightNumber}    " +
