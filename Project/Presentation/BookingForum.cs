@@ -214,16 +214,44 @@ public static class BookingForums
 
     private static PassangerModel CreatePassanger(int current, int total)
     {
-        Console.Clear();
-        Console.WriteLine("======================================");
-        Console.WriteLine($"      PASSENGER DETAILS ({current}/{total})       ");
-        Console.WriteLine("======================================\n");
+        void PrintHeader()
+        {
+            Console.Clear();
+            Console.WriteLine("======================================");
+            Console.WriteLine($"      PASSENGER DETAILS ({current}/{total})       ");
+            Console.WriteLine("======================================\n");
+        }
 
-        Console.WriteLine("Please enter first name:");
-        string? firstName = Console.ReadLine();
+        PrintHeader();
 
-        Console.WriteLine("\nPlease enter last name:");
-        string? lastName = Console.ReadLine();
+        string? firstName;
+        while (true)
+        {
+            Console.WriteLine("Please enter first name:");
+            firstName = Console.ReadLine();
+
+            if (!string.IsNullOrWhiteSpace(firstName))
+                break;
+
+            PrintHeader();
+            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Please try again.\n");
+        }
+
+        string? lastName;
+        while (true)
+        {
+            Console.WriteLine("\nPlease enter last name:");
+            lastName = Console.ReadLine();
+
+            if (!string.IsNullOrWhiteSpace(lastName))
+                break;
+
+            PrintHeader();
+            Console.WriteLine($"First name: {firstName}\n");
+            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Please try again.\n");
+        }
 
         string? dateOfBirth;
         while (true)
@@ -234,6 +262,9 @@ public static class BookingForums
             if (DateTime.TryParse(dateOfBirth, out _))
                 break;
 
+            PrintHeader();
+            Console.WriteLine($"First name: {firstName}");
+            Console.WriteLine($"Last name: {lastName}\n");
             Console.WriteLine("Invalid date format. Please use YYYY-MM-DD.\n");
         }
 
@@ -246,6 +277,10 @@ public static class BookingForums
             if (int.TryParse(userInput, out passportNumber))
                 break;
 
+            PrintHeader();
+            Console.WriteLine($"First name: {firstName}");
+            Console.WriteLine($"Last name: {lastName}");
+            Console.WriteLine($"Date of birth: {dateOfBirth}\n");
             Console.WriteLine("Invalid passport number. Please enter a numeric value.\n");
         }
 
@@ -253,4 +288,3 @@ public static class BookingForums
         return passanger;
     }
 }
-// wie ziet deze comment? :) groetjes  somaya araujo valdez 
