@@ -25,7 +25,13 @@ public static class DatabaseSeeder
         INSERT OR IGNORE INTO Accounts (id, emailAddress, phoneNumber, firstName, lastName, dateOfBirth, password, createdAt) VALUES
         (2, 'jan.jansen@example.com', '0612345678', 'Jan', 'Jansen', '1990-05-12', 'password123', '2026-01-01 10:00:00'),
         (3, 'emma.devries@example.com', '0698765432', 'Emma', 'de Vries', '1985-09-23', 'password123', '2026-01-02 11:15:00'),
-        (4, 'lucas.bakker@example.com', '0611223344', 'Lucas', 'Bakker', '1995-03-08', 'password123', '2026-01-03 09:30:00');";
+        (4, 'lucas.bakker@example.com', '0611223344', 'Lucas', 'Bakker', '1995-03-08', 'password123', '2026-01-03 09:30:00'),
+        (5, 'noor.vandenberg@example.com', '0644556677', 'Noor', 'van den Berg', '1993-02-14', 'password123', '2026-01-05 08:00:00'),
+        (6, 'thomas.smit@example.com', '0633445566', 'Thomas', 'Smit', '1988-07-30', 'password123', '2026-01-06 13:45:00'),
+        (7, 'lotte.visser@example.com', '0655667788', 'Lotte', 'Visser', '1997-11-18', 'password123', '2026-01-07 17:20:00'),
+        (8, 'daan.meijer@example.com', '0677889900', 'Daan', 'Meijer', '1982-04-05', 'password123', '2026-01-08 09:10:00'),
+        (9, 'sara.koning@example.com', '0622334455', 'Sara', 'Koning', '2001-08-22', 'password123', '2026-01-09 12:30:00'),
+        (10, 'finn.peters@example.com', '0611998877', 'Finn', 'Peters', '1979-12-01', 'password123', '2026-01-10 15:00:00');";
 
         using var cmd = new SqliteCommand(query, connection);
         cmd.ExecuteNonQuery();
@@ -43,7 +49,16 @@ public static class DatabaseSeeder
         (2, 'Sophie', 'Jansen', '1992-07-21', '2345678'),
         (3, 'Emma', 'de Vries', '1985-09-23', '3456789'),
         (4, 'Lucas', 'Bakker', '1995-03-08', '4567890'),
-        (5, 'Mila', 'Bakker', '2018-11-04', '5678901');";
+        (5, 'Mila', 'Bakker', '2018-11-04', '5678901'),
+        (6, 'Noor', 'van den Berg', '1993-02-14', '6789012'),
+        (7, 'Thomas', 'Smit', '1988-07-30', '7890123'),
+        (8, 'Lotte', 'Visser', '1997-11-18', '8901234'),
+        (9, 'Daan', 'Meijer', '1982-04-05', '9012345'),
+        (10, 'Sara', 'Koning', '2001-08-22', '0123456'),
+        (11, 'Finn', 'Peters', '1979-12-01', '1122334'),
+        (12, 'Anna', 'Peters', '2010-03-15', '2233445'),
+        (13, 'Bas', 'van den Berg', '1991-06-27', '3344556'),
+        (14, 'Roos', 'Smit', '1986-09-09', '4455667');";
 
         using var cmd = new SqliteCommand(query, connection);
         cmd.ExecuteNonQuery();
@@ -53,11 +68,21 @@ public static class DatabaseSeeder
     {
         var bookings = new[]
         {
-            (Id: 1, AccountId: 2, Date: "2026-03-15 14:20:00", TotalPrice: 260.00, Status: "Pending"),
-            (Id: 2, AccountId: 2, Date: "2026-04-01 09:45:00", TotalPrice: 130.00, Status: "Confirmed"),
-            (Id: 3, AccountId: 3, Date: "2026-03-20 16:10:00", TotalPrice: 150.00, Status: "Pending"),
-            (Id: 4, AccountId: 3, Date: "2026-04-05 12:00:00", TotalPrice: 175.00, Status: "Cancelled"),
-            (Id: 5, AccountId: 4, Date: "2026-04-10 18:30:00", TotalPrice: 390.00, Status: "Confirmed"),
+            (Id: 1,  AccountId: 2, Date: "2026-03-15 14:20:00", TotalPrice: 260.00, Status: "Confirmed"),
+            (Id: 2,  AccountId: 2, Date: "2026-04-01 09:45:00", TotalPrice: 130.00, Status: "Confirmed"),
+            (Id: 3,  AccountId: 3, Date: "2026-03-20 16:10:00", TotalPrice: 150.00, Status: "Confirmed"),
+            (Id: 4,  AccountId: 3, Date: "2026-04-05 12:00:00", TotalPrice: 175.00, Status: "Cancelled"),
+            (Id: 5,  AccountId: 4, Date: "2026-04-10 18:30:00", TotalPrice: 390.00, Status: "Confirmed"),
+            (Id: 6,  AccountId: 5, Date: "2026-04-12 10:00:00", TotalPrice: 240.00, Status: "Confirmed"),
+            (Id: 7,  AccountId: 5, Date: "2026-04-20 08:30:00", TotalPrice: 115.00, Status: "Confirmed"),
+            (Id: 8,  AccountId: 6, Date: "2026-04-15 14:00:00", TotalPrice: 330.00, Status: "Confirmed"),
+            (Id: 9,  AccountId: 6, Date: "2026-05-01 09:00:00", TotalPrice: 160.00, Status: "Cancelled"),
+            (Id: 10, AccountId: 7, Date: "2026-04-18 17:45:00", TotalPrice: 120.00, Status: "Confirmed"),
+            (Id: 11, AccountId: 7, Date: "2026-05-05 11:15:00", TotalPrice: 350.00, Status: "Confirmed"),
+            (Id: 12, AccountId: 8, Date: "2026-04-22 13:30:00", TotalPrice: 190.00, Status: "Confirmed"),
+            (Id: 13, AccountId: 9, Date: "2026-05-10 16:00:00", TotalPrice: 115.00, Status: "Confirmed"),
+            (Id: 14, AccountId: 10, Date: "2026-05-12 07:00:00", TotalPrice: 480.00, Status: "Confirmed"),
+            (Id: 15, AccountId: 2, Date: "2026-05-20 10:30:00", TotalPrice: 175.00, Status: "Confirmed"),
         };
 
         foreach (var b in bookings)
@@ -89,17 +114,51 @@ public static class DatabaseSeeder
 
         var tickets = new[]
         {
-            (BookingId: 1, FlightId: 1, SeatId: 1,   PassengerId: 1, Price: 130.00, ExtraBaggageKg: 0),
-            (BookingId: 1, FlightId: 1, SeatId: 2,   PassengerId: 2, Price: 130.00, ExtraBaggageKg: 0),
+            (BookingId: 1,  FlightId: 1,  SeatId: 1,   PassengerId: 1,  Price: 130.00, ExtraBaggageKg: 0),
+            (BookingId: 1,  FlightId: 1,  SeatId: 2,   PassengerId: 2,  Price: 130.00, ExtraBaggageKg: 0),
 
-            (BookingId: 2, FlightId: 3, SeatId: 675, PassengerId: 1, Price: 130.00, ExtraBaggageKg: 0),
+            (BookingId: 2,  FlightId: 3,  SeatId: 675, PassengerId: 1,  Price: 130.00, ExtraBaggageKg: 0),
 
-            (BookingId: 3, FlightId: 9, SeatId: 676, PassengerId: 3, Price: 150.00, ExtraBaggageKg: 0),
+            (BookingId: 3,  FlightId: 9,  SeatId: 676, PassengerId: 3,  Price: 150.00, ExtraBaggageKg: 0),
 
-            (BookingId: 4, FlightId: 4, SeatId: 181, PassengerId: 3, Price: 175.00, ExtraBaggageKg: 0),
+            (BookingId: 4,  FlightId: 4,  SeatId: 181, PassengerId: 3,  Price: 175.00, ExtraBaggageKg: 0),
 
-            (BookingId: 5, FlightId: 17, SeatId: 681, PassengerId: 4, Price: 195.00, ExtraBaggageKg: 0),
-            (BookingId: 5, FlightId: 17, SeatId: 682, PassengerId: 5, Price: 195.00, ExtraBaggageKg: 0),
+            (BookingId: 5,  FlightId: 17, SeatId: 681, PassengerId: 4,  Price: 195.00, ExtraBaggageKg: 0),
+            (BookingId: 5,  FlightId: 17, SeatId: 682, PassengerId: 5,  Price: 195.00, ExtraBaggageKg: 0),
+
+            // Noor van den Berg: retourvlucht Rotterdam-Londen
+            (BookingId: 6,  FlightId: 11, SeatId: 10,  PassengerId: 6,  Price: 120.00, ExtraBaggageKg: 23),
+            (BookingId: 6,  FlightId: 11, SeatId: 11,  PassengerId: 13, Price: 120.00, ExtraBaggageKg: 0),
+
+            // Noor: enkelvlucht Rotterdam-Parijs
+            (BookingId: 7,  FlightId: 19, SeatId: 20,  PassengerId: 6,  Price: 115.00, ExtraBaggageKg: 0),
+
+            // Thomas Smit: gezin Rotterdam-Stockholm
+            (BookingId: 8,  FlightId: 13, SeatId: 50,  PassengerId: 7,  Price: 165.00, ExtraBaggageKg: 23),
+            (BookingId: 8,  FlightId: 13, SeatId: 51,  PassengerId: 14, Price: 165.00, ExtraBaggageKg: 0),
+
+            // Thomas: geannuleerd Rotterdam-Rome
+            (BookingId: 9,  FlightId: 27, SeatId: 60,  PassengerId: 7,  Price: 160.00, ExtraBaggageKg: 0),
+
+            // Lotte Visser: enkelvlucht Rotterdam-Glasgow
+            (BookingId: 10, FlightId: 21, SeatId: 30,  PassengerId: 8,  Price: 120.00, ExtraBaggageKg: 0),
+
+            // Lotte: Rotterdam-Stockholm met extra bagage
+            (BookingId: 11, FlightId: 31, SeatId: 700, PassengerId: 8,  Price: 175.00, ExtraBaggageKg: 23),
+            (BookingId: 11, FlightId: 31, SeatId: 701, PassengerId: 6,  Price: 175.00, ExtraBaggageKg: 0),
+
+            // Daan Meijer: Rotterdam-Parijs
+            (BookingId: 12, FlightId: 35, SeatId: 710, PassengerId: 9,  Price: 190.00, ExtraBaggageKg: 0),
+
+            // Sara Koning: enkelvlucht Rotterdam-Frankfurt
+            (BookingId: 13, FlightId: 25, SeatId: 40,  PassengerId: 10, Price: 115.00, ExtraBaggageKg: 0),
+
+            // Finn Peters: gezin Rotterdam-Stockholm
+            (BookingId: 14, FlightId: 37, SeatId: 720, PassengerId: 11, Price: 240.00, ExtraBaggageKg: 23),
+            (BookingId: 14, FlightId: 37, SeatId: 721, PassengerId: 12, Price: 240.00, ExtraBaggageKg: 0),
+
+            // Jan Jansen: Rotterdam-Rome
+            (BookingId: 15, FlightId: 45, SeatId: 730, PassengerId: 1,  Price: 175.00, ExtraBaggageKg: 0),
         };
 
         foreach (var t in tickets)
