@@ -303,3 +303,4 @@ public static class SeatMap
         return new string(' ', leftPad) + text + new string(' ', rightPad);
     }
 }
+// wie ziet deze comment? :) groetjes  somaya araujo valdez 
