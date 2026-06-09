@@ -357,3 +357,5 @@ public static class DatabaseSeeder
         }
     }
 } 
+
+// wie ziet deze comment? :) groetjes  somaya araujo valdez 

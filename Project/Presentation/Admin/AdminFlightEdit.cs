@@ -12,7 +12,8 @@ static class AdminFlightEdit
             Console.WriteLine("1 to edit departure and arival time");
             Console.WriteLine("2 to cancel the flight (also cancels the bookings for said flight)");
             Console.WriteLine("3 to adjust the price");
-            Console.WriteLine("4 to go back to the previous menu");
+            Console.WriteLine("4 to print Passenger List");
+            Console.WriteLine("5 to go back to the previous menu");
             string? input = Console.ReadLine();
             switch (input)
             {
@@ -26,7 +27,8 @@ static class AdminFlightEdit
                     EditPrice(flight);
                     return;
                 case "4":
-                    return;
+                    PassengerList.Show(flight);
+                    break;
                 case "5":
                     return;
                 default:
