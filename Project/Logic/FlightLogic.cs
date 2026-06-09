@@ -176,16 +176,19 @@ public class FlightLogic
 
         if (!DateTime.TryParseExact(arrivalTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime arrivalTime))
             return (false, "Invalid arrival time. Use format yyyy-MM-dd HH:mm.");
-        if (departureTime <= DateTime.Parse(flight.DepartureTime))
-            return (false, "Departure must be further in the future.");
+
+        DateTime currentDeparture = DateTime.Parse(flight.DepartureTime);
+
+        if (departureTime < currentDeparture)
+            return (false, "Departure must be the same or further in the future.");
         if (departureTime <= DateTime.Now)
             return (false, "Departure time must be in the future.");
         if (arrivalTime <= departureTime)
             return (false, "Arrival time must be after departure time.");
-            
+
         flight.ArrivalTime = arrivalTime.ToString("yyyy-MM-dd HH:mm");
         flight.DepartureTime = departureTime.ToString("yyyy-MM-dd HH:mm");
-        flight.Status = "Delayed";
+        flight.Status = departureTime == currentDeparture ? flight.Status : "Delayed";
         FlightAccess db = new();
         db.EditFlightDetails(flight);
         return (true, "date is edited in database");

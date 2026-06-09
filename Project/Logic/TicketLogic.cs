@@ -25,4 +25,10 @@ public static class TicketLogic
         TicketAccess db = new();
         return db.GetByBookingId(bookingId);
     }
+
+    public static (int businessBooked, int economyBooked) GetSeatOccupancy(int flightId)
+    {
+        TicketAccess db = new();
+        return db.GetSeatOccupancyByFlightId(flightId);
+    }
 }

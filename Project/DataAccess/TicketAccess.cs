@@ -67,4 +67,20 @@ public class TicketAccess
 
         connection.Execute(sql, new { BookingId = bookingId });
     }
+
+    public (int businessBooked, int economyBooked) GetSeatOccupancyByFlightId(int flightId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+
+        string sql = @"
+        SELECT
+            COUNT(CASE WHEN s.seatClass = 'Business' THEN 1 END) AS BusinessBooked,
+            COUNT(CASE WHEN s.seatClass = 'Economy'  THEN 1 END) AS EconomyBooked
+        FROM Tickets t
+        JOIN Seats s ON t.seatId = s.id
+        WHERE t.flightId = @FlightId;";
+
+        return connection.QueryFirstOrDefault<(int BusinessBooked, int EconomyBooked)>(
+            sql, new { FlightId = flightId });
+    }
 }
