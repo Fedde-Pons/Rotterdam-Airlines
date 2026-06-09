@@ -93,7 +93,7 @@ public static class AirportLogic
         return futureFlights;
     }
 
-    public static bool DeleteAirport(long id)
+    public static (bool, string) DeleteAirport(long id)
     {
         try
         {
@@ -101,21 +101,22 @@ public static class AirportLogic
             AirportModel? existing = db.GetAirportById(id);
             if (existing == null)
             {
-                return false;
+                return (false, "Airport not found in database");
             }
 
             // an airport can only be removed when no future flights use it.
-            if (GetFutureFlightsForAirport(id).Count > 0)
+            List<FlightModel> futureFlights = GetFutureFlightsForAirport(id);
+            if (futureFlights.Count > 0)
             {
-                return false;
+                return (false, $"Cannot delete: {futureFlights.Count} future flight(s) still use this airport");
             }
 
             db.DeleteAirport(id);
-            return true;
+            return (true, "Airport successfully deleted");
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            return (false, $"Database error: {ex.Message}");
         }
     }
 

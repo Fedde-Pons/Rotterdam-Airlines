@@ -160,15 +160,15 @@ static class AirportManagement
             return false;
         }
 
-        bool success = AirportLogic.DeleteAirport(airport.Id);
+        (bool success, string message) = AirportLogic.DeleteAirport(airport.Id);
         if (success)
         {
             Console.Clear();
-            Console.WriteLine("\nAirport successfully deleted.");
+            Console.WriteLine("\n" + message);
         }
         else
         {
-            Console.WriteLine("\nCould not delete the airport.");
+            Console.WriteLine("\n" + message);
         }
         Console.WriteLine("Press any key to continue...");
         Console.ReadKey();
