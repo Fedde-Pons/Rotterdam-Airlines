@@ -16,7 +16,8 @@ public class FlightLogic
 
         return flights
             .Where(f => DateTime.TryParse(f.DepartureTime, out DateTime departureTime)
-                        && departureTime > DateTime.Now)
+                        && departureTime > DateTime.Now
+                        && f.Status != "Cancelled")
             .OrderBy(f => DateTime.Parse(f.DepartureTime))
             .ToList();
     }
