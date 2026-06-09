@@ -64,6 +64,7 @@ public static class SeatMap
                     Console.WriteLine($"   Seat {statusColor}{curCode}{RESET}{(isCursorAvailable ? "" : $"  {RED}(taken){RESET}")}");
                     Console.WriteLine($"   Class:      {(isBusiness ? $"{YELLOW}Business{RESET}" : $"{GREEN}Economy{RESET}")}    Price: €{price:F2}");
                     Console.WriteLine($"   Window:     {(curSeat.IsWindow  ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");
+                    Console.WriteLine($"   Leg room:   {(curSeat.IsExitRow  ? $"{GREEN}Yes (+€15){RESET}" : $"{DIM}No{RESET}")}");
                     Console.WriteLine($"   Exit row:   {(curSeat.IsExitRow  ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");
                     Console.WriteLine($"   First row:  {(curSeat.IsFirstRow ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");
                     Console.WriteLine($"   Last row:   {(curSeat.IsLastRow  ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");
@@ -303,4 +304,3 @@ public static class SeatMap
         return new string(' ', leftPad) + text + new string(' ', rightPad);
     }
 }
-// wie ziet deze comment? :) groetjes  somaya araujo valdez 
