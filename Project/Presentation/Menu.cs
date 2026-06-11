@@ -35,9 +35,7 @@ static class Menu
                     Console.WriteLine("3: My Bookings");
                     Console.WriteLine("4: My Account");
                     Console.WriteLine("5: Admin Dashboard");
-                    Console.WriteLine("6: View All Accounts");
-                    Console.WriteLine("7: Add Flight");
-                    Console.WriteLine("8: Exit program");
+                    Console.WriteLine("6: Exit program");
                 }
                 else
                 {
@@ -57,7 +55,8 @@ static class Menu
                 switch (input)
                 {
                     case "1":
-                        FlightList.ShowAllAvailableFlightsList();
+                        FlightList flightList = new();
+                        flightList.ShowAllAvailableFlightsList();
                         break;
 
                     case "2":
@@ -82,7 +81,8 @@ static class Menu
                 switch (input)
                 {
                     case "1":
-                        FlightList.ShowAllAvailableFlightsList();
+                        FlightList flightList = new();
+                        flightList.ShowAllAvailableFlightsList();
                         break;
 
                     case "2":
@@ -115,8 +115,8 @@ static class Menu
                 switch (input)
                 {
                     case "1":
-                        FlightList.ShowAllAvailableFlightsList();
-                        break;
+                        FlightList flightList = new();
+                        flightList.ShowAllAvailableFlightsList();                        break;
 
                     case "2":
                         FlightSearch.StartSearch();
@@ -135,14 +135,6 @@ static class Menu
                         break;
 
                     case "6":
-                        ShowAllAccounts();
-                        break;
-
-                    case "7":
-                        AdminFlightMenu.Start();
-                        break;
-
-                    case "8":
                         Console.WriteLine("Thank you for using Rotterdam Airlines!\nWe hope to see you again soon!");
                         Environment.Exit(0);
                         break;

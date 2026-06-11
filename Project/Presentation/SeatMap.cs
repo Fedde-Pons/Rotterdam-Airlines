@@ -47,6 +47,11 @@ public static class SeatMap
                 bool isBusiness = SeatingLogic.IsBusinessRow(curRow, layout);
                 string statusColor = isCursorAvailable ? (isBusiness ? YELLOW : GREEN) : RED;
                 double price = SeatingLogic.GetSeatPrice(curRow, layout, economyPrice, businessPrice);
+                // zorgt ervoor dat de nieuwe legroom seats de juiste prijs tonen.
+                if (curSeat != null && (curSeat.IsExitRow || curSeat.IsFirstRow) && curSeat.Seatclass.ToLower() == "economy")
+                {
+                    price += 15;
+                }
 
                 Console.WriteLine();
                 Console.WriteLine($"   Flight: {flight.FlightNumber}    " +
@@ -59,6 +64,7 @@ public static class SeatMap
                     Console.WriteLine($"   Seat {statusColor}{curCode}{RESET}{(isCursorAvailable ? "" : $"  {RED}(taken){RESET}")}");
                     Console.WriteLine($"   Class:      {(isBusiness ? $"{YELLOW}Business{RESET}" : $"{GREEN}Economy{RESET}")}    Price: €{price:F2}");
                     Console.WriteLine($"   Window:     {(curSeat.IsWindow  ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");
+                    Console.WriteLine($"   Leg room:   {(curSeat.IsExitRow  ? $"{GREEN}Yes (+€15){RESET}" : $"{DIM}No{RESET}")}");
                     Console.WriteLine($"   Exit row:   {(curSeat.IsExitRow  ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");
                     Console.WriteLine($"   First row:  {(curSeat.IsFirstRow ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");
                     Console.WriteLine($"   Last row:   {(curSeat.IsLastRow  ? $"{GREEN}Yes{RESET}" : $"{DIM}No{RESET}")}");

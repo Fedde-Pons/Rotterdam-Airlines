@@ -37,6 +37,89 @@ public static class AirportLogic
             return (false, "undefined behavior happend");
         }
     }
+    public static bool EditAirport(long id, string name, string address, string city, string country)
+    {
+        try
+        {
+            if (!ValidateLocation(city) || !ValidateLocation(country))
+            {
+                return false;
+            }
+
+            if (name == "" || address == "" || city == "" || country == "")
+            {
+                return false;
+            }
+
+            AirportAccess db = new();
+            AirportModel? existing = db.GetAirportById(id);
+            if (existing == null)
+            {
+                return false;
+            }
+
+            AirportModel updated = new(id, name, address, city, country);
+            db.UpdateAirport(updated);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static List<FlightModel> GetFutureFlightsForAirport(long airportId)
+    {
+        List<FlightModel> allFlights = new FlightAccess().GetAllFlights();
+        DateTime now = DateTime.Now;
+
+        List<FlightModel> futureFlights = new();
+        foreach (FlightModel flight in allFlights)
+        {
+            bool usesThisAirport =
+                flight.DepartureAirportId == airportId ||
+                flight.DestinationAirportId == airportId;
+
+            if (!usesThisAirport)
+            {
+                continue;
+            }
+
+            if (DateTime.TryParse(flight.DepartureTime, out DateTime departure) && departure > now)
+            {
+                futureFlights.Add(flight);
+            }
+        }
+        return futureFlights;
+    }
+
+    public static (bool, string) DeleteAirport(long id)
+    {
+        try
+        {
+            AirportAccess db = new();
+            AirportModel? existing = db.GetAirportById(id);
+            if (existing == null)
+            {
+                return (false, "Airport not found in database");
+            }
+
+            // an airport can only be removed when no future flights use it.
+            List<FlightModel> futureFlights = GetFutureFlightsForAirport(id);
+            if (futureFlights.Count > 0)
+            {
+                return (false, $"Cannot delete: {futureFlights.Count} future flight(s) still use this airport");
+            }
+
+            db.DeleteAirport(id);
+            return (true, "Airport successfully deleted");
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Database error: {ex.Message}");
+        }
+    }
+
     public static (AirportModel?, bool, string) ConvertToAirportModel(string name, string address, string city, string country)
     {
         try

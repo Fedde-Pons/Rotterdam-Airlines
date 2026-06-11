@@ -1,55 +1,40 @@
-static class FlightList
+public class FlightList
 {
-    static public void ShowAllAvailableFlightsList()
+    public virtual void ShowAllAvailableFlightsList()
     {
         FlightLogic flightLogic = new FlightLogic();
-        string previousList = "";
+        List<FlightModel> flights = flightLogic.GetAllAvailableFlightsSorted();
 
-        while (true)
+        Console.Clear();
+        Console.Write("\x1b[3J");
+        Console.Out.Flush();
+
+        if (flights == null || flights.Count == 0)
         {
-            List<FlightModel> flights = flightLogic.GetAllAvailableFlightsSorted();
-            string currentList = FlightLogic.CreateFlightsSummary(flights);
-
-            if (currentList != previousList)
-            {
-                previousList = currentList;
-
-                Console.Clear();
-                Console.Write("\x1b[3J");
-                Console.Out.Flush();
-
-                if (flights == null || flights.Count == 0)
-                {
-                    Console.WriteLine("\nThere are currently no available flights.\n");
-                }
-                else
-                {
-                    var departures = flights.Where(f => f.DepartureAirportId == 8).ToList();
-                    var arrivals = flights.Where(f => f.DestinationAirportId == 8).ToList();
-
-                    var leftBoard = BuildBoardLines("DEPARTURES", departures, isDeparture: true);
-                    var rightBoard = BuildBoardLines("ARRIVALS", arrivals, isDeparture: false);
-                    PrintBoardsSideBySide(leftBoard, rightBoard);
-                }
-
-                Console.WriteLine("Press any key to return to the menu...");
-            }
-            if(Console.KeyAvailable)
-            {
-                Console.ReadKey();
-                break;
-            }            
+            Console.WriteLine("\nThere are currently no available flights.\n");
         }
+        else
+        {
+            var departures = flights.Where(f => f.DepartureAirportId == 7).ToList();
+            var arrivals = flights.Where(f => f.DestinationAirportId == 7).ToList();
+
+            var leftBoard = BuildBoardLines("DEPARTURES", departures, isDeparture: true);
+            var rightBoard = BuildBoardLines("ARRIVALS", arrivals, isDeparture: false);
+            PrintBoardsSideBySide(leftBoard, rightBoard);
+        }
+
+        Console.WriteLine("Press any key to return to the menu...");
+        Console.ReadKey(true);
     }
 
-    private static string FormatShortTime(string? dateTime)
+    protected static string FormatShortTime(string? dateTime)
     {
         if (DateTime.TryParse(dateTime, out var dt))
             return dt.ToString("dd-MM-yyyy HH:mm:ss");
         return dateTime ?? "";
     }
 
-    private static List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> BuildBoardLines(
+    protected static List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> BuildBoardLines(
         string title, List<FlightModel> flights, bool isDeparture)
     {
         var lines = new List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)>();
@@ -127,7 +112,7 @@ static class FlightList
         return lines;
     }
 
-    private static void PrintBoardsSideBySide(
+    protected static void PrintBoardsSideBySide(
         List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> left,
         List<(string Text, string? Status, ConsoleColor Color, int BoardWidth)> right)
     {
@@ -178,7 +163,7 @@ static class FlightList
         Console.WriteLine();
     }
 
-    private static void WriteColoredStatus(string status, int width)
+    protected static void WriteColoredStatus(string status, int width)
     {
         ConsoleColor color = status switch
         {

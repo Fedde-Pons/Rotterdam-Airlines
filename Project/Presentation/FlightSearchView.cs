@@ -6,15 +6,24 @@ public static class FlightSearch
         FlightLogic flightLogic = new FlightLogic();
         List<FlightModel> flights = flightLogic.GetAllFutureFlights();
 
+        if (flights.Count == 0)
+        {
+            Console.WriteLine("\nSorry, no flights are currently available.");
+            Console.WriteLine("Press any key to return to the menu...");
+            Console.ReadKey();
+            Menu.Start();
+            return;
+        }
+
         List<string> availableRoutes = new List<string>();
 
-       
+
         foreach (FlightModel flight in flights)
         {
-            
+
             string routeStr = $"{flight.DepartureCity} -> {flight.DestinationCity}";
-            
-            
+
+
             if (!availableRoutes.Contains(routeStr))
             {
                 availableRoutes.Add(routeStr);
@@ -170,7 +179,7 @@ public static class FlightSearch
 
                     if (bookingChoice == "1")
                     {
-                        BookingForums.Start(specificFlight, DateTime.Today.ToString("yyyy-MM-dd"));
+                        BookingForums.Start(specificFlight, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                         break;
                     }
                     else if (bookingChoice == "2")

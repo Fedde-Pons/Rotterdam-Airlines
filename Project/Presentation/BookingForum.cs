@@ -9,7 +9,7 @@ public static class BookingForums
     public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount.Id;
-        BookingModel booking = new BookingModel(accountID, date, "pending");
+        BookingModel booking = new BookingModel(accountID, date, "Confirmed");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket, SeatModel seat)> bookingValues = [];
 
@@ -33,21 +33,64 @@ public static class BookingForums
         for (int i = 0; i < numberOfTickets; i++)
         {
             PassangerModel passanger = CreatePassanger(i + 1, numberOfTickets);
-            // seat and price logic goes here
-            var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, seatData.allSeats, economyPrice, businessPrice);
+            
+            SeatModel pickedSeat = null;
+            double finalPrice = 0;
+            int extraBaggageKg = 0;
 
-            if (seatingResult == null)
+            // Loop door elke passagier: laat ze een stoel kiezen, check of ze €15 extra moeten betalen voor beenruimte (alleen in economy), en vraag of ze extra bagage willen.
+            while (true)
             {
-                return;
+                var seatingResult = SeatingLogic.StartSeatSelection(flight, availableSeats, seatData.allSeats, economyPrice, businessPrice);
+
+                if (seatingResult == null)
+                {
+                    return;
+                }
+
+                pickedSeat = seatingResult.Value.seat;
+                finalPrice = seatingResult.Value.price;
+
+                
+                if ((pickedSeat.IsExitRow || pickedSeat.IsFirstRow) && pickedSeat.Seatclass.ToLower() == "economy")
+                {
+                    Console.Clear();
+                    Console.WriteLine("======================================");
+                    Console.WriteLine("          EXTRA LEGROOM SEAT          ");
+                    Console.WriteLine("======================================\n");
+                    Console.WriteLine($"Seat {pickedSeat.SeatNumber} has extra legroom!");
+                    Console.WriteLine("This seat costs an additional €15.");
+                    Console.WriteLine("\nDo you want to keep this seat? (Y/N): ");
+                    
+                    string? keepSeat = Console.ReadLine()?.Trim().ToUpper();
+                    
+                    if (keepSeat != "Y")
+                    {
+                        continue; 
+                    }
+                    finalPrice += 15; 
+                }
+                break; 
             }
 
-            SeatModel pickedSeat = seatingResult.Value.seat;
-            double finalPrice = seatingResult.Value.price;
+            
+            Console.Clear();
+            Console.WriteLine("======================================");
+            Console.WriteLine($"    EXTRA BAGGAGE ({passanger.FirstName})");
+            Console.WriteLine("======================================\n");
+            Console.WriteLine("Add an extra 23 kg checked bag for €25? (Y/N):(Y) ");
+            
+            string? bagInput = Console.ReadLine()?.Trim().ToUpper();
+            if (bagInput == "Y")
+            {
+                extraBaggageKg = 23;
+                finalPrice += 25;
+            }
 
             availableSeats.Remove(pickedSeat);
             bookedSeats++;
             
-            TicketModel ticket = CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice);
+            TicketModel ticket = CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice, extraBaggageKg);
             bookingValues.Add((passanger, ticket, pickedSeat));
         }
 
@@ -121,7 +164,12 @@ public static class BookingForums
             Console.WriteLine($"  To:          {flight.DestinationAirportName} ({flight.DestinationCity})");
             Console.WriteLine($"  Arrival:     {flight.ArrivalTime}");
             Console.WriteLine($"  Seat:        {seat.SeatNumber}  ({seat.Seatclass})");
-            Console.WriteLine($"  Price:       €{ticket.Price}\n");
+            Console.WriteLine($"  Price:       €{ticket.Price}");
+            if (ticket.ExtraBaggageKg > 0)
+            {
+                Console.WriteLine($"  Baggage:     + {ticket.ExtraBaggageKg}kg Checked Bag");
+            }
+            Console.WriteLine();
         }
 
         Console.WriteLine($"  Total paid: €{totalPrice}");
@@ -130,6 +178,7 @@ public static class BookingForums
         Console.WriteLine("\nPress any key to return to the main menu...");
         Console.ReadKey();
     }
+    
     private static int NumberOfTickets()
     {
         Console.Clear();
@@ -157,24 +206,52 @@ public static class BookingForums
         }
     }
 
-    private static TicketModel CreateTicket(int bookingID, int flightId, int seatID, int price)
+    private static TicketModel CreateTicket(int bookingID, int flightId, int seatID, int price, int extraBaggageKg)
     {
-        TicketModel ticket = new(bookingID, flightId, seatID, price, 0);
+        TicketModel ticket = new(bookingID, flightId, seatID, price, extraBaggageKg);
         return ticket;
     }
 
     private static PassangerModel CreatePassanger(int current, int total)
     {
-        Console.Clear();
-        Console.WriteLine("======================================");
-        Console.WriteLine($"      PASSENGER DETAILS ({current}/{total})       ");
-        Console.WriteLine("======================================\n");
+        void PrintHeader()
+        {
+            Console.Clear();
+            Console.WriteLine("======================================");
+            Console.WriteLine($"      PASSENGER DETAILS ({current}/{total})       ");
+            Console.WriteLine("======================================\n");
+        }
 
-        Console.WriteLine("Please enter first name:");
-        string? firstName = Console.ReadLine();
+        PrintHeader();
 
-        Console.WriteLine("\nPlease enter last name:");
-        string? lastName = Console.ReadLine();
+        string? firstName;
+        while (true)
+        {
+            Console.WriteLine("Please enter first name:");
+            firstName = Console.ReadLine();
+
+            if (!string.IsNullOrWhiteSpace(firstName))
+                break;
+
+            PrintHeader();
+            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Please try again.\n");
+        }
+
+        string? lastName;
+        while (true)
+        {
+            Console.WriteLine("\nPlease enter last name:");
+            lastName = Console.ReadLine();
+
+            if (!string.IsNullOrWhiteSpace(lastName))
+                break;
+
+            PrintHeader();
+            Console.WriteLine($"First name: {firstName}\n");
+            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Please try again.\n");
+        }
 
         string? dateOfBirth;
         while (true)
@@ -185,6 +262,9 @@ public static class BookingForums
             if (DateTime.TryParse(dateOfBirth, out _))
                 break;
 
+            PrintHeader();
+            Console.WriteLine($"First name: {firstName}");
+            Console.WriteLine($"Last name: {lastName}\n");
             Console.WriteLine("Invalid date format. Please use YYYY-MM-DD.\n");
         }
 
@@ -197,6 +277,10 @@ public static class BookingForums
             if (int.TryParse(userInput, out passportNumber))
                 break;
 
+            PrintHeader();
+            Console.WriteLine($"First name: {firstName}");
+            Console.WriteLine($"Last name: {lastName}");
+            Console.WriteLine($"Date of birth: {dateOfBirth}\n");
             Console.WriteLine("Invalid passport number. Please enter a numeric value.\n");
         }
 

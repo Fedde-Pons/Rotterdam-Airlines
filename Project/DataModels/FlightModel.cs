@@ -58,6 +58,6 @@ public class FlightModel
         
         // Sla op in de database
         FlightAccess flightAccess = new FlightAccess();
-        flightAccess.StoreNewFlightDetails(this);
+        flightAccess.EditFlightDetails(this);
     }
 }

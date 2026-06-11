@@ -25,7 +25,7 @@ public static class BookingLogic
     public static void EditBookingStatus(BookingModel booking, string changeInStatus)
     {
         BookingAccess db = new();
-        db.UpdateBookingStatus(changeInStatus, booking.Id);
+        db.UpdateBookingStatus(BookingModel.NormalizeStatus(changeInStatus), booking.Id);
     }
 
     public static List<BookingModel> GetBookingsForAccount(int accountId)
@@ -38,14 +38,13 @@ public static class BookingLogic
     {
         BookingAccess db = new();
         db.UpdateBookingStatus("Cancelled", bookingId);
+
+        TicketAccess ticketDb = new();
+        ticketDb.ResetCheckInForBooking(bookingId);
     }
 
     public static bool IsCancelled(BookingModel booking)
     {
-        return booking.Status == "Cancelled";
+        return string.Equals(booking.Status, "Cancelled", StringComparison.OrdinalIgnoreCase);
     }
-    // private bool IsValidateSeatAvailable(Plane plane)
-    // {
-    //     return false;
-    // }
 }
