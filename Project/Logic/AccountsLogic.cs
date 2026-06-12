@@ -18,6 +18,11 @@ public class AccountsLogic
         CurrentAccount = null;
     }
 
+    public List<AccountModel> GetAll()
+    {
+        return _access.GetAll();
+    }
+
     public AccountModel CheckLogin(string email, string password)
     {
         AccountModel acc = _access.GetByEmail(email.ToLower());

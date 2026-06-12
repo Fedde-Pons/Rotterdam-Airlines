@@ -10,12 +10,12 @@ public static class AirportLogic
         {
             if(!ValidateLocation(city) || !ValidateLocation(country))
             {
-                return (false, "not a real location or city");
+                return (false, "The entered city is not a real city.");
             }
             
             if(name == "" || address == ""|| city == "" || country == "")
             {
-                return (false, "please dont leave a value empty");
+                return (false, "Please make sure to fill in all fields");
             }
 
             (AirportModel? airport, bool isSucces, String message) airport = ConvertToAirportModel(name, address, city, country);
@@ -27,14 +27,14 @@ public static class AirportLogic
             AirportAccess db = new();
             if (AirportExists(airport.airport, db.GetAllAirports()))
             {
-                return (false, "airport already exists");
+                return (false, "This airport already exists");
             }
             db.WriteAirport(airport.airport);
-            return (true, "airport successfully added");
+            return (true, "Airport created successfully");
         }
         catch
         {
-            return (false, "undefined behavior happend");
+            return (false, "Undefined behavior detected");
         }
     }
     public static bool EditAirport(long id, string name, string address, string city, string country)
