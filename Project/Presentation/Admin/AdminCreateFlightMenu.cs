@@ -10,8 +10,7 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel and return to Flight Management)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
 
             string flightNumber = ReadFlightNumber(flightLogic);
             int aircraftIndex = ReadAircraftChoice(aircrafts);
@@ -94,8 +93,7 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
             if (error != null)
                 Console.WriteLine(error);
             Console.Write("Flight Number: ");
@@ -119,8 +117,7 @@ public class AdminFlightMenu
     {
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.WriteLine("Select Aircraft Type:");
         for (int i = 0; i < aircrafts.Count; i++)
         {
@@ -134,8 +131,7 @@ public class AdminFlightMenu
     {
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.WriteLine("Select Departure Airport:");
         for (int i = 0; i < airports.Count; i++)
         {
@@ -152,8 +148,7 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
             if (error != null)
                 Console.WriteLine(error);
             string date = ReadDate("Departure Date (yyyy-MM-dd): ");
@@ -173,8 +168,7 @@ public class AdminFlightMenu
 
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.WriteLine("Select Arrival Airport:");
         for (int i = 0; i < arrivalOptions.Count; i++)
         {
@@ -192,8 +186,7 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
             if (error != null)
                 Console.WriteLine("\n" + error);
             string date = ReadDate("Arrival Date (yyyy-MM-dd): ");
@@ -209,8 +202,7 @@ public class AdminFlightMenu
     {
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.Write("Base Price: ");
         string? input = ReadLineWithEscapeSupport();
         if (input == null) throw new OperationCanceledException();

@@ -166,49 +166,73 @@ static class AdminDashboard
 
     private static void ShowAirports()
     {
-        Console.Clear();
-        Console.WriteLine("+----------------------Airports--------------------+");
-        Console.WriteLine("| number |                                  action |");
-        Console.WriteLine("+--------------------------------------------------+");
-        Console.WriteLine("| 1      |             create new airport location |");
-        Console.WriteLine("+--------------------------------------------------+\n");
-        Console.Write("> ");
-        string? input = Console.ReadLine();
-        switch (input)
+        CreateAirport();
+    }
+
+    private static string? ReadLineOrEsc(string prompt)
+    {
+        Console.Write(prompt);
+        var input = new System.Text.StringBuilder();
+        while (true)
         {
-            case "1":
-                CreateAirport();
-                return;
-            default:
-                return;
+            ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Escape)
+                return null;
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
+                return input.ToString();
+            }
+            if (key.Key == ConsoleKey.Backspace && input.Length > 0)
+            {
+                input.Remove(input.Length - 1, 1);
+                Console.Write("\b \b");
+            }
+            else if (!char.IsControl(key.KeyChar))
+            {
+                input.Append(key.KeyChar);
+                Console.Write(key.KeyChar);
+            }
         }
+    }
+
+    private static void ShowCancelled()
+    {
+        Console.Clear();
+        Console.WriteLine("Airport creation cancelled.");
+        Console.WriteLine("Press any key to return to Airport Management...");
+        Console.ReadKey();
     }
 
     private static void CreateAirport()
     {
         Console.Clear();
-        Console.WriteLine("+-----------------------------------------------------------------+");
-        Console.WriteLine("| write down the location you want to add in the following format |");
-        Console.WriteLine("+-----------------------------------------------------------------+");
-        Console.WriteLine("| [name],[address],[city],[country]                               |");
-        Console.WriteLine("+-----------------------------------------------------------------+\n");
-        Console.Write("> ");
-        string? input = Console.ReadLine();
-        if (input == null)
+        Console.WriteLine("=== Add Airport ===");
+        Console.WriteLine("Press Esc at any time to cancel.\n");
+
+        string? name = ReadLineOrEsc("Name:    ");
+        if (name == null) { ShowCancelled(); return; }
+
+        string? address = ReadLineOrEsc("Address: ");
+        if (address == null) { ShowCancelled(); return; }
+
+        string? city = ReadLineOrEsc("City:    ");
+        if (city == null) { ShowCancelled(); return; }
+
+        string? country = ReadLineOrEsc("Country: ");
+        if (country == null) { ShowCancelled(); return; }
+
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
+            string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
         {
-            Console.WriteLine("please put in a valid input as described");
+            Console.WriteLine("\nAll fields are required. Press any key to go back...");
+            Console.ReadKey();
             return;
         }
-        string[] param = input.Split(",");
-        if (param.Length == 4)
-        {
-            (bool isSucces, string message) result = AirportLogic.AddAirport(param[0],param[1],param[2],param[3]);
-            Console.WriteLine(result.message);
-        }
-        else
-        {
-            Console.WriteLine("please only put numbers in this forum");
-        }
+
+        (bool isSucces, string message) result = AirportLogic.AddAirport(name, address, city, country);
+        Console.WriteLine($"\n{result.message}");
+        Console.WriteLine("Press any key to go back...");
         Console.ReadKey();
     }
 }
