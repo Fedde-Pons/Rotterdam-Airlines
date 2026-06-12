@@ -152,7 +152,7 @@ public class AdminFlightMenu
             if (error != null)
                 Console.WriteLine(error);
             string date = ReadDate("Departure Date (yyyy-MM-dd): ");
-            string time = ReadTime("Departure Time (HH:mm): ");
+            string time = ReadTime("\nDeparture Time (HH:mm): ");
             string combined = $"{date} {time}";
             if (DateTime.Parse(combined) > DateTime.Now)
                 return combined;
@@ -190,7 +190,7 @@ public class AdminFlightMenu
             if (error != null)
                 Console.WriteLine("\n" + error);
             string date = ReadDate("Arrival Date (yyyy-MM-dd): ");
-            string time = ReadTime("Arrival Time (HH:mm): ");
+            string time = ReadTime("\nArrival Time (HH:mm): ");
             string combined = $"{date} {time}";
             if (DateTime.Parse(combined) > DateTime.Parse(departureTime))
                 return combined;
@@ -231,7 +231,7 @@ public class AdminFlightMenu
             if (input == null) throw new OperationCanceledException();
             if (DateTime.TryParseExact(input, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out _))
                 return input;
-            Console.WriteLine("Invalid format. Please use yyyy-MM-dd (e.g. 2026-07-15).");
+            Console.WriteLine("\nInvalid format. Please use yyyy-MM-dd (e.g. 2026-07-15).");
         }
     }
 
@@ -244,7 +244,7 @@ public class AdminFlightMenu
             if (input == null) throw new OperationCanceledException();
             if (DateTime.TryParseExact(input, new[] { "HH:mm", "HH:mm:ss" }, null, System.Globalization.DateTimeStyles.None, out DateTime parsed))
                 return parsed.ToString("HH:mm");
-            Console.WriteLine("Invalid format. Please use HH:mm or HH:mm:ss (e.g. 14:30 or 14:30:00).");
+            Console.WriteLine("\nInvalid format. Please use HH:mm or HH:mm:ss (e.g. 14:30 or 14:30:00).");
         }
     }
 

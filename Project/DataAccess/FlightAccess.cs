@@ -3,12 +3,13 @@ using Dapper;
 
 public class FlightAccess
 {
-    private SqliteConnection _connection = new SqliteConnection("Data Source=DataSources/project.db");
+    private readonly string _connectionString = "Data Source=DataSources/project.db";
 
     public List<FlightModel> GetAllAvailableFlights()
     {
-        string sql = @"SELECT 
-            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
+        using var connection = new SqliteConnection(_connectionString);
+        string sql = @"SELECT
+            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId,
             f.departureTime, f.arrivalTime, f.basePrice, f.status,
             COALESCE(a.manufacturer, 'Unknown') AS AircraftManufacturer,
             COALESCE(a.model, 'Unknown') AS AircraftModel,
@@ -24,13 +25,14 @@ public class FlightAccess
             LEFT JOIN Airports dest ON f.destinationAirportId = dest.id
             WHERE f.status = 'Scheduled' OR f.status = 'Delayed' OR f.status = 'Cancelled'";
 
-        return _connection.Query<FlightModel>(sql).ToList();
+        return connection.Query<FlightModel>(sql).ToList();
     }
 
     public List<FlightModel> GetAllFlights()
     {
-        string sql = @"SELECT 
-            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
+        using var connection = new SqliteConnection(_connectionString);
+        string sql = @"SELECT
+            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId,
             f.departureTime, f.arrivalTime, f.basePrice, f.status,
             COALESCE(a.manufacturer, 'Unknown') AS AircraftManufacturer,
             COALESCE(a.model, 'Unknown') AS AircraftModel,
@@ -45,11 +47,12 @@ public class FlightAccess
             LEFT JOIN Airports dep ON f.departureAirportId = dep.id
             LEFT JOIN Airports dest ON f.destinationAirportId = dest.id";
 
-        return _connection.Query<FlightModel>(sql).ToList();
+        return connection.Query<FlightModel>(sql).ToList();
     }
 
     public bool AddFlight(FlightModel flight)
     {
+        using var connection = new SqliteConnection(_connectionString);
         try
         {
             string sql = @"INSERT INTO Flights
@@ -57,45 +60,45 @@ public class FlightAccess
             VALUES
             (@FlightNumber, @AircraftId, @DepartureAirportId, @DestinationAirportId, @DepartureTime, @ArrivalTime, @BasePrice, @Status)";
 
-            int result = _connection.Execute(sql, flight);
+            int result = connection.Execute(sql, flight);
             return result > 0;
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine(ex.Message);
             return false;
         }
     }
 
     public bool EditFlightDetails(FlightModel flight)
     {
+        using var connection = new SqliteConnection(_connectionString);
         try
         {
-            string sql = @"UPDATE Flights 
-                SET flightNumber = @FlightNumber, 
-                    aircraftId = @AircraftId, 
-                    departureAirportId = @DepartureAirportId, 
-                    destinationAirportId = @DestinationAirportId, 
-                    departureTime = @DepartureTime, 
-                    arrivalTime = @ArrivalTime, 
-                    basePrice = @BasePrice, 
-                    status = @Status 
+            string sql = @"UPDATE Flights
+                SET flightNumber = @FlightNumber,
+                    aircraftId = @AircraftId,
+                    departureAirportId = @DepartureAirportId,
+                    destinationAirportId = @DestinationAirportId,
+                    departureTime = @DepartureTime,
+                    arrivalTime = @ArrivalTime,
+                    basePrice = @BasePrice,
+                    status = @Status
                 WHERE id = @Id";
 
-            int result = _connection.Execute(sql, flight);
+            int result = connection.Execute(sql, flight);
             return result > 0;
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine(ex.Message);
             return false;
         }
     }
 
     public FlightModel? RetrieveFlight(int id)
     {
-        string sql = @"SELECT 
-            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
+        using var connection = new SqliteConnection(_connectionString);
+        string sql = @"SELECT
+            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId,
             f.departureTime, f.arrivalTime, f.basePrice, f.status,
             COALESCE(a.manufacturer, 'Unknown') AS AircraftManufacturer,
             COALESCE(a.model, 'Unknown') AS AircraftModel,
@@ -111,13 +114,14 @@ public class FlightAccess
             LEFT JOIN Airports dest ON f.destinationAirportId = dest.id
             WHERE f.id = @Id";
 
-        return _connection.QueryFirstOrDefault<FlightModel>(sql, new { Id = id });
+        return connection.QueryFirstOrDefault<FlightModel>(sql, new { Id = id });
     }
 
     public FlightModel? RetrieveFlight(string flightNumber)
     {
-        string sql = @"SELECT 
-            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId, 
+        using var connection = new SqliteConnection(_connectionString);
+        string sql = @"SELECT
+            f.id, f.flightNumber, f.aircraftId, f.departureAirportId, f.destinationAirportId,
             f.departureTime, f.arrivalTime, f.basePrice, f.status,
             COALESCE(a.manufacturer, 'Unknown') AS AircraftManufacturer,
             COALESCE(a.model, 'Unknown') AS AircraftModel,
@@ -133,14 +137,15 @@ public class FlightAccess
             LEFT JOIN Airports dest ON f.destinationAirportId = dest.id
             WHERE f.flightNumber = @FlightNumber";
 
-        return _connection.QueryFirstOrDefault<FlightModel>(sql, new { FlightNumber = flightNumber });
+        return connection.QueryFirstOrDefault<FlightModel>(sql, new { FlightNumber = flightNumber });
     }
 
     public (List<SeatModel> availableSeats, List<SeatModel> allSeats, int bookedSeats) GetLiveSeatData(int flightId, int aircraftId)
     {
-        string getSeatsQuery = "SELECT * FROM Seats WHERE aircraftId = @AircraftId";
+        using var connection = new SqliteConnection(_connectionString);
 
-        List<SeatModel> allSeats = _connection
+        string getSeatsQuery = "SELECT * FROM Seats WHERE aircraftId = @AircraftId";
+        List<SeatModel> allSeats = connection
             .Query<SeatModel>(getSeatsQuery, new { AircraftId = aircraftId })
             .ToList();
 
@@ -151,7 +156,7 @@ public class FlightAccess
             WHERE t.flightId = @FlightId
               AND LOWER(b.status) != 'cancelled'";
 
-        List<int> bookedSeatIds = _connection
+        List<int> bookedSeatIds = connection
             .Query<int>(getBookedSeatsQuery, new { FlightId = flightId })
             .ToList();
 
@@ -164,13 +169,15 @@ public class FlightAccess
 
     public SeatModel? RetrieveSeat(int seatId)
     {
+        using var connection = new SqliteConnection(_connectionString);
         string sql = "SELECT * FROM Seats WHERE id = @Id";
-        return _connection.QueryFirstOrDefault<SeatModel>(sql, new { Id = seatId });
+        return connection.QueryFirstOrDefault<SeatModel>(sql, new { Id = seatId });
     }
 
     public List<AircraftModel> GetAllAircrafts()
     {
+        using var connection = new SqliteConnection(_connectionString);
         string sql = "SELECT * FROM Aircrafts";
-        return _connection.Query<AircraftModel>(sql).ToList();
+        return connection.Query<AircraftModel>(sql).ToList();
     }
 }

@@ -4,6 +4,16 @@ using System.Text.RegularExpressions;
 
 public static class AirportLogic
 {
+    public static AirportModel? GetAirportById(long id)
+    {
+        return new AirportAccess().GetAirportById(id);
+    }
+
+    public static List<AirportModel> GetAllAirports()
+    {
+        return new AirportAccess().GetAllAirports();
+    }
+
     public static (bool, string) AddAirport(string name, string address, string city, string country)
     {
         try

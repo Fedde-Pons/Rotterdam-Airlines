@@ -151,7 +151,7 @@ static class AdminDashboard
         Console.Clear();
         Console.WriteLine("=== All Accounts ===\n");
 
-        List<AccountModel> accounts = new AccountsAccess().GetAll();
+        List<AccountModel> accounts = new AccountsLogic().GetAll();
 
         Console.WriteLine($"{"ID",-6} {"Name",-24} {"Email",-30} {"Phone",-16} {"Admin"}");
         Console.WriteLine(new string('-', 85));

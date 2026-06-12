@@ -13,8 +13,8 @@ public static class BookingForums
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket, SeatModel seat)> bookingValues = [];
 
-        FlightAccess dbAccess = new FlightAccess();
-        var seatData = dbAccess.GetLiveSeatData(flight.Id, flight.AircraftId);
+        FlightLogic flightLogic = new();
+        var seatData = flightLogic.GetLiveSeatData(flight.Id, flight.AircraftId);
         
         List<SeatModel> availableSeats = seatData.availableSeats;
         int totalSeats = seatData.allSeats.Count;
@@ -133,18 +133,8 @@ public static class BookingForums
         // ── SAVE TO DATABASE ───────────────────────────────────────────
         booking.TotalPrice = totalPrice;
 
-        BookingAccess bookingAccess = new();
-        PassangerAccess passangerAccess = new();
-        TicketAccess ticketAccess = new();
-
-        int bookingId = bookingAccess.Write(booking);
-
-        foreach (var (passanger, ticket, _) in bookingValues)
-        {
-            int passangerId = passangerAccess.Write(passanger);
-            TicketModel dbTicket = new(bookingId, ticket.FlightId, ticket.SeatId, passangerId, ticket.Price, ticket.ExtraBaggageKg);
-            ticketAccess.Write(dbTicket);
-        }
+        var entries = bookingValues.Select(bv => (bv.passanger, bv.ticket)).ToList();
+        int bookingId = BookingLogic.SaveBooking(booking, entries);
 
         // ── TICKET DISPLAY ─────────────────────────────────────────────
         Console.Clear();

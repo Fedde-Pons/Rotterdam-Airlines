@@ -23,6 +23,29 @@ public class AccountsLogic
         return _access.GetAll();
     }
 
+    public List<AccountModel> Search(string searchTerm)
+    {
+        return _access.Search(searchTerm);
+    }
+
+    public AccountModel GetById(long id)
+    {
+        return _access.GetById(id);
+    }
+
+    public (bool success, string message) Delete(long id)
+    {
+        try
+        {
+            _access.Delete(id);
+            return (true, "Account deleted successfully.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return (false, ex.Message);
+        }
+    }
+
     public AccountModel CheckLogin(string email, string password)
     {
         AccountModel acc = _access.GetByEmail(email.ToLower());

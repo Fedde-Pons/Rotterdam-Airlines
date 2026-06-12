@@ -141,8 +141,8 @@ public static class FlightSearch
             {
 
                 specificFlightFound = true;
-                FlightAccess flightAccess = new FlightAccess();
-                var (availableSeatsList, allSeatsList, bookedSeats) = flightAccess.GetLiveSeatData(specificFlight.Id, specificFlight.AircraftId);
+                FlightLogic flightLogic = new FlightLogic();
+                var (availableSeatsList, allSeatsList, bookedSeats) = flightLogic.GetLiveSeatData(specificFlight.Id, specificFlight.AircraftId);
                 int totalSeats = allSeatsList.Count;
 
                 int totalEconomy = allSeatsList.Count(s => s.Seatclass.Equals("Economy", StringComparison.OrdinalIgnoreCase));

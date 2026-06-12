@@ -8,7 +8,7 @@ static class AirportManagement
             Console.Clear();
             Console.WriteLine("=== All Airports ===\n");
 
-            List<AirportModel> airports = new AirportAccess().GetAllAirports();
+            List<AirportModel> airports = AirportLogic.GetAllAirports();
 
             if (airports.Count == 0)
             {
@@ -68,7 +68,7 @@ static class AirportManagement
             {
                 case "1":
                     EditAirportView(airport);
-                    AirportModel? refreshedAirport = new AirportAccess().GetAirportById(airport.Id);
+                    AirportModel? refreshedAirport = AirportLogic.GetAirportById(airport.Id);
                     if (refreshedAirport == null)
                     {
                         return;

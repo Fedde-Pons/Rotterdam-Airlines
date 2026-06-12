@@ -129,17 +129,7 @@ public static class MyBookings
             }
 
             bool isCancelled = BookingLogic.IsCancelled(booking);
-            // stukje voor check in validatie zodat er niet 24 uur voor de vluch kan worden ingecheckt.
-            // ook misschien kunnen we dit restructuren naar 3 lagen model. future reference.
-            bool needsCheckIn = false;
-            foreach (var t in tickets)
-            {
-                if (!t.IsCheckedIn)
-                {
-                    needsCheckIn = true;
-                    break;
-                }
-            }
+            bool needsCheckIn = tickets.Any(t => !t.IsCheckedIn);
 
             bool isCheckInOpen = false;
             string checkInMessage = "";
@@ -147,22 +137,9 @@ public static class MyBookings
             if (tickets.Count > 0)
             {
                 FlightModel? firstFlight = _flightLogic.GetFlightById(tickets[0].FlightId);
-                if (firstFlight != null && DateTime.TryParse(firstFlight.DepartureTime, out DateTime departureTime))
+                if (firstFlight != null)
                 {
-                    TimeSpan timeUntilFlight = departureTime - DateTime.Now;
-                    
-                    if (timeUntilFlight.TotalHours > 24)
-                    {
-                        checkInMessage = "\n  * Online check-in opens 24 hours before departure.";
-                    }
-                    else if (timeUntilFlight.TotalHours <= 24 && timeUntilFlight.TotalHours >= 1)
-                    {
-                        isCheckInOpen = true; 
-                    }
-                    else
-                    {
-                        checkInMessage = "\n  * Online check-in is now closed (closes 1 hour before departure).";
-                    }
+                    (isCheckInOpen, checkInMessage) = TicketLogic.GetCheckInStatus(firstFlight.DepartureTime);
                 }
             }
             
@@ -303,12 +280,7 @@ public static class MyBookings
 
         if (input == "Y")
         {
-            TicketAccess db = new TicketAccess();
-            foreach (var t in pendingTickets)
-            {
-                db.UpdateCheckInStatus(t.Id);
-                t.IsCheckedIn = true;
-            }
+            TicketLogic.CheckIn(pendingTickets);
 
             Console.WriteLine("\nSuccess! Online check-in is confirmed.");
             Console.WriteLine("We have sent the boarding pass(es) to your registered email address.");

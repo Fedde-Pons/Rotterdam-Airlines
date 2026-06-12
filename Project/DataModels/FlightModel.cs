@@ -39,25 +39,4 @@ public class FlightModel
 
     public FlightModel() { }
 
-    public void UpdateBasePriceInDB(
-        double demandFactor,
-        double timeUntilDepartureFactor,
-        string seatType = "economy",
-        double discount = 0)
-    {
-        // Bereken de nieuwe prijs met PricingCoreLogic
-        double newPrice = PricingCoreLogic.CalculateFlightPrice(
-            distance_in_km,
-            demandFactor,
-            timeUntilDepartureFactor,
-            seatType,
-            discount);
-        
-        // Update de BasePrice
-        BasePrice = newPrice;
-        
-        // Sla op in de database
-        FlightAccess flightAccess = new FlightAccess();
-        flightAccess.EditFlightDetails(this);
-    }
 }

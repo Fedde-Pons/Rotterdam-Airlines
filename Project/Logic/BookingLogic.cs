@@ -62,4 +62,22 @@ public static class BookingLogic
     {
         return string.Equals(booking.Status, "Cancelled", StringComparison.OrdinalIgnoreCase);
     }
+
+    public static int SaveBooking(BookingModel booking, List<(PassangerModel passanger, TicketModel ticket)> entries)
+    {
+        BookingAccess bookingAccess = new();
+        PassangerAccess passangerAccess = new();
+        TicketAccess ticketAccess = new();
+
+        int bookingId = bookingAccess.Write(booking);
+
+        foreach (var (passanger, ticket) in entries)
+        {
+            int passangerId = passangerAccess.Write(passanger);
+            TicketModel dbTicket = new(bookingId, ticket.FlightId, ticket.SeatId, passangerId, ticket.Price, ticket.ExtraBaggageKg);
+            ticketAccess.Write(dbTicket);
+        }
+
+        return bookingId;
+    }
 }

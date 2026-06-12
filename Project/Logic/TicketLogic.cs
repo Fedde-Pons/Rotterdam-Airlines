@@ -16,7 +16,7 @@ public static class TicketLogic
         }
         catch
         {
-            return (false, "couldnt create a booking", null);
+            return (false, "Could not create booking", null);
         }
     }
 
@@ -30,5 +30,31 @@ public static class TicketLogic
     {
         TicketAccess db = new();
         return db.GetSeatOccupancyByFlightId(flightId);
+    }
+
+    public static void CheckIn(List<TicketModel> tickets)
+    {
+        TicketAccess db = new();
+        foreach (var t in tickets)
+        {
+            db.UpdateCheckInStatus(t.Id);
+            t.IsCheckedIn = true;
+        }
+    }
+
+    public static (bool isOpen, string message) GetCheckInStatus(string departureTime)
+    {
+        if (!DateTime.TryParse(departureTime, out DateTime departure))
+            return (false, "");
+
+        TimeSpan timeUntilFlight = departure - DateTime.Now;
+
+        if (timeUntilFlight.TotalHours > 24)
+            return (false, "\n  * Online check-in opens 24 hours before departure.");
+
+        if (timeUntilFlight.TotalHours >= 1)
+            return (true, "");
+
+        return (false, "\n  * Online check-in is now closed (closes 1 hour before departure).");
     }
 }
