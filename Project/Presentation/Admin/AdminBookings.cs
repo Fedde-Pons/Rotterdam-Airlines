@@ -74,7 +74,7 @@ static class AdminBookings
 
             Console.WriteLine($"Booking Nr.: {booking.Id}");
             Console.WriteLine($"Account:     {accountName}");
-            Console.WriteLine($"Date:        {booking.Date}");
+            Console.WriteLine($"Booked At:        {booking.Date}");
             Console.WriteLine($"Total Price: €{booking.TotalPrice:F2}");
             Console.WriteLine($"Status:      {ColorStatus(booking.Status)}\n");
 
