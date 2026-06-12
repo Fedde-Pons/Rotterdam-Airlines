@@ -28,6 +28,21 @@ public static class BookingLogic
         db.UpdateBookingStatus(BookingModel.NormalizeStatus(changeInStatus), booking.Id);
     }
 
+    public static List<BookingModel> GetPastBookings()
+    {
+        BookingAccess db = new();
+        return db.GetAll()
+            .Where(b => DateTime.TryParse(b.Date, out DateTime d) && d < DateTime.Now)
+            .OrderByDescending(b => b.Date)
+            .ToList();
+    }
+
+    public static BookingModel? GetById(int id)
+    {
+        BookingAccess db = new();
+        return db.GetById(id);
+    }
+
     public static List<BookingModel> GetBookingsForAccount(int accountId)
     {
         BookingAccess db = new();
