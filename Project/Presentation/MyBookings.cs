@@ -33,7 +33,7 @@ public static class MyBookings
             for (int i = 0; i < bookings.Count; i++)
             {
                 var b = bookings[i];
-                Console.WriteLine($"{i + 1}: Booking #{b.Id}  |  Date: {b.Date}  |  Status: {FormatStatus(b.Status)}  |  Total: €{b.TotalPrice}");
+                Console.WriteLine($"{i + 1}: Booking #{b.Id}  |  Booked on: {b.Date}  |  Status: {FormatStatus(b.Status)}  |  Total: €{b.TotalPrice}");
             }
 
             Console.WriteLine("\nEnter the number of a booking to view it, or q to return to the main menu:");
@@ -78,7 +78,7 @@ public static class MyBookings
             Console.WriteLine("======================================");
             Console.WriteLine($"          BOOKING #{booking.Id}");
             Console.WriteLine("======================================\n");
-            Console.WriteLine($"Date:    {booking.Date}");
+            Console.WriteLine($"Booked on:    {booking.Date}");
             Console.WriteLine($"Status:  {FormatStatus(booking.Status)}");
             Console.WriteLine($"Total:   €{booking.TotalPrice}\n");
 
