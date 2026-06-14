@@ -78,7 +78,7 @@ public static class BookingForums
             Console.WriteLine("======================================");
             Console.WriteLine($"    EXTRA BAGGAGE ({passanger.FirstName})");
             Console.WriteLine("======================================\n");
-            Console.WriteLine("Add an extra 23 kg checked bag for €25? (Y/N):(Y) ");
+            Console.WriteLine("Add an extra 23 kg checked bag for €25? (Y/N): ");
             
             string? bagInput = Console.ReadLine()?.Trim().ToUpper();
             if (bagInput == "Y")

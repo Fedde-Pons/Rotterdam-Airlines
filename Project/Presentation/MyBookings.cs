@@ -70,7 +70,7 @@ public static class MyBookings
         return label;
     }
 
-private static void ShowBookingDetails(BookingModel booking)
+    private static void ShowBookingDetails(BookingModel booking)
     {
         while (true)
         {
@@ -137,7 +137,12 @@ private static void ShowBookingDetails(BookingModel booking)
                     else
                         Console.WriteLine($"  Seat:        (unknown)");
                     Console.WriteLine($"  Price:       €{t.Price}");
-                    Console.WriteLine($"  Baggage:     {t.ExtraBaggageKg} kg extra");
+
+                    // nieuwe baggage display naar de wensen van de P.O.
+                    string baggageText = t.ExtraBaggageKg > 0 
+                        ? $"{25 + t.ExtraBaggageKg} kg (25 kg standard + {t.ExtraBaggageKg} kg extra)"
+                        : "25 kg (standard)";
+                    Console.WriteLine($"  Baggage:     {baggageText}");
 
                     string ticketStatus = "";
                     
@@ -282,7 +287,11 @@ private static void ShowBookingDetails(BookingModel booking)
             string seatLabel = seat != null ? seat.SeatNumber : "(unknown)";
             string flightLabel = flight != null ? flight.FlightNumber : $"(Flight #{t.FlightId})";
 
-            Console.WriteLine($" * {passangerName,-20} | Flight: {flightLabel,-8} | Seat: {seatLabel}");
+            string shortBaggageText = t.ExtraBaggageKg > 0 
+                ? $"{25 + t.ExtraBaggageKg}kg (incl. extra)" 
+                : "25kg (standard)";
+
+            Console.WriteLine($" * {passangerName,-20} | Flight: {flightLabel,-8} | Seat: {seatLabel,-4} | Bag: {shortBaggageText}");
         }
         Console.WriteLine("------------------------------------------------------------\n");
 
