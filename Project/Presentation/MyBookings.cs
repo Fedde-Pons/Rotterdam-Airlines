@@ -70,7 +70,7 @@ public static class MyBookings
         return label;
     }
 
-    private static void ShowBookingDetails(BookingModel booking)
+private static void ShowBookingDetails(BookingModel booking)
     {
         while (true)
         {
@@ -78,12 +78,27 @@ public static class MyBookings
             Console.WriteLine("======================================");
             Console.WriteLine($"          BOOKING #{booking.Id}");
             Console.WriteLine("======================================\n");
-            Console.WriteLine($"Booked on:    {booking.Date}");
-            Console.WriteLine($"Status:  {FormatStatus(booking.Status)}");
-            Console.WriteLine($"Total:   €{booking.TotalPrice}\n");
+            Console.WriteLine($"Booked on: {booking.Date}");
+            Console.WriteLine($"Status:    {FormatStatus(booking.Status)}");
+            Console.WriteLine($"Total:     €{booking.TotalPrice}\n");
 
             List<TicketModel> tickets = TicketLogic.GetTicketsForBooking(booking.Id);
 
+            bool isCancelled = BookingLogic.IsCancelled(booking);
+            bool needsCheckIn = tickets.Any(t => !t.IsCheckedIn);
+
+            bool isCheckInOpen = false;
+            string checkInMessage = "";
+
+            if (tickets.Count > 0)
+            {
+                FlightModel? firstFlight = _flightLogic.GetFlightById(tickets[0].FlightId);
+                if (firstFlight != null)
+                {
+                    (isCheckInOpen, checkInMessage) = TicketLogic.GetCheckInStatus(firstFlight.DepartureTime);
+                }
+            }
+            
             if (tickets.Count == 0)
             {
                 Console.WriteLine("This booking has no tickets.\n");
@@ -123,31 +138,31 @@ public static class MyBookings
                         Console.WriteLine($"  Seat:        (unknown)");
                     Console.WriteLine($"  Price:       €{t.Price}");
                     Console.WriteLine($"  Baggage:     {t.ExtraBaggageKg} kg extra");
-                    Console.WriteLine($"  Status:      {(t.IsCheckedIn ? "\x1b[32mChecked In\x1b[0m" : "\x1b[31mNot Checked In\x1b[0m")}");
+
+                    string ticketStatus = "";
+                    
+                    if (t.IsCheckedIn)
+                    {
+                        ticketStatus = "\x1b[32mChecked In\x1b[0m";
+                    }
+                    else if (isCheckInOpen)
+                    {
+                        ticketStatus = "\x1b[31mNot Checked In\x1b[0m";
+                    }
+                    else
+                    {
+                        ticketStatus = "Check in opens 24 hours before departure, and closes 1 hour before departure";
+                    }
+
+                    Console.WriteLine($"  Status:      {ticketStatus}");
                     Console.WriteLine();
                 }
             }
 
-            bool isCancelled = BookingLogic.IsCancelled(booking);
-            bool needsCheckIn = tickets.Any(t => !t.IsCheckedIn);
-
-            bool isCheckInOpen = false;
-            string checkInMessage = "";
-
-            if (tickets.Count > 0)
-            {
-                FlightModel? firstFlight = _flightLogic.GetFlightById(tickets[0].FlightId);
-                if (firstFlight != null)
-                {
-                    (isCheckInOpen, checkInMessage) = TicketLogic.GetCheckInStatus(firstFlight.DepartureTime);
-                }
-            }
-            
             if (!isCancelled)
             {
                 Console.WriteLine("1: Cancel this booking");
 
-                
                 if (needsCheckIn && isCheckInOpen)
                 {
                     Console.WriteLine("2: Check in online");
@@ -156,7 +171,6 @@ public static class MyBookings
                 else
                 {
                     Console.WriteLine("2: Back to my bookings");
-                    
                     
                     if (needsCheckIn && !isCheckInOpen && !string.IsNullOrEmpty(checkInMessage))
                     {
@@ -185,12 +199,10 @@ public static class MyBookings
                 {
                     if (ConfirmCancellation(booking)) return;
                 }
-                
                 else if (input == "2" && needsCheckIn && isCheckInOpen)
                 {
                     PerformCheckIn(booking, tickets);
                 }
-                
                 else if ((input == "2" && (!needsCheckIn || !isCheckInOpen)) || (input == "3" && needsCheckIn && isCheckInOpen))
                 {
                     return;
