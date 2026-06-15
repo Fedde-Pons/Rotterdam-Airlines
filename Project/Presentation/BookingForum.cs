@@ -78,7 +78,7 @@ public static class BookingForums
             Console.WriteLine("======================================");
             Console.WriteLine($"    EXTRA BAGGAGE ({passanger.FirstName})");
             Console.WriteLine("======================================\n");
-            Console.WriteLine("Add an extra 23 kg checked bag for €25? (Y/N): ");
+            Console.WriteLine("Add an extra 23 kg checked bag (on top of the 25kg) for €25?  (Y/N): ");
             
             string? bagInput = Console.ReadLine()?.Trim().ToUpper();
             if (bagInput == "Y")
@@ -220,11 +220,12 @@ public static class BookingForums
             Console.WriteLine("Please enter first name:");
             firstName = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(firstName))
+            // Calling the logic layer for name validation - serhat (dit kwam voort uit systematisch testen )
+            if (PassangerLogic.IsValidName(firstName))
                 break;
 
             PrintHeader();
-            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Name can only contain letters, hyphens (-) and apostrophes (').");
             Console.WriteLine("Please try again.\n");
         }
 
@@ -234,12 +235,13 @@ public static class BookingForums
             Console.WriteLine("\nPlease enter last name:");
             lastName = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(lastName))
+            // Calling the logic layer for name validation - serhat
+            if (PassangerLogic.IsValidName(lastName))
                 break;
 
             PrintHeader();
             Console.WriteLine($"First name: {firstName}\n");
-            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Name can only contain letters, hyphens (-) and apostrophes (').");
             Console.WriteLine("Please try again.\n");
         }
 
@@ -249,7 +251,7 @@ public static class BookingForums
             Console.WriteLine("\nPlease enter date of birth (YYYY-MM-DD): ");
             dateOfBirth = Console.ReadLine();
 
-            if (DateTime.TryParse(dateOfBirth, out _))
+            if (PassangerLogic.IsValidDateOfBirth(dateOfBirth))
                 break;
 
             PrintHeader();
