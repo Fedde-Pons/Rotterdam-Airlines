@@ -9,6 +9,8 @@ public static class PassangerLogic
     return name.All(c => char.IsLetter(c) || c == '-' || c == '\'');
     }
     // leeftijd validatie, kan dus niet in toekomst meer worden geboekt en minimaal 2 weken van current date.
+    // datetime .today is een property dat je eigenlijk vandaag geeft als property vanzelfsprekend.
+    // .AddDays is een date time methode dat eigenlijk dagen toevoegt of afteld als je in de min gaat, dus - 14 voor 2 weken terug voor validatie.
     public static bool IsValidDateOfBirth(string dateOfBirth)
     {
     if (!DateTime.TryParse(dateOfBirth, out DateTime dob)) return false;
