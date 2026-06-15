@@ -2,19 +2,27 @@ static class UserLogin
 {
     static private AccountsLogic accountsLogic = new AccountsLogic();
 
-
     public static void Start()
     {
         Console.Clear();
+
+        Console.WriteLine("==== Login ====");
+        Console.WriteLine();
+
         Console.WriteLine("Welcome to the login page");
+        Console.WriteLine();
+
         Console.WriteLine("Please enter your email address:");
         string email = Console.ReadLine();
+
         Console.WriteLine("\nPlease enter your password:");
         string password = "";
         ConsoleKeyInfo key;
+
         do
         {
             key = Console.ReadKey(intercept: true);
+
             if (key.Key == ConsoleKey.Backspace && password.Length > 0)
             {
                 password = password[..^1];
@@ -25,9 +33,13 @@ static class UserLogin
                 password += key.KeyChar;
                 Console.Write("*");
             }
+
         } while (key.Key != ConsoleKey.Enter);
+
         Console.WriteLine();
+
         AccountModel acc = accountsLogic.CheckLogin(email, password);
+
         if (acc != null)
         {
             Console.Clear();
@@ -39,6 +51,7 @@ static class UserLogin
             Console.Clear();
             Console.WriteLine("No account found with that email and password");
         }
+
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
     }
