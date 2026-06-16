@@ -19,7 +19,7 @@ public class AirportTests
 
         // act & assert
         Assert.AreEqual(true, result.Item1);
-        Assert.AreEqual("Airport successfully added", result.Item2);
+        Assert.AreEqual("Airport created successfully", result.Item2);
     }
 
     [TestMethod]
