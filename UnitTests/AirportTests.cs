@@ -19,7 +19,7 @@ public class AirportTests
 
         // act & assert
         Assert.AreEqual(true, result.Item1);
-        Assert.AreEqual("airport successfully added", result.Item2);
+        Assert.AreEqual("Airport successfully added", result.Item2);
     }
 
     [TestMethod]
@@ -31,7 +31,7 @@ public class AirportTests
         // act & assert
         var result = AirportLogic.AddAirport("Schiphol Airport", "New Terminal", "Amsterdam", "Netherlands");
         Assert.IsFalse(result.Item1, "Duplicate airport should fail");
-        Assert.AreEqual("airport already exists", result.Item2);
+        Assert.AreEqual("This airport already exists", result.Item2);
     }
 
     [TestMethod]
@@ -144,7 +144,7 @@ public class AirportTests
         // assert
         Assert.IsTrue(result1.Item1, "First addition should succeed");
         Assert.IsFalse(result2.Item1, "Second addition with same name should fail");
-        Assert.AreEqual("airport already exists", result2.Item2);
+        Assert.AreEqual("This airport already exists", result2.Item2);
     }
 
     [TestMethod]
