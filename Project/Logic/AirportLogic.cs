@@ -20,7 +20,7 @@ public static class AirportLogic
         {
             if(!ValidateLocation(city) || !ValidateLocation(country))
             {
-                return (false, "The entered city is not a real city.");
+                return (false, "not a real location or city");
             }
             
             if(name == "" || address == ""|| city == "" || country == "")
@@ -44,7 +44,7 @@ public static class AirportLogic
         }
         catch
         {
-            return (false, "Undefined behavior detected");
+            return (false, "undefined behavior happend");
         }
     }
     public static bool EditAirport(long id, string name, string address, string city, string country)

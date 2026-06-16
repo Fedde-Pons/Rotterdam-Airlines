@@ -103,10 +103,7 @@ public class AirportTests
 
         // assert
         Assert.IsFalse(result.Item1);
-        Assert.IsTrue(string.IsNullOrEmpty(result.Item2) || 
-                     result.Item2 == "not a real location or city" || 
-                     result.Item2.Contains("convert") || 
-                     result.Item2 == "undefined behavior happend");
+        Assert.AreEqual("not a real location or city", result.Item2);
     }
 
     [TestMethod]
@@ -185,10 +182,7 @@ public class AirportTests
 
         // assert - Should fail validation and return error message
         Assert.IsFalse(result.Item1);
-        Assert.IsTrue(string.IsNullOrEmpty(result.Item2) || 
-                     result.Item2 == "not a real location or city" || 
-                     result.Item2.Contains("convert") || 
-                     result.Item2 == "undefined behavior happend");
+        Assert.AreEqual("not a real location or city", result.Item2);
     }
 
     [TestMethod]
@@ -199,10 +193,7 @@ public class AirportTests
 
         // assert - Should fail validation and return error message
         Assert.IsFalse(result.Item1);
-        Assert.IsTrue(string.IsNullOrEmpty(result.Item2) || 
-                     result.Item2 == "not a real location or city" || 
-                     result.Item2.Contains("convert") || 
-                     result.Item2 == "undefined behavior happend");
+        Assert.AreEqual("not a real location or city", result.Item2);
     }
 
     [TestMethod]
@@ -213,10 +204,7 @@ public class AirportTests
 
         // assert 
         Assert.IsFalse(result.Item1);
-        Assert.IsTrue(string.IsNullOrEmpty(result.Item2) || 
-                     result.Item2 == "not a real location or city" || 
-                     result.Item2.Contains("convert") || 
-                     result.Item2 == "undefined behavior happend");
+        Assert.AreEqual("not a real location or city", result.Item2);
     }
 
     [TestMethod]
