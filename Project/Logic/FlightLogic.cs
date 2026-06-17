@@ -197,6 +197,44 @@ public class FlightLogic
         return (true, "The date has been adjusted.");
     }
 
+    public static List<string> GetAvailableRoutes(List<FlightModel> flights)
+    {
+        List<string> routes = [];
+        foreach (FlightModel flight in flights)
+        {
+            string routeStr = $"{flight.DepartureCity} -> {flight.DestinationCity}";
+            if (!routes.Contains(routeStr))
+                routes.Add(routeStr);
+        }
+        routes.Sort();
+        return routes;
+    }
+
+    public static List<FlightModel> FilterByRoute(List<FlightModel> flights, string? departure, string? destination)
+    {
+        List<FlightModel> matches = [];
+        foreach (FlightModel flight in flights)
+        {
+            if (flight.DepartureCity?.Equals(departure, StringComparison.OrdinalIgnoreCase) == true &&
+                flight.DestinationCity?.Equals(destination, StringComparison.OrdinalIgnoreCase) == true)
+            {
+                matches.Add(flight);
+            }
+        }
+        return matches;
+    }
+
+    public static List<FlightModel> FilterByDate(List<FlightModel> flights, DateTime date)
+    {
+        List<FlightModel> matches = [];
+        foreach (FlightModel f in flights)
+        {
+            if (DateTime.TryParse(f.DepartureTime, out DateTime departure) && departure.Date == date.Date)
+                matches.Add(f);
+        }
+        return matches;
+    }
+
     public (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
     {
         TicketAccess ticketDb = new();

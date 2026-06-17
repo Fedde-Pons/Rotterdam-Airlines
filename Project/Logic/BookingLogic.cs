@@ -9,6 +9,11 @@ public static class BookingLogic
     /// creates and returns a booking data <br/>
     /// booking only returns null if something went wrong
     /// </summary>
+    public static BookingModel CreateBooking(int accountId, string date, string status)
+    {
+        return new BookingModel(accountId, date, status);
+    }
+
     public static (bool IsSuccesfull, string Message, BookingModel? booking) CreateBooking(int accountId, string date, float totalPrice, string status)
     {
         try

@@ -9,7 +9,7 @@ public static class BookingForums
     public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount.Id;
-        BookingModel booking = new BookingModel(accountID, date, "Confirmed");
+        BookingModel booking = BookingLogic.CreateBooking(accountID, date, "Confirmed");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket, SeatModel seat)> bookingValues = [];
 
@@ -90,7 +90,7 @@ public static class BookingForums
             availableSeats.Remove(pickedSeat);
             bookedSeats++;
             
-            TicketModel ticket = CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice, extraBaggageKg);
+            TicketModel ticket = TicketLogic.CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice, extraBaggageKg);
             bookingValues.Add((passanger, ticket, pickedSeat));
         }
 
@@ -196,12 +196,6 @@ public static class BookingForums
         }
     }
 
-    private static TicketModel CreateTicket(int bookingID, int flightId, int seatID, int price, int extraBaggageKg)
-    {
-        TicketModel ticket = new(bookingID, flightId, seatID, price, extraBaggageKg);
-        return ticket;
-    }
-
     private static PassangerModel CreatePassanger(int current, int total)
     {
         void PrintHeader()
@@ -276,7 +270,6 @@ public static class BookingForums
             Console.WriteLine("Invalid passport number. Please enter a numeric value.\n");
         }
 
-        PassangerModel passanger = new PassangerModel(firstName, lastName, dateOfBirth, passportNumber);
-        return passanger;
+        return PassangerLogic.CreatePassanger(firstName, lastName, dateOfBirth, passportNumber);
     }
 }
