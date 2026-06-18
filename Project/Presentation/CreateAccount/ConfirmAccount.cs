@@ -277,12 +277,12 @@ static class ConfirmAccount
             if (Response1 == "N") {return true;}
             else if (Response1 == "Y")
             {
-                Console.WriteLine("Are you sure you want to stop? \nCreating an account only takes a minute and gives you full access to discounts and member benefits.\n\nYour progress will be lost.\nY/N");
+                Console.WriteLine("Are you sure you want to stop?\n\nYour progress will be lost.\nY/N");
                 string Response2 = (Console.ReadLine() ?? "").ToUpper();
                 if (Response2 == "Y") 
                 {
                     Console.Clear();
-                    Console.WriteLine("We're sorry to see you going, you can always sign up and still earn membership benefits!");
+                    Console.WriteLine("Registration cancelled.");
                     Console.WriteLine("Press enter to continue...");
                     Console.ReadLine();
                     return false;

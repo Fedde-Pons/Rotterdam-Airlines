@@ -10,8 +10,7 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel and return to Flight Management)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
 
             string flightNumber = ReadFlightNumber(flightLogic);
             int aircraftIndex = ReadAircraftChoice(aircrafts);
@@ -94,8 +93,7 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
             if (error != null)
                 Console.WriteLine(error);
             Console.Write("Flight Number: ");
@@ -119,8 +117,7 @@ public class AdminFlightMenu
     {
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.WriteLine("Select Aircraft Type:");
         for (int i = 0; i < aircrafts.Count; i++)
         {
@@ -134,8 +131,7 @@ public class AdminFlightMenu
     {
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.WriteLine("Select Departure Airport:");
         for (int i = 0; i < airports.Count; i++)
         {
@@ -152,12 +148,11 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
             if (error != null)
                 Console.WriteLine(error);
             string date = ReadDate("Departure Date (yyyy-MM-dd): ");
-            string time = ReadTime("Departure Time (HH:mm): ");
+            string time = ReadTime("\nDeparture Time (HH:mm): ");
             string combined = $"{date} {time}";
             if (DateTime.Parse(combined) > DateTime.Now)
                 return combined;
@@ -173,8 +168,7 @@ public class AdminFlightMenu
 
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.WriteLine("Select Arrival Airport:");
         for (int i = 0; i < arrivalOptions.Count; i++)
         {
@@ -192,12 +186,11 @@ public class AdminFlightMenu
         {
             Console.Clear();
             Console.WriteLine("=== ADD NEW FLIGHT ===");
-            Console.WriteLine("(Press ESC at any time to cancel)");
-            Console.WriteLine();
+            Console.WriteLine("Press Esc at any time to cancel.\n");
             if (error != null)
                 Console.WriteLine("\n" + error);
             string date = ReadDate("Arrival Date (yyyy-MM-dd): ");
-            string time = ReadTime("Arrival Time (HH:mm): ");
+            string time = ReadTime("\nArrival Time (HH:mm): ");
             string combined = $"{date} {time}";
             if (DateTime.Parse(combined) > DateTime.Parse(departureTime))
                 return combined;
@@ -209,8 +202,7 @@ public class AdminFlightMenu
     {
         Console.Clear();
         Console.WriteLine("=== ADD NEW FLIGHT ===");
-        Console.WriteLine("(Press ESC at any time to cancel)");
-        Console.WriteLine();
+        Console.WriteLine("Press Esc at any time to cancel.\n");
         Console.Write("Base Price: ");
         string? input = ReadLineWithEscapeSupport();
         if (input == null) throw new OperationCanceledException();
@@ -239,7 +231,7 @@ public class AdminFlightMenu
             if (input == null) throw new OperationCanceledException();
             if (DateTime.TryParseExact(input, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out _))
                 return input;
-            Console.WriteLine("Invalid format. Please use yyyy-MM-dd (e.g. 2026-07-15).");
+            Console.WriteLine("\nInvalid format. Please use yyyy-MM-dd (e.g. 2026-07-15).");
         }
     }
 
@@ -252,7 +244,7 @@ public class AdminFlightMenu
             if (input == null) throw new OperationCanceledException();
             if (DateTime.TryParseExact(input, new[] { "HH:mm", "HH:mm:ss" }, null, System.Globalization.DateTimeStyles.None, out DateTime parsed))
                 return parsed.ToString("HH:mm");
-            Console.WriteLine("Invalid format. Please use HH:mm or HH:mm:ss (e.g. 14:30 or 14:30:00).");
+            Console.WriteLine("\nInvalid format. Please use HH:mm or HH:mm:ss (e.g. 14:30 or 14:30:00).");
         }
     }
 

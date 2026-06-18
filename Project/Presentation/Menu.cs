@@ -230,7 +230,7 @@ static class Menu
     {
         Console.Clear();
 
-        AccountsAccess accountsAccess = new AccountsAccess();
+        AccountsLogic accountsLogic = new AccountsLogic();
 
         Console.WriteLine("=== ACCOUNT SEARCH ===");
         Console.WriteLine("Enter a name or email to search.");
@@ -242,11 +242,11 @@ static class Menu
 
         if (string.IsNullOrWhiteSpace(search))
         {
-            accounts = accountsAccess.GetAll();
+            accounts = accountsLogic.GetAll();
         }
         else
         {
-            accounts = accountsAccess.Search(search);
+            accounts = accountsLogic.Search(search);
         }
 
         Console.Clear();
@@ -284,7 +284,7 @@ static class Menu
                 }
                 else
                 {
-                    AccountModel accountToDelete = accountsAccess.GetById(accountId);
+                    AccountModel accountToDelete = accountsLogic.GetById(accountId);
 
                     if (accountToDelete == null)
                     {
@@ -294,13 +294,22 @@ static class Menu
                     }
                     else
                     {
-                        accountsAccess.Delete(accountId);
+                        var (success, message) = accountsLogic.Delete(accountId);
 
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\n=================================");
-                        Console.WriteLine(" Account deleted successfully! ");
-                        Console.WriteLine("=================================");
-                        Console.ResetColor();
+                        if (success)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\n=================================");
+                            Console.WriteLine(" Account deleted successfully! ");
+                            Console.WriteLine("=================================");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\n{message}");
+                            Console.ResetColor();
+                        }
                     }
                 }
             }

@@ -60,6 +60,11 @@ public class FlightLogic
         return flightAccess.RetrieveSeat(id);
     }
 
+    public (List<SeatModel> availableSeats, List<SeatModel> allSeats, int bookedSeats) GetLiveSeatData(int flightId, int aircraftId)
+    {
+        return flightAccess.GetLiveSeatData(flightId, aircraftId);
+    }
+
     public bool FlightNumberExists(string flightNumber)
     {
         return flightAccess.RetrieveFlight(flightNumber) != null;
@@ -161,15 +166,14 @@ public class FlightLogic
         return sb.ToString();
     }
 
-    public static (bool Success, string ErrorMessage) EditPrice(FlightModel flight, int price)
+    public (bool Success, string ErrorMessage) EditPrice(FlightModel flight, int price)
     {
         flight.BasePrice = price;
-        FlightAccess db = new();
-        db.EditFlightDetails(flight);
-        return (true, "price as been adjusted");
+        flightAccess.EditFlightDetails(flight);
+        return (true, "The price has been adjusted.");
     }
 
-    public static (bool Success, string ErrorMessage) EditFlightTime(FlightModel flight, string? departurTimeInput, string? arrivalTimeInput)
+    public (bool Success, string ErrorMessage) EditFlightTime(FlightModel flight, string? departurTimeInput, string? arrivalTimeInput)
     {
         if (!DateTime.TryParseExact(departurTimeInput, "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime departureTime))
             return (false, "Invalid departure time. Use format yyyy-MM-dd HH:mm.");
@@ -189,30 +193,67 @@ public class FlightLogic
         flight.ArrivalTime = arrivalTime.ToString("yyyy-MM-dd HH:mm");
         flight.DepartureTime = departureTime.ToString("yyyy-MM-dd HH:mm");
         flight.Status = departureTime == currentDeparture ? flight.Status : "Delayed";
-        FlightAccess db = new();
-        db.EditFlightDetails(flight);
-        return (true, "date is edited in database");
+        flightAccess.EditFlightDetails(flight);
+        return (true, "The date has been adjusted.");
     }
-    public static (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
+
+    public static List<string> GetAvailableRoutes(List<FlightModel> flights)
     {
-        FlightAccess flightDb = new();
+        List<string> routes = [];
+        foreach (FlightModel flight in flights)
+        {
+            string routeStr = $"{flight.DepartureCity} -> {flight.DestinationCity}";
+            if (!routes.Contains(routeStr))
+                routes.Add(routeStr);
+        }
+        routes.Sort();
+        return routes;
+    }
+
+    public static List<FlightModel> FilterByRoute(List<FlightModel> flights, string? departure, string? destination)
+    {
+        List<FlightModel> matches = [];
+        foreach (FlightModel flight in flights)
+        {
+            if (flight.DepartureCity?.Equals(departure, StringComparison.OrdinalIgnoreCase) == true &&
+                flight.DestinationCity?.Equals(destination, StringComparison.OrdinalIgnoreCase) == true)
+            {
+                matches.Add(flight);
+            }
+        }
+        return matches;
+    }
+
+    public static List<FlightModel> FilterByDate(List<FlightModel> flights, DateTime date)
+    {
+        List<FlightModel> matches = [];
+        foreach (FlightModel f in flights)
+        {
+            if (DateTime.TryParse(f.DepartureTime, out DateTime departure) && departure.Date == date.Date)
+                matches.Add(f);
+        }
+        return matches;
+    }
+
+    public (bool Success, string ErrorMessage) CancelFlight(FlightModel flight)
+    {
         TicketAccess ticketDb = new();
         BookingAccess bookingDb = new();
         List<BookingModel?> cancelBookingsList = [];
 
         List<TicketModel> tickets = ticketDb.GetByFlightId(flight.Id);
-        foreach(TicketModel ticket in tickets)
+        foreach (TicketModel ticket in tickets)
         {
             cancelBookingsList.Add(bookingDb.GetById(ticket.BookingId));
         }
-        
-        foreach(BookingModel? booking in cancelBookingsList)
+
+        foreach (BookingModel? booking in cancelBookingsList)
         {
             if (booking is not null)
-            bookingDb.Cancel(booking.Id);
+                bookingDb.Cancel(booking.Id);
         }
-        flight.Status = "Cancelled"; 
-        flightDb.EditFlightDetails(flight);
-        return (true, "flight with connected bookings are canceld");
+        flight.Status = "Cancelled";
+        flightAccess.EditFlightDetails(flight);
+        return (true, "The flight with all the connected bookings are cancelled.");
     }
 }

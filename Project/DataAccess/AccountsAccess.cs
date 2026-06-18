@@ -142,9 +142,7 @@ public class AccountsAccess
         }
         catch (SqliteException ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\nCould not delete account. Database error: {ex.Message}");
-            Console.ResetColor();
+            throw new InvalidOperationException($"Could not delete account. Database error: {ex.Message}", ex);
         }
     }
 

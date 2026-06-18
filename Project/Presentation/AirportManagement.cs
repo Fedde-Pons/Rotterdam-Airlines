@@ -8,7 +8,7 @@ static class AirportManagement
             Console.Clear();
             Console.WriteLine("=== All Airports ===\n");
 
-            List<AirportModel> airports = new AirportAccess().GetAllAirports();
+            List<AirportModel> airports = AirportLogic.GetAllAirports();
 
             if (airports.Count == 0)
             {
@@ -23,10 +23,10 @@ static class AirportManagement
                 Console.WriteLine($"{i + 1}: {airports[i].Name} ({airports[i].City}, {airports[i].Country})");
             }
 
-            Console.WriteLine("\nEnter the number of an airport to open it, or enter q to go back:");
+            Console.WriteLine("\nEnter the number of an airport to open it, or press Enter to go back:");
             string? input = Console.ReadLine();
 
-            if (input == "q")
+            if (input == "")
             {
                 return;
             }
@@ -68,7 +68,7 @@ static class AirportManagement
             {
                 case "1":
                     EditAirportView(airport);
-                    AirportModel? refreshedAirport = new AirportAccess().GetAirportById(airport.Id);
+                    AirportModel? refreshedAirport = AirportLogic.GetAirportById(airport.Id);
                     if (refreshedAirport == null)
                     {
                         return;

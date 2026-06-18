@@ -1,5 +1,7 @@
 static class AdminFlightEdit
 {
+    private static FlightLogic _flightLogic = new FlightLogic();
+
     public static void ShowflightWithEditValues(FlightModel flight)
     {
         while (true)
@@ -10,6 +12,7 @@ static class AdminFlightEdit
             Console.WriteLine($"To:             {flight.DestinationAirportName} ({flight.DestinationCity}, {flight.DestinationCountry})");
             Console.WriteLine($"Departure time: {flight.DepartureTime}");
             Console.WriteLine($"Arrival time:   {flight.ArrivalTime}");
+            Console.WriteLine($"Base price:     €{flight.BasePrice}");
             Console.WriteLine($"Status:         {flight.Status}");
             Console.WriteLine($"Aircraft:       {flight.AircraftManufacturer} {flight.AircraftModel}");
 
@@ -119,7 +122,7 @@ static class AdminFlightEdit
             Console.Clear();
             Console.WriteLine("Processing update...");
 
-            (bool isSuccesfull, string ErrorMessage) edittedFlight = FlightLogic.EditFlightTime(flight, departure, arival);
+            (bool isSuccesfull, string ErrorMessage) edittedFlight = _flightLogic.EditFlightTime(flight, departure, arival);
             if (!edittedFlight.isSuccesfull)
             {
                 Console.Clear();
@@ -163,7 +166,7 @@ static class AdminFlightEdit
             {
                 Console.Clear();
                 Console.WriteLine("Processing update...");
-                FlightLogic.EditPrice(flight, price);
+                _flightLogic.EditPrice(flight, price);
 
                 Console.Clear();
                 Console.WriteLine("Base price has been successfully updated");
@@ -199,7 +202,7 @@ static class AdminFlightEdit
             {
                 Console.Clear();
                 Console.WriteLine("Cancelling flight...");
-                FlightLogic.CancelFlight(flight);
+                _flightLogic.CancelFlight(flight);
 
                 Console.Clear();
                 Console.WriteLine("Flight has been successfully cancelled");

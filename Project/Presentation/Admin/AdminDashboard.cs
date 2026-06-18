@@ -143,61 +143,7 @@ static class AdminDashboard
 
     private static void ShowBookings()
     {
-        Console.Clear();
-        Console.WriteLine("=== All Bookings ===\n");
-
-        List<BookingModel> bookings = new BookingAccess().GetAll().ToList();
-
-        if (bookings.Count == 0)
-        {
-            Console.WriteLine("No bookings found.");
-            Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
-            Console.ReadKey();
-
-        }
-        else
-        {
-            Console.WriteLine($"{"ID",-6} {"Account ID",-12} {"Date",-22} {"Total Price",-14} {"Status"}");
-            Console.WriteLine(new string('-', 70));
-            foreach (BookingModel booking in bookings)
-            {
-                Console.WriteLine($"{booking.Id,-6} {booking.AccountId,-12} {booking.Date,-22} {"€" + booking.TotalPrice.ToString("F2"),-14} {booking.Status}");
-            }
-            Console.WriteLine("select 1 [id] to edit status by id\n");
-            string? input = Console.ReadLine();
-            string[] param = input.Split(" ");
-            if (param.Length == 1)
-            {
-                Console.WriteLine("No bookings found.");
-                Console.WriteLine("\nPress any key to return to the Admin Dashboard...");
-                Console.ReadKey();
-            }
-            else if (param.Length == 2)
-            {
-                if (int.TryParse(param[1], out int id))
-                {
-                    if (bookings.FirstOrDefault(x => x.Id == id) != null)
-                    {
-                        EditBookingStatus(bookings, id);
-                    }
-                    else
-                    {
-                        Console.WriteLine("something went wrong with id selection");
-                        Console.ReadKey();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("please only put numbers in this forum");
-                }
-
-            }
-            else
-            {
-
-            }
-        }
-
+        AdminBookings.Show();
     }
 
     private static void ShowAccounts()
@@ -205,7 +151,7 @@ static class AdminDashboard
         Console.Clear();
         Console.WriteLine("=== All Accounts ===\n");
 
-        List<AccountModel> accounts = new AccountsAccess().GetAll();
+        List<AccountModel> accounts = new AccountsLogic().GetAll();
 
         Console.WriteLine($"{"ID",-6} {"Name",-24} {"Email",-30} {"Phone",-16} {"Admin"}");
         Console.WriteLine(new string('-', 85));
@@ -220,94 +166,73 @@ static class AdminDashboard
 
     private static void ShowAirports()
     {
-        Console.Clear();
-        Console.WriteLine("+----------------------Airports--------------------+");
-        Console.WriteLine("| number |                                  action |");
-        Console.WriteLine("+--------------------------------------------------+");
-        Console.WriteLine("| 1      |             create new airport location |");
-        Console.WriteLine("+--------------------------------------------------+\n");
-        Console.Write("> ");
-        string? input = Console.ReadLine();
-        switch (input)
+        CreateAirport();
+    }
+
+    private static string? ReadLineOrEsc(string prompt)
+    {
+        Console.Write(prompt);
+        var input = new System.Text.StringBuilder();
+        while (true)
         {
-            case "1":
-                CreateAirport();
-                return;
-            default:
-                return;
+            ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Escape)
+                return null;
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
+                return input.ToString();
+            }
+            if (key.Key == ConsoleKey.Backspace && input.Length > 0)
+            {
+                input.Remove(input.Length - 1, 1);
+                Console.Write("\b \b");
+            }
+            else if (!char.IsControl(key.KeyChar))
+            {
+                input.Append(key.KeyChar);
+                Console.Write(key.KeyChar);
+            }
         }
     }
 
-    private static void EditBookingStatus(List<BookingModel> bookings, int id)
+    private static void ShowCancelled()
     {
-        BookingModel result = bookings.First(x => x.Id == id);
-        while (true)
-        {
-            Console.Clear();
-            Console.WriteLine($"current status of booking with {result.Id}: {result.Status}");
-            Console.WriteLine("+---------------------------+");
-            Console.WriteLine("| number |  change status to|");
-            Console.WriteLine("+---------------------------+");
-            Console.WriteLine("| 1      |          Pending |");
-            Console.WriteLine("| 2      |        Confirmed |");
-            Console.WriteLine("| 3      |        Cancelled |");
-            Console.WriteLine("+---------------------------+");
-            Console.WriteLine("| press 0 to cancel and     |");
-            Console.WriteLine("| return to admin screen    |");
-            Console.WriteLine("+---------------------------+ \n");
-            Console.Write("> ");
-            string? input = Console.ReadLine();
-            switch (input)
-            {
-                // pending
-                case "1":
-                    BookingLogic.EditBookingStatus(result, "Pending");
-                    return;
-                // confirmed
-                case "2":
-                    BookingLogic.EditBookingStatus(result, "Confirmed");
-                    return;
-                // cancelled
-                case "3":
-                    BookingLogic.EditBookingStatus(result, "Cancelled");
-                    return;
-                case "0":
-                    return;
-                default:
-                    Console.Clear();
-                    Console.WriteLine("Invalid input, please try again.");
-                    Console.WriteLine("Press any key to return to the menu...");
-                    Console.ReadKey();
-                    break;
-            }
-        }
+        Console.Clear();
+        Console.WriteLine("Airport creation cancelled.");
+        Console.WriteLine("Press any key to return to Airport Management...");
+        Console.ReadKey();
     }
 
     private static void CreateAirport()
     {
         Console.Clear();
-        Console.WriteLine("+-----------------------------------------------------------------+");
-        Console.WriteLine("| write down the location you want to add in the following format |");
-        Console.WriteLine("+-----------------------------------------------------------------+");
-        Console.WriteLine("| [name],[address],[city],[country]                               |");
-        Console.WriteLine("+-----------------------------------------------------------------+\n");
-        Console.Write("> ");
-        string? input = Console.ReadLine();
-        if (input == null)
+        Console.WriteLine("=== Add Airport ===");
+        Console.WriteLine("Press Esc at any time to cancel.\n");
+
+        string? name = ReadLineOrEsc("Name:    ");
+        if (name == null) { ShowCancelled(); return; }
+
+        string? address = ReadLineOrEsc("Address: ");
+        if (address == null) { ShowCancelled(); return; }
+
+        string? city = ReadLineOrEsc("City:    ");
+        if (city == null) { ShowCancelled(); return; }
+
+        string? country = ReadLineOrEsc("Country: ");
+        if (country == null) { ShowCancelled(); return; }
+
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
+            string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
         {
-            Console.WriteLine("please put in a valid input as described");
+            Console.WriteLine("\nAll fields are required. Press any key to go back...");
+            Console.ReadKey();
             return;
         }
-        string[] param = input.Split(",");
-        if (param.Length == 4)
-        {
-            (bool isSucces, string message) result = AirportLogic.AddAirport(param[0],param[1],param[2],param[3]);
-            Console.WriteLine(result.message);
-        }
-        else
-        {
-            Console.WriteLine("please only put numbers in this forum");
-        }
+
+        (bool isSucces, string message) result = AirportLogic.AddAirport(name, address, city, country);
+        Console.WriteLine($"\n{result.message}");
+        Console.WriteLine("Press any key to go back...");
         Console.ReadKey();
     }
 }

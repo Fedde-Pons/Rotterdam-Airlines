@@ -4,6 +4,16 @@ using System.Text.RegularExpressions;
 
 public static class AirportLogic
 {
+    public static AirportModel? GetAirportById(long id)
+    {
+        return new AirportAccess().GetAirportById(id);
+    }
+
+    public static List<AirportModel> GetAllAirports()
+    {
+        return new AirportAccess().GetAllAirports();
+    }
+
     public static (bool, string) AddAirport(string name, string address, string city, string country)
     {
         try
@@ -15,7 +25,7 @@ public static class AirportLogic
             
             if(name == "" || address == ""|| city == "" || country == "")
             {
-                return (false, "please dont leave a value empty");
+                return (false, "Please make sure to fill in all fields");
             }
 
             (AirportModel? airport, bool isSucces, String message) airport = ConvertToAirportModel(name, address, city, country);
@@ -27,10 +37,10 @@ public static class AirportLogic
             AirportAccess db = new();
             if (AirportExists(airport.airport, db.GetAllAirports()))
             {
-                return (false, "airport already exists");
+                return (false, "This airport already exists");
             }
             db.WriteAirport(airport.airport);
-            return (true, "airport successfully added");
+            return (true, "Airport created successfully");
         }
         catch
         {

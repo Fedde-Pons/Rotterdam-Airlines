@@ -33,7 +33,7 @@ public static class MyBookings
             for (int i = 0; i < bookings.Count; i++)
             {
                 var b = bookings[i];
-                Console.WriteLine($"{i + 1}: Booking #{b.Id}  |  Date: {b.Date}  |  Status: {FormatStatus(b.Status)}  |  Total: €{b.TotalPrice}");
+                Console.WriteLine($"{i + 1}: Booking #{b.Id}  |  Booked on: {b.Date}  |  Status: {FormatStatus(b.Status)}  |  Total: €{b.TotalPrice}");
             }
 
             Console.WriteLine("\nEnter the number of a booking to view it, or q to return to the main menu:");
@@ -78,12 +78,27 @@ public static class MyBookings
             Console.WriteLine("======================================");
             Console.WriteLine($"          BOOKING #{booking.Id}");
             Console.WriteLine("======================================\n");
-            Console.WriteLine($"Date:    {booking.Date}");
-            Console.WriteLine($"Status:  {FormatStatus(booking.Status)}");
-            Console.WriteLine($"Total:   €{booking.TotalPrice}\n");
+            Console.WriteLine($"Booked on: {booking.Date}");
+            Console.WriteLine($"Status:    {FormatStatus(booking.Status)}");
+            Console.WriteLine($"Total:     €{booking.TotalPrice}\n");
 
             List<TicketModel> tickets = TicketLogic.GetTicketsForBooking(booking.Id);
 
+            bool isCancelled = BookingLogic.IsCancelled(booking);
+            bool needsCheckIn = tickets.Any(t => !t.IsCheckedIn);
+
+            bool isCheckInOpen = false;
+            string checkInMessage = "";
+
+            if (tickets.Count > 0)
+            {
+                FlightModel? firstFlight = _flightLogic.GetFlightById(tickets[0].FlightId);
+                if (firstFlight != null)
+                {
+                    (isCheckInOpen, checkInMessage) = TicketLogic.GetCheckInStatus(firstFlight.DepartureTime);
+                }
+            }
+            
             if (tickets.Count == 0)
             {
                 Console.WriteLine("This booking has no tickets.\n");
@@ -122,55 +137,37 @@ public static class MyBookings
                     else
                         Console.WriteLine($"  Seat:        (unknown)");
                     Console.WriteLine($"  Price:       €{t.Price}");
-                    Console.WriteLine($"  Baggage:     {t.ExtraBaggageKg} kg extra");
-                    Console.WriteLine($"  Status:      {(t.IsCheckedIn ? "\x1b[32mChecked In\x1b[0m" : "\x1b[31mNot Checked In\x1b[0m")}");
+
+                    // nieuwe baggage display naar de wensen van de P.O.
+                    string baggageText = t.ExtraBaggageKg > 0 
+                        ? $"{25 + t.ExtraBaggageKg} kg (25 kg standard + {t.ExtraBaggageKg} kg extra)"
+                        : "25 kg (standard)";
+                    Console.WriteLine($"  Baggage:     {baggageText}");
+
+                    string ticketStatus = "";
+                    
+                    if (t.IsCheckedIn)
+                    {
+                        ticketStatus = "\x1b[32mChecked In\x1b[0m";
+                    }
+                    else if (isCheckInOpen)
+                    {
+                        ticketStatus = "\x1b[31mNot Checked In\x1b[0m";
+                    }
+                    else
+                    {
+                        ticketStatus = "Check in opens 24 hours before departure, and closes 1 hour before departure";
+                    }
+
+                    Console.WriteLine($"  Status:      {ticketStatus}");
                     Console.WriteLine();
                 }
             }
 
-            bool isCancelled = BookingLogic.IsCancelled(booking);
-            // stukje voor check in validatie zodat er niet 24 uur voor de vluch kan worden ingecheckt.
-            // ook misschien kunnen we dit restructuren naar 3 lagen model. future reference.
-            bool needsCheckIn = false;
-            foreach (var t in tickets)
-            {
-                if (!t.IsCheckedIn)
-                {
-                    needsCheckIn = true;
-                    break;
-                }
-            }
-
-            bool isCheckInOpen = false;
-            string checkInMessage = "";
-
-            if (tickets.Count > 0)
-            {
-                FlightModel? firstFlight = _flightLogic.GetFlightById(tickets[0].FlightId);
-                if (firstFlight != null && DateTime.TryParse(firstFlight.DepartureTime, out DateTime departureTime))
-                {
-                    TimeSpan timeUntilFlight = departureTime - DateTime.Now;
-                    
-                    if (timeUntilFlight.TotalHours > 24)
-                    {
-                        checkInMessage = "\n  * Online check-in opens 24 hours before departure.";
-                    }
-                    else if (timeUntilFlight.TotalHours <= 24 && timeUntilFlight.TotalHours >= 1)
-                    {
-                        isCheckInOpen = true; 
-                    }
-                    else
-                    {
-                        checkInMessage = "\n  * Online check-in is now closed (closes 1 hour before departure).";
-                    }
-                }
-            }
-            
             if (!isCancelled)
             {
                 Console.WriteLine("1: Cancel this booking");
 
-                
                 if (needsCheckIn && isCheckInOpen)
                 {
                     Console.WriteLine("2: Check in online");
@@ -179,7 +176,6 @@ public static class MyBookings
                 else
                 {
                     Console.WriteLine("2: Back to my bookings");
-                    
                     
                     if (needsCheckIn && !isCheckInOpen && !string.IsNullOrEmpty(checkInMessage))
                     {
@@ -208,12 +204,10 @@ public static class MyBookings
                 {
                     if (ConfirmCancellation(booking)) return;
                 }
-                
                 else if (input == "2" && needsCheckIn && isCheckInOpen)
                 {
                     PerformCheckIn(booking, tickets);
                 }
-                
                 else if ((input == "2" && (!needsCheckIn || !isCheckInOpen)) || (input == "3" && needsCheckIn && isCheckInOpen))
                 {
                     return;
@@ -293,7 +287,11 @@ public static class MyBookings
             string seatLabel = seat != null ? seat.SeatNumber : "(unknown)";
             string flightLabel = flight != null ? flight.FlightNumber : $"(Flight #{t.FlightId})";
 
-            Console.WriteLine($" * {passangerName,-20} | Flight: {flightLabel,-8} | Seat: {seatLabel}");
+            string shortBaggageText = t.ExtraBaggageKg > 0 
+                ? $"{25 + t.ExtraBaggageKg}kg (incl. extra)" 
+                : "25kg (standard)";
+
+            Console.WriteLine($" * {passangerName,-20} | Flight: {flightLabel,-8} | Seat: {seatLabel,-4} | Bag: {shortBaggageText}");
         }
         Console.WriteLine("------------------------------------------------------------\n");
 
@@ -303,12 +301,7 @@ public static class MyBookings
 
         if (input == "Y")
         {
-            TicketAccess db = new TicketAccess();
-            foreach (var t in pendingTickets)
-            {
-                db.UpdateCheckInStatus(t.Id);
-                t.IsCheckedIn = true;
-            }
+            TicketLogic.CheckIn(pendingTickets);
 
             Console.WriteLine("\nSuccess! Online check-in is confirmed.");
             Console.WriteLine("We have sent the boarding pass(es) to your registered email address.");

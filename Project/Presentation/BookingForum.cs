@@ -9,12 +9,12 @@ public static class BookingForums
     public static void Start(FlightModel flight, string date)
     {
         int accountID = AccountsLogic.CurrentAccount.Id;
-        BookingModel booking = new BookingModel(accountID, date, "Confirmed");
+        BookingModel booking = BookingLogic.CreateBooking(accountID, date, "Confirmed");
         int numberOfTickets = NumberOfTickets();
         List<(PassangerModel passanger, TicketModel ticket, SeatModel seat)> bookingValues = [];
 
-        FlightAccess dbAccess = new FlightAccess();
-        var seatData = dbAccess.GetLiveSeatData(flight.Id, flight.AircraftId);
+        FlightLogic flightLogic = new();
+        var seatData = flightLogic.GetLiveSeatData(flight.Id, flight.AircraftId);
         
         List<SeatModel> availableSeats = seatData.availableSeats;
         int totalSeats = seatData.allSeats.Count;
@@ -78,7 +78,7 @@ public static class BookingForums
             Console.WriteLine("======================================");
             Console.WriteLine($"    EXTRA BAGGAGE ({passanger.FirstName})");
             Console.WriteLine("======================================\n");
-            Console.WriteLine("Add an extra 23 kg checked bag for €25? (Y/N):(Y) ");
+            Console.WriteLine("Add an extra 23 kg checked bag (on top of the 25kg) for €25?  (Y/N): ");
             
             string? bagInput = Console.ReadLine()?.Trim().ToUpper();
             if (bagInput == "Y")
@@ -90,7 +90,7 @@ public static class BookingForums
             availableSeats.Remove(pickedSeat);
             bookedSeats++;
             
-            TicketModel ticket = CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice, extraBaggageKg);
+            TicketModel ticket = TicketLogic.CreateTicket(booking.Id, flight.Id, pickedSeat.Id, (int)finalPrice, extraBaggageKg);
             bookingValues.Add((passanger, ticket, pickedSeat));
         }
 
@@ -133,18 +133,8 @@ public static class BookingForums
         // ── SAVE TO DATABASE ───────────────────────────────────────────
         booking.TotalPrice = totalPrice;
 
-        BookingAccess bookingAccess = new();
-        PassangerAccess passangerAccess = new();
-        TicketAccess ticketAccess = new();
-
-        int bookingId = bookingAccess.Write(booking);
-
-        foreach (var (passanger, ticket, _) in bookingValues)
-        {
-            int passangerId = passangerAccess.Write(passanger);
-            TicketModel dbTicket = new(bookingId, ticket.FlightId, ticket.SeatId, passangerId, ticket.Price, ticket.ExtraBaggageKg);
-            ticketAccess.Write(dbTicket);
-        }
+        var entries = bookingValues.Select(bv => (bv.passanger, bv.ticket)).ToList();
+        int bookingId = BookingLogic.SaveBooking(booking, entries);
 
         // ── TICKET DISPLAY ─────────────────────────────────────────────
         Console.Clear();
@@ -206,12 +196,6 @@ public static class BookingForums
         }
     }
 
-    private static TicketModel CreateTicket(int bookingID, int flightId, int seatID, int price, int extraBaggageKg)
-    {
-        TicketModel ticket = new(bookingID, flightId, seatID, price, extraBaggageKg);
-        return ticket;
-    }
-
     private static PassangerModel CreatePassanger(int current, int total)
     {
         void PrintHeader()
@@ -230,11 +214,12 @@ public static class BookingForums
             Console.WriteLine("Please enter first name:");
             firstName = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(firstName))
+            // Calling the logic layer for name validation - serhat (dit kwam voort uit systematisch testen )
+            if (PassangerLogic.IsValidName(firstName))
                 break;
 
             PrintHeader();
-            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Name can only contain letters, hyphens (-) and apostrophes (').");
             Console.WriteLine("Please try again.\n");
         }
 
@@ -244,12 +229,13 @@ public static class BookingForums
             Console.WriteLine("\nPlease enter last name:");
             lastName = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(lastName))
+            // Calling the logic layer for name validation - serhat
+            if (PassangerLogic.IsValidName(lastName))
                 break;
 
             PrintHeader();
             Console.WriteLine($"First name: {firstName}\n");
-            Console.WriteLine("You can not enter an empty value.");
+            Console.WriteLine("Name can only contain letters, hyphens (-) and apostrophes (').");
             Console.WriteLine("Please try again.\n");
         }
 
@@ -259,7 +245,7 @@ public static class BookingForums
             Console.WriteLine("\nPlease enter date of birth (YYYY-MM-DD): ");
             dateOfBirth = Console.ReadLine();
 
-            if (DateTime.TryParse(dateOfBirth, out _))
+            if (PassangerLogic.IsValidDateOfBirth(dateOfBirth))
                 break;
 
             PrintHeader();
@@ -284,7 +270,6 @@ public static class BookingForums
             Console.WriteLine("Invalid passport number. Please enter a numeric value.\n");
         }
 
-        PassangerModel passanger = new PassangerModel(firstName, lastName, dateOfBirth, passportNumber);
-        return passanger;
+        return PassangerLogic.CreatePassanger(firstName, lastName, dateOfBirth, passportNumber);
     }
 }
