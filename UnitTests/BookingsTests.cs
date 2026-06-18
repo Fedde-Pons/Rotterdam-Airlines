@@ -22,7 +22,7 @@ public class BookingTests
 
         // assert
         Assert.IsNotNull(flight, "Een vlucht in de toekomst moet selecteerbaar zijn.");
-        Assert.IsGreaterThan(DateTime.Parse(flight.DepartureTime!), DateTime.Now, "De vertrektijd moet in de toekomst liggen.");
+        Assert.IsGreaterThan(DateTime.Now, DateTime.Parse(flight.DepartureTime!), "De vertrektijd moet in de toekomst liggen.");
     }
 
     [TestMethod]
@@ -399,7 +399,7 @@ public class BookingTests
         Assert.IsNotNull(result.booking);
         Assert.AreNotEqual(0, result.booking.AccountId, "AccountId moet ingesteld zijn.");
         Assert.IsFalse(string.IsNullOrEmpty(result.booking.Date), "Datum moet ingesteld zijn.");
-        Assert.IsGreaterThanOrEqualTo(result.booking.TotalPrice, 0.0, "Prijs moet ingesteld zijn.");
+        Assert.IsGreaterThanOrEqualTo(0.0, result.booking.TotalPrice, "Prijs moet ingesteld zijn.");
         Assert.IsFalse(string.IsNullOrEmpty(result.booking.Status), "Status moet ingesteld zijn.");
     }
 }

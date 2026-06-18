@@ -14,7 +14,7 @@ public static class PassangerLogic
     public static bool IsValidDateOfBirth(string dateOfBirth)
     {
     if (!DateTime.TryParse(dateOfBirth, out DateTime dob)) return false;
-    return dob <= DateTime.Today.AddDays(-14);
+    return dob <= DateTime.Today.AddDays(-14) && dob > DateTime.Today.AddYears(-120);
     }
 
     public static PassangerModel CreatePassanger(string? firstName, string? lastName, string? dateOfBirth, int passportNumber)
