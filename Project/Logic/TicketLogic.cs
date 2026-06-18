@@ -7,6 +7,11 @@ public static class TicketLogic
     /// creates and returns a ticket model <br/>
     /// ticket only returns null if something went wrong
     /// </summary>  
+    public static TicketModel CreateTicket(int bookingId, int flightId, int seatId, int price, int extraBaggageKg)
+    {
+        return new TicketModel(bookingId, flightId, seatId, price, extraBaggageKg);
+    }
+
     // only function that can be tested in this file
     public static (bool IsSuccesfull, string message, TicketModel? ticket) CreateTicket(int bookingID, int flightId, int seatId, int passangerID, float price, int extraBaggadeKg)
     {

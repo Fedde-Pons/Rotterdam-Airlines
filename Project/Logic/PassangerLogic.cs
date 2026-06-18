@@ -17,6 +17,11 @@ public static class PassangerLogic
     return dob <= DateTime.Today.AddDays(-14);
     }
 
+    public static PassangerModel CreatePassanger(string? firstName, string? lastName, string? dateOfBirth, int passportNumber)
+    {
+        return new PassangerModel(firstName, lastName, dateOfBirth, passportNumber);
+    }
+
     public static PassangerModel? GetById(int id)
     {
         PassangerAccess db = new();

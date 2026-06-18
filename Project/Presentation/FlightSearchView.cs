@@ -15,22 +15,7 @@ public static class FlightSearch
             return;
         }
 
-        List<string> availableRoutes = new List<string>();
-
-
-        foreach (FlightModel flight in flights)
-        {
-
-            string routeStr = $"{flight.DepartureCity} -> {flight.DestinationCity}";
-
-
-            if (!availableRoutes.Contains(routeStr))
-            {
-                availableRoutes.Add(routeStr);
-            }
-        }
-
-        availableRoutes.Sort();
+        List<string> availableRoutes = FlightLogic.GetAvailableRoutes(flights);
 
         Console.WriteLine("\nAvailable Routes:");
         foreach (string route in availableRoutes)
@@ -42,21 +27,12 @@ public static class FlightSearch
 
         
         Console.Write("Enter your departure city: ");
-        string searchDeparture = Console.ReadLine();
+        string? searchDeparture = Console.ReadLine();
 
         Console.Write("Enter your destination city: ");
-        string searchDestination = Console.ReadLine();
+        string? searchDestination = Console.ReadLine();
 
-        List<FlightModel> routeMatches = new List<FlightModel>();
-
-        foreach (FlightModel flight in flights)
-        {
-            if (flight.DepartureCity.Equals(searchDeparture, StringComparison.OrdinalIgnoreCase) &&
-                flight.DestinationCity.Equals(searchDestination, StringComparison.OrdinalIgnoreCase))
-            {
-                routeMatches.Add(flight);
-            }
-        }
+        List<FlightModel> routeMatches = FlightLogic.FilterByRoute(flights, searchDeparture, searchDestination);
 
         if (routeMatches.Count == 0)
         {
@@ -69,7 +45,7 @@ public static class FlightSearch
 
         Console.Clear();
 
-        Console.WriteLine($"\nAVAILABLE FLIGHTS: {searchDeparture.ToUpper()} TO {searchDestination.ToUpper()}");
+        Console.WriteLine($"\nAVAILABLE FLIGHTS: {searchDeparture?.ToUpper()} TO {searchDestination?.ToUpper()}");
         foreach (FlightModel f in routeMatches)
         {
             Console.WriteLine($"- Flight {f.FlightNumber} departs at {f.DepartureTime}");
@@ -92,15 +68,7 @@ public static class FlightSearch
             }
         }
 
-        List<FlightModel> finalMatches = new List<FlightModel>();
-
-        foreach (FlightModel f in routeMatches)
-        {
-            if (DateTime.Parse(f.DepartureTime).Date == searchDate.Date)
-            {
-                finalMatches.Add(f);
-            }
-        }
+        List<FlightModel> finalMatches = FlightLogic.FilterByDate(routeMatches, searchDate);
 
         if (finalMatches.Count == 0)
         {
